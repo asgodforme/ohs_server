@@ -2,8 +2,8 @@ server:
  port: 8888
 spring: 
  datasource:
-  driverClassName: com.mysql.cj.jdbc.Driver
-  url: jdbc:mysql://127.0.0.1:3306/ohs
+  driverClassName: com.mysql.jdbc.Driver
+  url: jdbc:mysql://127.0.0.1:3306/ohs?serverTimezone=GMT%2B8&useUnicode=true&characterEncoding=utf-8
   username: root
   password: jiangjie1
  jpa: 
