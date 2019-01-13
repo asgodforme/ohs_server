@@ -13,7 +13,7 @@ import com.jiangjie.ohs.service.MenuService;
 
 @RestController
 @RequestMapping("/api/menu")
-public class OhsController {
+public class OhsMenuController {
 	
 	@Autowired
 	private MenuService menuService;

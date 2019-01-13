@@ -22,12 +22,12 @@ public class OhsModuleConfig {
 	 */
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int id;
+	private Integer id;
 
 	/**
 	 * 归属系统id
 	 */
-	private int sysId;
+	private Integer sysId;
 
 	/**
 	 * 模块名
@@ -45,19 +45,19 @@ public class OhsModuleConfig {
 	@Embedded
 	private RelationUserInfo relationUserInfo;
 
-	public int getId() {
+	public Integer getId() {
 		return id;
 	}
 
-	public void setId(int id) {
+	public void setId(Integer id) {
 		this.id = id;
 	}
 
-	public int getSysId() {
+	public Integer getSysId() {
 		return sysId;
 	}
 
-	public void setSysId(int sysId) {
+	public void setSysId(Integer sysId) {
 		this.sysId = sysId;
 	}
 
