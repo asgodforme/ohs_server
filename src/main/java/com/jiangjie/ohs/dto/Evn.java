@@ -1,33 +1,33 @@
-package com.jiangjie.ohs.entity;
+package com.jiangjie.ohs.dto;
 
-import javax.persistence.Embedded;
-import javax.persistence.Entity;
+import java.sql.Timestamp;
+
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
-import com.jiangjie.ohs.entity.common.RelationUserInfo;
-
 /**
- * 环境配置表
+ * 环境信息
  * 
  * @author Administrator
  *
  */
-@Entity
-public class OhsEnvironmentConfig {
+public class Evn {
 
 	/**
 	 * 主键
 	 */
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer id;
+	private int id;
 
 	/**
-	 * 归属系统id
+	 * 归属系统名
 	 */
-	private Integer sysId;
+	private String sysAlias;
+
+	/** 归属系统码 */
+	private String sysChineseNme;
 
 	/**
 	 * 环境类型： 1-数据库查询的环境，用户动态数据源的配置和加载。 2-自动测试的请求地址环境
@@ -69,34 +69,36 @@ public class OhsEnvironmentConfig {
 	 */
 	private String evnName;
 
-	/**
-	 * 公共信息
-	 */
-	@Embedded
-	private RelationUserInfo relationUserInfo;
+	private Timestamp updateDate;
 
-	public Integer getId() {
+	private String updateUser;
+
+	private Timestamp createDate;
+
+	private String createUser;
+
+	public int getId() {
 		return id;
 	}
 
-	public void setId(Integer id) {
+	public void setId(int id) {
 		this.id = id;
 	}
 
-	public Integer getSysId() {
-		return sysId;
+	public String getSysAlias() {
+		return sysAlias;
 	}
 
-	public void setSysId(Integer sysId) {
-		this.sysId = sysId;
+	public void setSysAlias(String sysAlias) {
+		this.sysAlias = sysAlias;
 	}
 
-	public String getEvnIp() {
-		return evnIp;
+	public String getSysChineseNme() {
+		return sysChineseNme;
 	}
 
-	public void setEvnIp(String evnIp) {
-		this.evnIp = evnIp;
+	public void setSysChineseNme(String sysChineseNme) {
+		this.sysChineseNme = sysChineseNme;
 	}
 
 	public String getInterfaceNme() {
@@ -123,12 +125,36 @@ public class OhsEnvironmentConfig {
 		this.dbPwd = dbPwd;
 	}
 
-	public RelationUserInfo getRelationUserInfo() {
-		return relationUserInfo;
+	public Timestamp getUpdateDate() {
+		return updateDate;
 	}
 
-	public void setRelationUserInfo(RelationUserInfo relationUserInfo) {
-		this.relationUserInfo = relationUserInfo;
+	public void setUpdateDate(Timestamp updateDate) {
+		this.updateDate = updateDate;
+	}
+
+	public String getUpdateUser() {
+		return updateUser;
+	}
+
+	public void setUpdateUser(String updateUser) {
+		this.updateUser = updateUser;
+	}
+
+	public Timestamp getCreateDate() {
+		return createDate;
+	}
+
+	public void setCreateDate(Timestamp createDate) {
+		this.createDate = createDate;
+	}
+
+	public String getCreateUser() {
+		return createUser;
+	}
+
+	public void setCreateUser(String createUser) {
+		this.createUser = createUser;
 	}
 
 	public String getEvnTyp() {
@@ -137,6 +163,14 @@ public class OhsEnvironmentConfig {
 
 	public void setEvnTyp(String evnTyp) {
 		this.evnTyp = evnTyp;
+	}
+
+	public String getEvnIp() {
+		return evnIp;
+	}
+
+	public void setEvnIp(String evnIp) {
+		this.evnIp = evnIp;
 	}
 
 	public String getEvnPort() {

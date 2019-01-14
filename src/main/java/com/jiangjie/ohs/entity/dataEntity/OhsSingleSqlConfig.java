@@ -1,10 +1,16 @@
 package com.jiangjie.ohs.entity.dataEntity;
 
 import java.sql.Timestamp;
+import java.util.List;
 
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 
 /**
  * 单表sql配置
@@ -12,7 +18,8 @@ import javax.persistence.Id;
  * @author Administrator
  *
  */
-public class OhsSingleSQLConfig {
+@Entity
+public class OhsSingleSqlConfig {
 
 	/** 主键 */
 	@Id
@@ -30,6 +37,13 @@ public class OhsSingleSQLConfig {
 
 	/** 单表查询的sql语句 */
 	private String singleTableSql;
+
+	@ManyToMany(fetch = FetchType.LAZY)
+	@JoinTable(name = "ohs_single_query_sql", // 表名
+			// joincolumns需要将此entity中的什么字段添加到表的什么字段，name是存储在多对多关系表中的字段名，referencedColumnName为此外键
+			joinColumns = { @JoinColumn(name = "single_sql_id", referencedColumnName = "id")  }, 
+			inverseJoinColumns = {@JoinColumn(name = "single_query_id", referencedColumnName = "id") })
+	private List<OhsSingleQueryWhereInfo> OhsSingleQueryWhereInfos;
 
 	private Timestamp createDate;
 
@@ -109,6 +123,14 @@ public class OhsSingleSQLConfig {
 
 	public void setUpdateUser(String updateUser) {
 		this.updateUser = updateUser;
+	}
+
+	public List<OhsSingleQueryWhereInfo> getOhsSingleQueryWhereInfos() {
+		return OhsSingleQueryWhereInfos;
+	}
+
+	public void setOhsSingleQueryWhereInfos(List<OhsSingleQueryWhereInfo> ohsSingleQueryWhereInfos) {
+		OhsSingleQueryWhereInfos = ohsSingleQueryWhereInfos;
 	}
 
 }
