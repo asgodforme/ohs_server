@@ -25,7 +25,7 @@ public class OhsTableConfig {
 	private Integer sysId;
 
 	/** 表schema名 */
-	private String schema;
+	private String schemaName;
 
 	/** 表名 */
 	private String tableName;
@@ -54,12 +54,12 @@ public class OhsTableConfig {
 		this.sysId = sysId;
 	}
 
-	public String getSchema() {
-		return schema;
+	public String getSchemaName() {
+		return schemaName;
 	}
 
-	public void setSchema(String schema) {
-		this.schema = schema;
+	public void setSchemaName(String schemaName) {
+		this.schemaName = schemaName;
 	}
 
 	public String getTableName() {

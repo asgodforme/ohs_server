@@ -9,6 +9,7 @@ import javax.persistence.Id;
 
 /**
  * 字段配置
+ * 
  * @author Administrator
  *
  */
@@ -19,16 +20,19 @@ public class OhsColumnConfig {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
-	
+
+	/** 归属系统id */
+	private Integer sysId;
+
 	/** 归属表名id */
 	private Integer tableId;
-	
+
 	/** 字段名 */
 	private String columnName;
-	
+
 	/** 字段别名 */
 	private String columnAlias;
-	
+
 	private Timestamp createDate;
 
 	private String createUser;
@@ -36,6 +40,14 @@ public class OhsColumnConfig {
 	private Timestamp updateDate;
 
 	private String updateUser;
+
+	public Integer getSysId() {
+		return sysId;
+	}
+
+	public void setSysId(Integer sysId) {
+		this.sysId = sysId;
+	}
 
 	public Integer getId() {
 		return id;
@@ -100,6 +112,5 @@ public class OhsColumnConfig {
 	public void setUpdateUser(String updateUser) {
 		this.updateUser = updateUser;
 	}
-	
-	
+
 }
