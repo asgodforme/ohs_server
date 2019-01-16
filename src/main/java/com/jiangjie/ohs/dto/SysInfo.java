@@ -1,26 +1,18 @@
-package com.jiangjie.ohs.entity;
+package com.jiangjie.ohs.dto;
 
 import java.sql.Timestamp;
+import java.util.List;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import com.jiangjie.ohs.entity.dataEntity.OhsTableConfig;
 
 /**
- * 系统配置表： 一个系统对应多个环境（sit, uat, pro等等） 一个系统对应多个功能模块
+ * 系统信息
  * 
  * @author Administrator
  *
  */
-@Entity
-public class OhsSysConfig {
+public class SysInfo {
 
-	/**
-	 * 主键
-	 */
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 
 	/**
@@ -37,6 +29,8 @@ public class OhsSysConfig {
 	 * 数据库schema名
 	 */
 	private String schemaName;
+
+	private List<OhsTableConfig> ohsTableConfigs;
 
 	/** 创建时间 */
 	private Timestamp createDate;
@@ -87,11 +81,11 @@ public class OhsSysConfig {
 		this.updateUser = updateUser;
 	}
 
-	public OhsSysConfig() {
+	public SysInfo() {
 		super();
 	}
 
-	public OhsSysConfig(String sysAlias, String sysChineseNme) {
+	public SysInfo(String sysAlias, String sysChineseNme) {
 		super();
 		this.sysAlias = sysAlias;
 		this.sysChineseNme = sysChineseNme;
@@ -121,11 +115,19 @@ public class OhsSysConfig {
 		this.sysChineseNme = sysChineseNme;
 	}
 
+	public List<OhsTableConfig> getOhsTableConfigs() {
+		return ohsTableConfigs;
+	}
+
+	public void setOhsTableConfigs(List<OhsTableConfig> ohsTableConfigs) {
+		this.ohsTableConfigs = ohsTableConfigs;
+	}
+
 	@Override
 	public String toString() {
-		return "OhsSysConfig [id=" + id + ", sysAlias=" + sysAlias + ", sysChineseNme=" + sysChineseNme
-				+ ", createDate=" + createDate + ", createUser=" + createUser + ", updateDate=" + updateDate
-				+ ", updateUser=" + updateUser + "]";
+		return "SysInfo [id=" + id + ", sysAlias=" + sysAlias + ", sysChineseNme=" + sysChineseNme + ", schemaName="
+				+ schemaName + ", ohsTableConfigs=" + ohsTableConfigs + ", createDate=" + createDate + ", createUser="
+				+ createUser + ", updateDate=" + updateDate + ", updateUser=" + updateUser + "]";
 	}
 
 }

@@ -38,7 +38,7 @@ public class ModuleConfigServiceImpl implements ModuleConfigService {
 
 		List<OhsSysConfig> ohsSysConfigLst = ohsSysConfigRepository.findAll(Example.of(ohsSysConfig));
 		if (CollectionUtils.isEmpty(ohsSysConfigLst)) {
-			throw new OhsException("不存在对应系统配置信息，请先添加系统后再查询或新增修改模块！");
+			throw new OhsException("当前系统不存在对应系统配置信息，请先添加系统配置信息后再查询或新增修改模块！");
 		}
 
 		// 只允许系统中存在唯一系统码和唯一系统名的系统
@@ -54,7 +54,7 @@ public class ModuleConfigServiceImpl implements ModuleConfigService {
 
 		List<OhsModuleConfig> ohsModuleConfigList = ohsModuleConfigRepository.findAll(Example.of(ohsModuleConfig));
 		if (CollectionUtils.isEmpty(ohsModuleConfigList)) {
-			throw new OhsException("不存在对应模块配置信息，请自行添加模块！");
+			throw new OhsException("当前系统不存在对应模块配置信息，请自行添加模块！");
 		}
 
 		List<Module> moduleLst = new ArrayList<>();
@@ -124,7 +124,7 @@ public class ModuleConfigServiceImpl implements ModuleConfigService {
 
 		List<OhsSysConfig> ohsSysConfigLst = ohsSysConfigRepository.findAll(Example.of(ohsSysConfig));
 		if (CollectionUtils.isEmpty(ohsSysConfigLst)) {
-			throw new OhsException("对应系统配置信息不存在，请先添加系统后再查询或新增修改模块！");
+			throw new OhsException("对应系统配置信息不存在，可能被别人删除了。请先添加系统配置信息后再查询或新增修改模块！");
 		}
 		
 		// 只允许系统中存在唯一系统码和唯一系统名的系统

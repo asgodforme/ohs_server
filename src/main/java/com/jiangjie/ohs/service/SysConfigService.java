@@ -2,6 +2,7 @@ package com.jiangjie.ohs.service;
 
 import java.util.List;
 
+import com.jiangjie.ohs.dto.SysInfo;
 import com.jiangjie.ohs.entity.OhsSysConfig;
 import com.jiangjie.ohs.exception.OhsException;
 
@@ -18,6 +19,13 @@ public interface SysConfigService {
 	 * @return
 	 */
 	public List<OhsSysConfig> getAllSys(OhsSysConfig ohsSysConfig);
+	
+	/**
+	 * 获得系统配置信息，包括系统下的所有表信息
+	 * @param ohsSysConfig
+	 * @return
+	 */
+	public List<SysInfo> getAllSysInfo(OhsSysConfig ohsSysConfig);
 
 	/**
 	 * 保存系统配置信息
