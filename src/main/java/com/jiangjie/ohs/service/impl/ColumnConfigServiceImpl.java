@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
-import com.jiangjie.ohs.dto.Column;
+import com.jiangjie.ohs.dto.ColumnDTO;
 import com.jiangjie.ohs.entity.OhsSysConfig;
 import com.jiangjie.ohs.entity.dataEntity.OhsColumnConfig;
 import com.jiangjie.ohs.entity.dataEntity.OhsTableConfig;
@@ -36,7 +36,7 @@ public class ColumnConfigServiceImpl implements ColumnConfigService {
 	private OhsColumnConfigRepository ohsColumnConfigRepository;
 	
 	@Override
-	public List<Column> getAllColumn(Column column) throws OhsException {
+	public List<ColumnDTO> getAllColumn(ColumnDTO column) throws OhsException {
 		
 		OhsSysConfig ohsSysConfig = new OhsSysConfig();
 		ohsSysConfig.setSysAlias(OhsUtils.putIfNotBlank(column.getSysAlias()));
@@ -63,7 +63,7 @@ public class ColumnConfigServiceImpl implements ColumnConfigService {
 			throw new OhsException("不存在对应表信息，请先添加表配置信息后在查询新增字段信息！");
 		}
 		
-		List<Column> columnLst = new ArrayList<>();
+		List<ColumnDTO> columnLst = new ArrayList<>();
 		OhsColumnConfig ohsColumnConfig = new OhsColumnConfig();
 		// 未上送系统相关信息，相当于查询了全部的表信息
 		if (ohsSysConfig.getId() == null) {
@@ -75,7 +75,7 @@ public class ColumnConfigServiceImpl implements ColumnConfigService {
 				List<OhsColumnConfig> ohsColumnConfigLst = ohsColumnConfigRepository.findAll(Example.of(ohsColumnConfig));	
 				for (OhsColumnConfig ohsColumnCfg : ohsColumnConfigLst) {
 					if (ohsTableCfg.getId().equals(ohsColumnCfg.getTableId()) && ohsTableCfg.getSysId().equals(ohsColumnCfg.getSysId())) {
-						Column col = new Column();
+						ColumnDTO col = new ColumnDTO();
 						col.setId(ohsColumnCfg.getId());
 						col.setColumnAlias(ohsColumnCfg.getColumnAlias());
 						col.setColumnName(ohsColumnCfg.getColumnName());
@@ -101,7 +101,7 @@ public class ColumnConfigServiceImpl implements ColumnConfigService {
 			ohsColumnConfig.setTableId(ohsTableConfigLst.get(0).getId());
 			List<OhsColumnConfig> ohsColumnConfigLst = ohsColumnConfigRepository.findAll(Example.of(ohsColumnConfig));	
 			for (OhsColumnConfig ohsColumnCfg : ohsColumnConfigLst) {
-				Column col = new Column();
+				ColumnDTO col = new ColumnDTO();
 				col.setId(ohsColumnCfg.getId());
 				col.setColumnAlias(ohsColumnCfg.getColumnAlias());
 				col.setColumnName(ohsColumnCfg.getColumnName());
@@ -125,7 +125,7 @@ public class ColumnConfigServiceImpl implements ColumnConfigService {
 	}
 
 	@Override
-	public Column saveColumnConfig(Column column) throws OhsException {
+	public ColumnDTO saveColumnConfig(ColumnDTO column) throws OhsException {
 		OhsSysConfig ohsSysConfig = new OhsSysConfig();
 		ohsSysConfig.setSysAlias(OhsUtils.putIfNotBlank(column.getSysAlias()));
 		ohsSysConfig.setSysChineseNme(OhsUtils.putIfNotBlank(column.getSysChineseNme()));
@@ -163,19 +163,19 @@ public class ColumnConfigServiceImpl implements ColumnConfigService {
 	}
 
 	@Override
-	public Column deleteById(int id) throws OhsException  {
+	public ColumnDTO deleteById(int id) throws OhsException  {
 		Optional<OhsColumnConfig> ohsColumnConfiOpt = ohsColumnConfigRepository.findById(id);
 		if (!ohsColumnConfiOpt.isPresent()) {
 			throw new OhsException("该字段信息已被删除！请重新查询！");
 		}
 		ohsColumnConfigRepository.deleteById(id);
-		Column column = new Column();
+		ColumnDTO column = new ColumnDTO();
 		column.setId(id);
 		return column;
 	}
 
 	@Override
-	public Column updateById(Column column) throws OhsException  {
+	public ColumnDTO updateById(ColumnDTO column) throws OhsException  {
 		OhsSysConfig ohsSysConfig = new OhsSysConfig();
 		ohsSysConfig.setSysAlias(OhsUtils.putIfNotBlank(column.getSysAlias()));
 		ohsSysConfig.setSysChineseNme(OhsUtils.putIfNotBlank(column.getSysChineseNme()));

@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.jiangjie.ohs.dto.Column;
+import com.jiangjie.ohs.dto.ColumnDTO;
 import com.jiangjie.ohs.exception.OhsException;
 import com.jiangjie.ohs.service.EnumValueConfigService;
 
@@ -28,7 +28,7 @@ public class OhsEnumValueConfigController {
 	 * @throws OhsException
 	 */
 	@GetMapping("/getAllEnumValue")
-	public List<Column> getAllEnumValue(Column column) throws OhsException {
+	public List<ColumnDTO> getAllEnumValue(ColumnDTO column) throws OhsException {
 		return enumValueConfigService.getAllEnumValue(column);
 	}
 	
@@ -36,12 +36,12 @@ public class OhsEnumValueConfigController {
 	 * TODO POST传值报错！！！麻蛋
 	 */
 	@GetMapping("/saveEnumValueConfig")
-	public Column saveEnumValueConfig(Column column) throws OhsException {
+	public ColumnDTO saveEnumValueConfig(ColumnDTO column) throws OhsException {
 		return enumValueConfigService.saveEnumValueConfig(column);
 	}
 	
 	@DeleteMapping("/deleteById/{id}")
-	public Column deleteById(@PathVariable("id") String id) throws OhsException {
+	public ColumnDTO deleteById(@PathVariable("id") String id) throws OhsException {
 		return enumValueConfigService.deleteById(Integer.parseInt(id));
 	}
 	
@@ -52,7 +52,7 @@ public class OhsEnumValueConfigController {
 	 * @throws OhsException 
 	 */
 	@GetMapping("/updateById")
-	public Column updateById(Column column) throws OhsException {
+	public ColumnDTO updateById(ColumnDTO column) throws OhsException {
 		return enumValueConfigService.updateById(column);
 	}
 

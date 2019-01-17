@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.jiangjie.ohs.dto.Column;
+import com.jiangjie.ohs.dto.ColumnDTO;
 import com.jiangjie.ohs.exception.OhsException;
 import com.jiangjie.ohs.service.ColumnConfigService;
 
@@ -28,7 +28,7 @@ public class OhsColumnConfigController {
 	 * @throws OhsException
 	 */
 	@GetMapping("/getAllColumn")
-	public List<Column> getAllColumn(Column Column) throws OhsException {
+	public List<ColumnDTO> getAllColumn(ColumnDTO Column) throws OhsException {
 		return columnConfigService.getAllColumn(Column);
 	}
 	
@@ -36,12 +36,12 @@ public class OhsColumnConfigController {
 	 * TODO POST传值报错！！！麻蛋
 	 */
 	@GetMapping("/saveColumnConfig")
-	public Column saveColumnConfig(Column column) throws OhsException {
+	public ColumnDTO saveColumnConfig(ColumnDTO column) throws OhsException {
 		return columnConfigService.saveColumnConfig(column);
 	}
 	
 	@DeleteMapping("/deleteById/{id}")
-	public Column deleteById(@PathVariable("id") String id) throws OhsException {
+	public ColumnDTO deleteById(@PathVariable("id") String id) throws OhsException {
 		return columnConfigService.deleteById(Integer.parseInt(id));
 	}
 	
@@ -52,7 +52,7 @@ public class OhsColumnConfigController {
 	 * @throws OhsException 
 	 */
 	@GetMapping("/updateById")
-	public Column updateById(Column column) throws OhsException {
+	public ColumnDTO updateById(ColumnDTO column) throws OhsException {
 		return columnConfigService.updateById(column);
 	}
 

@@ -1,10 +1,13 @@
 package com.jiangjie.ohs.dto;
 
 import java.sql.Timestamp;
+import java.util.List;
 
 public class Table {
 
 	private int id;
+
+	private int sysId;
 
 	private String sysAlias;
 
@@ -13,6 +16,8 @@ public class Table {
 	private String schemaName;
 
 	private String tableName;
+
+	private List<Column> columns;
 
 	private Timestamp updateDate;
 
@@ -28,6 +33,14 @@ public class Table {
 
 	public void setId(int id) {
 		this.id = id;
+	}
+
+	public int getSysId() {
+		return sysId;
+	}
+
+	public void setSysId(int sysId) {
+		this.sysId = sysId;
 	}
 
 	public String getSysAlias() {
@@ -92,6 +105,14 @@ public class Table {
 
 	public void setCreateUser(String createUser) {
 		this.createUser = createUser;
+	}
+
+	public List<Column> getColumns() {
+		return columns;
+	}
+
+	public void setColumns(List<Column> columns) {
+		this.columns = columns;
 	}
 
 	@Override

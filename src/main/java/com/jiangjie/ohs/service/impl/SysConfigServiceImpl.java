@@ -6,16 +6,21 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import com.jiangjie.ohs.dto.Column;
 import com.jiangjie.ohs.dto.SysInfo;
+import com.jiangjie.ohs.dto.Table;
 import com.jiangjie.ohs.entity.OhsSysConfig;
+import com.jiangjie.ohs.entity.dataEntity.OhsColumnConfig;
 import com.jiangjie.ohs.entity.dataEntity.OhsTableConfig;
 import com.jiangjie.ohs.exception.OhsException;
+import com.jiangjie.ohs.repository.OhsColumnConfigRepository;
 import com.jiangjie.ohs.repository.OhsSysConfigRepository;
 import com.jiangjie.ohs.repository.OhsTableConfigRepository;
 import com.jiangjie.ohs.service.SysConfigService;
@@ -34,6 +39,9 @@ public class SysConfigServiceImpl implements SysConfigService {
 	@Autowired
 	private OhsTableConfigRepository ohsTableConfigRepository;
 	
+	@Autowired
+	private OhsColumnConfigRepository columnConfigRepository;
+	
 	private static final Function<OhsSysConfig, SysInfo> toSysInfo = ohsSysCfg -> {
 		SysInfo sysInfo = new SysInfo();
 		sysInfo.setId(ohsSysCfg.getId());
@@ -45,6 +53,33 @@ public class SysConfigServiceImpl implements SysConfigService {
 		sysInfo.setUpdateDate(ohsSysCfg.getUpdateDate());
 		sysInfo.setUpdateUser(ohsSysCfg.getUpdateUser());
 		return sysInfo;
+	};
+	
+	private static final Function<OhsTableConfig, Table> toTable = ohsTableCfg -> {
+		Table table = new Table();
+		table.setId(ohsTableCfg.getId());
+		table.setSysId(ohsTableCfg.getSysId());
+		table.setSchemaName(ohsTableCfg.getSchemaName());
+		table.setTableName(ohsTableCfg.getTableName());
+		table.setCreateDate(ohsTableCfg.getCreateDate());
+		table.setCreateUser(ohsTableCfg.getCreateUser());
+		table.setUpdateDate(ohsTableCfg.getUpdateDate());
+		table.setUpdateUser(ohsTableCfg.getUpdateUser());
+		return table;
+	};
+	
+	private static final Function<OhsColumnConfig, Column> toColumn = ohsColumnConfig -> {
+		Column column = new Column();
+		column.setId(ohsColumnConfig.getId());
+		column.setSysId(ohsColumnConfig.getSysId());
+		column.setTableId(ohsColumnConfig.getTableId());
+		column.setColumnName(ohsColumnConfig.getColumnName());
+		column.setColumnAlias(ohsColumnConfig.getColumnAlias());
+		column.setCreateDate(ohsColumnConfig.getCreateDate());
+		column.setCreateUser(ohsColumnConfig.getCreateUser());
+		column.setUpdateDate(ohsColumnConfig.getUpdateDate());
+		column.setUpdateUser(ohsColumnConfig.getUpdateUser());
+		return column;
 	};
 	
 	public List<OhsSysConfig> getAllSys(OhsSysConfig ohsSysConfig) {
@@ -63,7 +98,19 @@ public class SysConfigServiceImpl implements SysConfigService {
 				qryOhsTableCfg.setSysId(ohsSysCfg.getId());
 				qryOhsTableCfg.setSchemaName(ohsSysCfg.getSchemaName());
 				List<OhsTableConfig> ohsTableConfigLst = ohsTableConfigRepository.findAll(Example.of(qryOhsTableCfg));
-				sysInfo.setOhsTableConfigs(ohsTableConfigLst);
+				List<Table> tableLst = new ArrayList<>();
+				if (!CollectionUtils.isEmpty(ohsTableConfigLst)) {
+					tableLst = ohsTableConfigLst.stream().map(toTable::apply).collect(Collectors.toList());;
+					tableLst.stream().forEach(table -> {
+						OhsColumnConfig ohsColumnConfig = new OhsColumnConfig();
+						ohsColumnConfig.setSysId(table.getSysId());
+						ohsColumnConfig.setTableId(table.getId());
+						List<OhsColumnConfig> ohsColumnConfigLst = columnConfigRepository.findAll(Example.of(ohsColumnConfig));
+						List<Column> columnLst = ohsColumnConfigLst.stream().map(toColumn::apply).collect(Collectors.toList());;
+						table.setColumns(columnLst);
+					});
+				}
+				sysInfo.setOhsTableConfigs(tableLst);
 				sysInfoLst.add(sysInfo);
 			});
 		}

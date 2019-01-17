@@ -11,7 +11,7 @@ import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
-import com.jiangjie.ohs.dto.Column;
+import com.jiangjie.ohs.dto.ColumnDTO;
 import com.jiangjie.ohs.entity.OhsSysConfig;
 import com.jiangjie.ohs.entity.dataEntity.OhsColumnConfig;
 import com.jiangjie.ohs.entity.dataEntity.OhsEnumValueConfig;
@@ -44,7 +44,7 @@ public class EnumValueConfigServiceImpl implements EnumValueConfigService {
 	private OhsColumnConfigRepository ohsColumnConfigRepository;
 	
 	@Override
-	public List<Column> getAllEnumValue(Column column) throws OhsException {
+	public List<ColumnDTO> getAllEnumValue(ColumnDTO column) throws OhsException {
 		OhsEnumValueConfig ohsEnumValueConfig = new OhsEnumValueConfig();
 		ohsEnumValueConfig.setEnumValue(OhsUtils.putIfNotBlank(column.getEnumValue()));
 		ohsEnumValueConfig.setEnumChineseValue(OhsUtils.putIfNotBlank(column.getEnumChineseValue()));
@@ -53,12 +53,12 @@ public class EnumValueConfigServiceImpl implements EnumValueConfigService {
 		if (CollectionUtils.isEmpty(ohsEnumValueConfigLst)) {
 			throw new OhsException("当前枚举值配置信息为空！请先添加后再查询！");
 		}
-		List<Column> columns = columnConfigService.getAllColumn(column);
-		List<Column> returnCol = new ArrayList<>();
+		List<ColumnDTO> columns = columnConfigService.getAllColumn(column);
+		List<ColumnDTO> returnCol = new ArrayList<>();
 		for (OhsEnumValueConfig ohsEnumValueCfg : ohsEnumValueConfigLst) {
-			Optional<Column> matchColOpt = columns.stream().filter(col -> col.getId() == ohsEnumValueCfg.getColumnId().intValue()).findFirst();
+			Optional<ColumnDTO> matchColOpt = columns.stream().filter(col -> col.getId() == ohsEnumValueCfg.getColumnId().intValue()).findFirst();
 			if (matchColOpt.isPresent()) {
-				Column temCol = matchColOpt.get();
+				ColumnDTO temCol = matchColOpt.get();
 				temCol.setId(ohsEnumValueCfg.getId());
 				temCol.setEnumValue(ohsEnumValueCfg.getEnumValue());
 				temCol.setEnumChineseValue(ohsEnumValueCfg.getEnumChineseValue());
@@ -76,7 +76,7 @@ public class EnumValueConfigServiceImpl implements EnumValueConfigService {
 	}
 
 	@Override
-	public Column saveEnumValueConfig(Column column) throws OhsException {
+	public ColumnDTO saveEnumValueConfig(ColumnDTO column) throws OhsException {
 		OhsSysConfig ohsSysConfig = new OhsSysConfig();
 		ohsSysConfig.setSysAlias(OhsUtils.putIfNotBlank(column.getSysAlias()));
 		ohsSysConfig.setSysChineseNme(OhsUtils.putIfNotBlank(column.getSysChineseNme()));
@@ -126,19 +126,19 @@ public class EnumValueConfigServiceImpl implements EnumValueConfigService {
 	}
 
 	@Override
-	public Column deleteById(int id) throws OhsException {
+	public ColumnDTO deleteById(int id) throws OhsException {
 		Optional<OhsEnumValueConfig> ohsEnumValueConfigOpt = ohsEnumValueConfigRepository.findById(id);
 		if (!ohsEnumValueConfigOpt.isPresent()) {
 			throw new OhsException("该枚举值信息已经被删除！");
 		}
 		ohsEnumValueConfigRepository.deleteById(id);
-		Column column = new Column();
+		ColumnDTO column = new ColumnDTO();
 		column.setId(id);
 		return column;
 	}
 
 	@Override
-	public Column updateById(Column column) throws OhsException {
+	public ColumnDTO updateById(ColumnDTO column) throws OhsException {
 		OhsSysConfig ohsSysConfig = new OhsSysConfig();
 		ohsSysConfig.setSysAlias(OhsUtils.putIfNotBlank(column.getSysAlias()));
 		ohsSysConfig.setSysChineseNme(OhsUtils.putIfNotBlank(column.getSysChineseNme()));

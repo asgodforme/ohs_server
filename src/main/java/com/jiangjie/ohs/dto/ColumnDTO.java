@@ -2,17 +2,25 @@ package com.jiangjie.ohs.dto;
 
 import java.sql.Timestamp;
 
-public class Column {
+public class ColumnDTO {
 
-	private Integer id;
+	private int id;
 
-	private Integer sysId;
+	private String sysAlias;
 
-	private Integer tableId;
+	private String sysChineseNme;
+
+	private String schemaName;
+
+	private String tableName;
 
 	private String columnName;
 
 	private String columnAlias;
+
+	private String enumValue;
+
+	private String enumChineseValue;
 
 	private Timestamp createDate;
 
@@ -22,28 +30,60 @@ public class Column {
 
 	private String updateUser;
 
-	public Integer getId() {
+	public String getEnumValue() {
+		return enumValue;
+	}
+
+	public void setEnumValue(String enumValue) {
+		this.enumValue = enumValue;
+	}
+
+	public String getEnumChineseValue() {
+		return enumChineseValue;
+	}
+
+	public void setEnumChineseValue(String enumChineseValue) {
+		this.enumChineseValue = enumChineseValue;
+	}
+
+	public String getSysAlias() {
+		return sysAlias;
+	}
+
+	public void setSysAlias(String sysAlias) {
+		this.sysAlias = sysAlias;
+	}
+
+	public String getSysChineseNme() {
+		return sysChineseNme;
+	}
+
+	public void setSysChineseNme(String sysChineseNme) {
+		this.sysChineseNme = sysChineseNme;
+	}
+
+	public int getId() {
 		return id;
 	}
 
-	public void setId(Integer id) {
+	public void setId(int id) {
 		this.id = id;
 	}
 
-	public Integer getSysId() {
-		return sysId;
+	public String getSchemaName() {
+		return schemaName;
 	}
 
-	public void setSysId(Integer sysId) {
-		this.sysId = sysId;
+	public void setSchemaName(String schemaName) {
+		this.schemaName = schemaName;
 	}
 
-	public Integer getTableId() {
-		return tableId;
+	public String getTableName() {
+		return tableName;
 	}
 
-	public void setTableId(Integer tableId) {
-		this.tableId = tableId;
+	public void setTableName(String tableName) {
+		this.tableName = tableName;
 	}
 
 	public String getColumnName() {

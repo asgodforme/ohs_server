@@ -30,7 +30,7 @@ public class SysInfo {
 	 */
 	private String schemaName;
 
-	private List<OhsTableConfig> ohsTableConfigs;
+	private List<Table> ohsTableConfigs;
 
 	/** 创建时间 */
 	private Timestamp createDate;
@@ -115,11 +115,11 @@ public class SysInfo {
 		this.sysChineseNme = sysChineseNme;
 	}
 
-	public List<OhsTableConfig> getOhsTableConfigs() {
+	public List<Table> getOhsTableConfigs() {
 		return ohsTableConfigs;
 	}
 
-	public void setOhsTableConfigs(List<OhsTableConfig> ohsTableConfigs) {
+	public void setOhsTableConfigs(List<Table> ohsTableConfigs) {
 		this.ohsTableConfigs = ohsTableConfigs;
 	}
 
