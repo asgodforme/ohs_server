@@ -33,6 +33,9 @@ public class OhsColumnConfig {
 	/** 字段别名 */
 	private String columnAlias;
 
+	/** 该字段查询的时候是否显示 */
+	private String isHide;
+
 	private Timestamp createDate;
 
 	private String createUser;
@@ -111,6 +114,14 @@ public class OhsColumnConfig {
 
 	public void setUpdateUser(String updateUser) {
 		this.updateUser = updateUser;
+	}
+
+	public String getIsHide() {
+		return isHide;
+	}
+
+	public void setIsHide(String isHide) {
+		this.isHide = isHide;
 	}
 
 }

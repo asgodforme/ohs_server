@@ -22,6 +22,8 @@ public class ColumnDTO {
 
 	private String enumChineseValue;
 
+	private String isHide;
+
 	private Timestamp createDate;
 
 	private String createUser;
@@ -29,6 +31,14 @@ public class ColumnDTO {
 	private Timestamp updateDate;
 
 	private String updateUser;
+
+	public String getIsHide() {
+		return isHide;
+	}
+
+	public void setIsHide(String isHide) {
+		this.isHide = isHide;
+	}
 
 	public String getEnumValue() {
 		return enumValue;
@@ -132,6 +142,15 @@ public class ColumnDTO {
 
 	public void setUpdateUser(String updateUser) {
 		this.updateUser = updateUser;
+	}
+
+	@Override
+	public String toString() {
+		return "ColumnDTO [id=" + id + ", sysAlias=" + sysAlias + ", sysChineseNme=" + sysChineseNme + ", schemaName="
+				+ schemaName + ", tableName=" + tableName + ", columnName=" + columnName + ", columnAlias="
+				+ columnAlias + ", enumValue=" + enumValue + ", enumChineseValue=" + enumChineseValue + ", isHide="
+				+ isHide + ", createDate=" + createDate + ", createUser=" + createUser + ", updateDate=" + updateDate
+				+ ", updateUser=" + updateUser + "]";
 	}
 
 }

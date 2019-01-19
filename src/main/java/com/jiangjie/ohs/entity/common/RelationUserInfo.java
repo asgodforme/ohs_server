@@ -6,12 +6,13 @@ import javax.persistence.Embeddable;
 
 /**
  * 公共的创建人，创建时间，修改人，修改时间
+ * 
  * @author Administrator
  *
  */
 @Embeddable
 public class RelationUserInfo {
-	
+
 	private Timestamp createDate;
 
 	private String createUser;
@@ -50,6 +51,12 @@ public class RelationUserInfo {
 
 	public void setUpdateUser(String updateUser) {
 		this.updateUser = updateUser;
+	}
+
+	@Override
+	public String toString() {
+		return "RelationUserInfo [createDate=" + createDate + ", createUser=" + createUser + ", updateDate="
+				+ updateDate + ", updateUser=" + updateUser + "]";
 	}
 
 }

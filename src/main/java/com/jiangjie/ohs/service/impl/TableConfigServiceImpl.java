@@ -37,6 +37,7 @@ public class TableConfigServiceImpl implements TableConfigService {
 		ohsTableConfig.setCreateUser("姜杰");
 		ohsTableConfig.setSchemaName(table.getSchemaName());
 		ohsTableConfig.setTableName(table.getTableName());
+		ohsTableConfig.setTableChnName(table.getTableChnName());
 		return ohsTableConfig;
 	};
 	
@@ -49,6 +50,7 @@ public class TableConfigServiceImpl implements TableConfigService {
 		table.setCreateUser(ohsTableConfig.getCreateUser());
 		table.setUpdateDate(ohsTableConfig.getUpdateDate());
 		table.setUpdateUser(ohsTableConfig.getUpdateUser());
+		table.setTableChnName(ohsTableConfig.getTableChnName());
 		return table;
 	};
 
@@ -70,6 +72,7 @@ public class TableConfigServiceImpl implements TableConfigService {
 		OhsTableConfig ohsTableConfig = new OhsTableConfig();
 		ohsTableConfig.setSchemaName(OhsUtils.putIfNotBlank(table.getSchemaName()));
 		ohsTableConfig.setTableName(OhsUtils.putIfNotBlank(table.getTableName()));
+		ohsTableConfig.setTableChnName(OhsUtils.putIfNotBlank(table.getTableChnName()));
 		ohsTableConfig.setSysId(ohsSysConfig.getId());
 		
 		List<OhsTableConfig> ohsTableConfigLst = ohsTableConfigRepository.findAll(Example.of(ohsTableConfig));
@@ -105,7 +108,6 @@ public class TableConfigServiceImpl implements TableConfigService {
 
 	@Override
 	public Table saveTableConfig(Table table) throws OhsException {
-		System.out.println(table);
 		OhsSysConfig ohsSysConfig = new OhsSysConfig();
 		ohsSysConfig.setSysAlias(OhsUtils.putIfNotBlank(table.getSysAlias()));
 		ohsSysConfig.setSysChineseNme(OhsUtils.putIfNotBlank(table.getSysChineseNme()));
@@ -114,8 +116,6 @@ public class TableConfigServiceImpl implements TableConfigService {
 		if (CollectionUtils.isEmpty(ohsSysConfigLst)) {
 			throw new OhsException("不存在对应系统配置信息，请先添加系统后再查询或新增修改表信息！");
 		}
-		
-		System.out.println(ohsSysConfigLst);
 		
 		OhsTableConfig ohsTableConfig = toOhsTableConfig.apply(table);
 		ohsTableConfig.setSysId(ohsSysConfigLst.get(0).getId());
@@ -166,6 +166,7 @@ public class TableConfigServiceImpl implements TableConfigService {
 		ohsTableConfig.setUpdateUser("修改者");
 		ohsTableConfig.setCreateDate(ohsTableConfigOpt.get().getCreateDate());
 		ohsTableConfig.setCreateUser(ohsTableConfigOpt.get().getCreateUser());
+		ohsTableConfig.setTableChnName(table.getTableChnName());
 		
 		ohsTableConfig = ohsTableConfigRepository.save(ohsTableConfig);
 		

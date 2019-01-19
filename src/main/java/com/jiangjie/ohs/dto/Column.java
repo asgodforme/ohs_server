@@ -14,6 +14,8 @@ public class Column {
 
 	private String columnAlias;
 
+	private String isHide;
+
 	private Timestamp createDate;
 
 	private String createUser;
@@ -92,6 +94,14 @@ public class Column {
 
 	public void setUpdateUser(String updateUser) {
 		this.updateUser = updateUser;
+	}
+
+	public String getIsHide() {
+		return isHide;
+	}
+
+	public void setIsHide(String isHide) {
+		this.isHide = isHide;
 	}
 
 }

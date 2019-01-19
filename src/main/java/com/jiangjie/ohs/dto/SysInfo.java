@@ -3,8 +3,6 @@ package com.jiangjie.ohs.dto;
 import java.sql.Timestamp;
 import java.util.List;
 
-import com.jiangjie.ohs.entity.dataEntity.OhsTableConfig;
-
 /**
  * 系统信息
  * 
@@ -30,7 +28,15 @@ public class SysInfo {
 	 */
 	private String schemaName;
 
+	/**
+	 * 表信息
+	 */
 	private List<Table> ohsTableConfigs;
+
+	/**
+	 * 模块信息
+	 */
+	private List<Module> ohsModuleConfigs;
 
 	/** 创建时间 */
 	private Timestamp createDate;
@@ -121,6 +127,14 @@ public class SysInfo {
 
 	public void setOhsTableConfigs(List<Table> ohsTableConfigs) {
 		this.ohsTableConfigs = ohsTableConfigs;
+	}
+
+	public List<Module> getOhsModuleConfigs() {
+		return ohsModuleConfigs;
+	}
+
+	public void setOhsModuleConfigs(List<Module> ohsModuleConfigs) {
+		this.ohsModuleConfigs = ohsModuleConfigs;
 	}
 
 	@Override

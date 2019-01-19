@@ -17,6 +17,8 @@ public class Table {
 
 	private String tableName;
 
+	private String tableChnName;
+
 	private List<Column> columns;
 
 	private Timestamp updateDate;
@@ -26,6 +28,14 @@ public class Table {
 	private Timestamp createDate;
 
 	private String createUser;
+
+	public String getTableChnName() {
+		return tableChnName;
+	}
+
+	public void setTableChnName(String tableChnName) {
+		this.tableChnName = tableChnName;
+	}
 
 	public int getId() {
 		return id;

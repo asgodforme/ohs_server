@@ -37,6 +37,7 @@ public class OhsColumnConfigController {
 	 */
 	@GetMapping("/saveColumnConfig")
 	public ColumnDTO saveColumnConfig(ColumnDTO column) throws OhsException {
+		System.out.println(column);
 		return columnConfigService.saveColumnConfig(column);
 	}
 	

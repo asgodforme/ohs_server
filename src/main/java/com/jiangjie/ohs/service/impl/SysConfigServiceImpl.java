@@ -14,13 +14,17 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import com.jiangjie.ohs.dto.Column;
+import com.jiangjie.ohs.dto.Module;
 import com.jiangjie.ohs.dto.SysInfo;
 import com.jiangjie.ohs.dto.Table;
+import com.jiangjie.ohs.entity.OhsModuleConfig;
 import com.jiangjie.ohs.entity.OhsSysConfig;
+import com.jiangjie.ohs.entity.common.RelationUserInfo;
 import com.jiangjie.ohs.entity.dataEntity.OhsColumnConfig;
 import com.jiangjie.ohs.entity.dataEntity.OhsTableConfig;
 import com.jiangjie.ohs.exception.OhsException;
 import com.jiangjie.ohs.repository.OhsColumnConfigRepository;
+import com.jiangjie.ohs.repository.OhsModuleConfigRepository;
 import com.jiangjie.ohs.repository.OhsSysConfigRepository;
 import com.jiangjie.ohs.repository.OhsTableConfigRepository;
 import com.jiangjie.ohs.service.SysConfigService;
@@ -41,6 +45,9 @@ public class SysConfigServiceImpl implements SysConfigService {
 	
 	@Autowired
 	private OhsColumnConfigRepository columnConfigRepository;
+	
+	@Autowired
+	private OhsModuleConfigRepository ohsModuleConfigRepository;
 	
 	private static final Function<OhsSysConfig, SysInfo> toSysInfo = ohsSysCfg -> {
 		SysInfo sysInfo = new SysInfo();
@@ -63,6 +70,7 @@ public class SysConfigServiceImpl implements SysConfigService {
 		table.setTableName(ohsTableCfg.getTableName());
 		table.setCreateDate(ohsTableCfg.getCreateDate());
 		table.setCreateUser(ohsTableCfg.getCreateUser());
+		table.setTableChnName(ohsTableCfg.getTableChnName());
 		table.setUpdateDate(ohsTableCfg.getUpdateDate());
 		table.setUpdateUser(ohsTableCfg.getUpdateUser());
 		return table;
@@ -82,6 +90,19 @@ public class SysConfigServiceImpl implements SysConfigService {
 		return column;
 	};
 	
+	private static final Function<OhsModuleConfig, Module> toModule = ohsModuleConfig -> {
+		Module module = new Module();
+		module.setId(ohsModuleConfig.getId());
+		module.setModuleName(ohsModuleConfig.getModuleName());
+		module.setModuleAlias(ohsModuleConfig.getModuleAlias());
+		module.setCreateDate(ohsModuleConfig.getRelationUserInfo().getCreateDate());
+		module.setCreateUser(ohsModuleConfig.getRelationUserInfo().getCreateUser());
+		module.setUpdateDate(ohsModuleConfig.getRelationUserInfo().getUpdateDate());
+		module.setUpdateUser(ohsModuleConfig.getRelationUserInfo().getUpdateUser());
+		return module;
+		
+	};
+	
 	public List<OhsSysConfig> getAllSys(OhsSysConfig ohsSysConfig) {
 		Example<OhsSysConfig> example = Example.of(ohsSysConfig);
 		return sysConfigRepository.findAll(example);
@@ -93,6 +114,7 @@ public class SysConfigServiceImpl implements SysConfigService {
 		List<SysInfo> sysInfoLst = new ArrayList<SysInfo>();
 		if (!CollectionUtils.isEmpty(OhsSysConfigLst)) {
 			OhsSysConfigLst.stream().forEach(ohsSysCfg -> {
+				// 查询系统下的表信息，表信息中维护着字段信息
 				SysInfo sysInfo = toSysInfo.apply(ohsSysCfg);
 				OhsTableConfig qryOhsTableCfg = new OhsTableConfig();
 				qryOhsTableCfg.setSysId(ohsSysCfg.getId());
@@ -111,6 +133,16 @@ public class SysConfigServiceImpl implements SysConfigService {
 					});
 				}
 				sysInfo.setOhsTableConfigs(tableLst);
+				
+				// 查询系统下的模块信息
+				OhsModuleConfig ohsModuleConfig = new OhsModuleConfig();
+				ohsModuleConfig.setSysId(ohsSysCfg.getId());
+				List<OhsModuleConfig> ohsModuleConfigLst = ohsModuleConfigRepository.findAll(Example.of(ohsModuleConfig));
+				List<Module> moduleLst = new ArrayList<>();
+				if (!CollectionUtils.isEmpty(ohsModuleConfigLst)) {
+					moduleLst = ohsModuleConfigLst.stream().map(toModule::apply).collect(Collectors.toList());
+				}
+				sysInfo.setOhsModuleConfigs(moduleLst);
 				sysInfoLst.add(sysInfo);
 			});
 		}

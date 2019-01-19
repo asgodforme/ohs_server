@@ -1,11 +1,15 @@
 package com.jiangjie.ohs.entity.dataEntity;
 
 import java.sql.Timestamp;
+import java.util.List;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
+
+import com.jiangjie.ohs.entity.OhsModuleConfig;
 
 /**
  * 表配置
@@ -29,6 +33,14 @@ public class OhsTableConfig {
 
 	/** 表名 */
 	private String tableName;
+
+	/**
+	 * 表中文名
+	 */
+	private String tableChnName;
+
+	@ManyToMany(mappedBy = "ohsTableConfigs")
+	private List<OhsModuleConfig> ohsModuleConfigs;
 
 	private Timestamp createDate;
 
@@ -102,10 +114,28 @@ public class OhsTableConfig {
 		this.updateUser = updateUser;
 	}
 
-	// @ManyToMany(fetch = FetchType.LAZY) // 延迟加载 TODO
-	// @JoinTable(
-	// name = "ohs_module_table"
-	// )
-	// private List<OhsModuleConfig> OhsModuleConfigs;
+	public String getTableChnName() {
+		return tableChnName;
+	}
+
+	public void setTableChnName(String tableChnName) {
+		this.tableChnName = tableChnName;
+	}
+
+	public List<OhsModuleConfig> getOhsModuleConfigs() {
+		return ohsModuleConfigs;
+	}
+
+	public void setOhsModuleConfigs(List<OhsModuleConfig> ohsModuleConfigs) {
+		this.ohsModuleConfigs = ohsModuleConfigs;
+	}
+
+	@Override
+	public String toString() {
+		return "OhsTableConfig [id=" + id + ", sysId=" + sysId + ", schemaName=" + schemaName + ", tableName="
+				+ tableName + ", tableChnName=" + tableChnName + ", ohsModuleConfigs=" + ohsModuleConfigs
+				+ ", createDate=" + createDate + ", createUser=" + createUser + ", updateDate=" + updateDate
+				+ ", updateUser=" + updateUser + "]";
+	}
 
 }
