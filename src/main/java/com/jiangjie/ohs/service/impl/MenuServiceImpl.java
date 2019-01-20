@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -23,7 +24,9 @@ public class MenuServiceImpl implements MenuService {
 	 * 组装前台需要的菜单结构
 	 */
 	public List<Menu> packageMenu() {
-		List<OhsMenu> ohsMenus = ohsMenuRepository.findAll();
+		OhsMenu qryOhsMenu = new OhsMenu();
+		qryOhsMenu.setIsHide("0");
+		List<OhsMenu> ohsMenus = ohsMenuRepository.findAll(Example.of(qryOhsMenu));
 		List<Menu> menus = new ArrayList<>();
 		ohsMenus.stream().filter(ohsMenu -> StringUtils.isEmpty(ohsMenu.getParentMenuId())).forEach(ohsMenu -> {
 			Menu menu = new Menu();

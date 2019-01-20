@@ -22,7 +22,7 @@ public class OhsMenu {
 	 */
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int id;
+	private Integer id;
 
 	/**
 	 * 角色 0-配置者， 1-使用者
@@ -70,10 +70,23 @@ public class OhsMenu {
 	private String subMenuUrl;
 
 	/**
+	 * 是否隐藏该菜单
+	 */
+	private String isHide;
+
+	/**
 	 * 公共信息
 	 */
 	@Embedded
 	private RelationUserInfo relationUserInfo;
+
+	public String getIsHide() {
+		return isHide;
+	}
+
+	public void setIsHide(String isHide) {
+		this.isHide = isHide;
+	}
 
 	public String getParentMenuDesc() {
 		return parentMenuDesc;
@@ -83,11 +96,11 @@ public class OhsMenu {
 		this.parentMenuDesc = parentMenuDesc;
 	}
 
-	public int getId() {
+	public Integer getId() {
 		return id;
 	}
 
-	public void setId(int id) {
+	public void setId(Integer id) {
 		this.id = id;
 	}
 
