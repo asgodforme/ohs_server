@@ -1,16 +1,11 @@
 package com.jiangjie.ohs.entity.dataEntity;
 
 import java.sql.Timestamp;
-import java.util.List;
 
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
 import javax.persistence.Transient;
 
 /**
@@ -47,12 +42,6 @@ public class OhsSingleSqlConfig {
 
 	@Transient
 	private String moduleAlias;
-
-	@ManyToMany(fetch = FetchType.LAZY)
-	@JoinTable(name = "ohs_single_query_sql", // 表名
-			joinColumns = { @JoinColumn(name = "single_sql_id", referencedColumnName = "id") }, inverseJoinColumns = {
-					@JoinColumn(name = "single_query_id", referencedColumnName = "id") })
-	private List<OhsSingleQueryWhereInfo> ohsSingleQueryWhereInfos;
 
 	private Timestamp createDate;
 
@@ -156,22 +145,6 @@ public class OhsSingleSqlConfig {
 
 	public void setUpdateUser(String updateUser) {
 		this.updateUser = updateUser;
-	}
-
-	public List<OhsSingleQueryWhereInfo> getOhsSingleQueryWhereInfos() {
-		return ohsSingleQueryWhereInfos;
-	}
-
-	public void setOhsSingleQueryWhereInfos(List<OhsSingleQueryWhereInfo> ohsSingleQueryWhereInfos) {
-		this.ohsSingleQueryWhereInfos = ohsSingleQueryWhereInfos;
-	}
-
-	@Override
-	public String toString() {
-		return "OhsSingleSqlConfig [id=" + id + ", moduleId=" + moduleId + ", remark=" + remark + ", tableId=" + tableId
-				+ ", singleTableSql=" + singleTableSql + ", moduleName=" + moduleName + ", moduleAlias=" + moduleAlias
-				+ ", ohsSingleQueryWhereInfos=" + ohsSingleQueryWhereInfos + ", createDate=" + createDate
-				+ ", createUser=" + createUser + ", updateDate=" + updateDate + ", updateUser=" + updateUser + "]";
 	}
 
 }

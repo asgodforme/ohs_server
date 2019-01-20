@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jiangjie.ohs.mapper.OhsSingleSqlConfigMapper">
+
+	<resultMap id="ohsModuleConfigMap" type="com.jiangjie.ohs.entity.OhsModuleConfig">
+		<id property="id" column="id" />
+		<result property="moduleAlias" column="module_alias" />
+		<result property="moduleName" column="module_name" />
+		<result property="sysId" column="sys_id" />
+		<association property="relationUserInfo" resultMap="relationUserInfoMap" />  
+		<collection property="ohsTableConfigs" ofType="com.jiangjie.ohs.entity.dataEntity.OhsTableConfig">
+			<id property="id" column="id1" />
+			<result property="sysId" column="sys_id1" />
+			<result property="schemaName" column="schema_name" />
+			<result property="tableName" column="table_name" />
+			<result property="tableChnName" column="table_chn_name" />
+			<result property="createDate" column="create_date" />
+			<result property="createUser" column="create_user" />
+			<result property="updateDate" column="update_date" />
+			<result property="updateUser" column="update_user" />
+		</collection>
+	</resultMap>
+	
+	<resultMap type="com.jiangjie.ohs.entity.common.RelationUserInfo" id="relationUserInfoMap">   
+        <result property="createDate" column="create_date" />  
+        <result property="createUser" column="create_user" />   
+        <result property="updateDate" column="update_date" />   
+        <result property="updateUser" column="update_user" />   
+    </resultMap>
+
+	<!-- 查询模块下的表信息  -->
+	<select id="findOhsTableConfigInnerOhsModuleConfig" resultMap="ohsModuleConfigMap">
+		select 
+			ohsModule.*, 
+			ohsTable.id as id1,
+			ohsTable.sys_id as sys_id1,
+			ohsTable.schema_name as schema_name,
+			ohsTable.table_name as table_name,
+			ohsTable.table_chn_name as table_chn_name,
+			ohsTable.create_date as create_date,
+			ohsTable.create_user as create_user,
+			ohsTable.update_date as update_date,
+			ohsTable.update_user as update_user
+		from 
+			ohs_table_config ohsTable 
+		inner join
+			ohs_module_table_config ohsModuleTable 
+		on 
+			ohsTable.id = ohsModuleTable.table_id 
+		inner join 
+			ohs_module_config ohsModule 
+		on ohsModule.id = ohsModuleTable.module_id 
+			and ohsTable.sys_id = ohsModule.sys_id
+	</select>
+	
+	<resultMap id="singleSqlMap" type="com.jiangjie.ohs.dto.SingleSql">
+		<id property="id" column="id" />
+		<result property="sysAlias" column="sys_alias" />
+		<result property="sysChineseNme" column="sys_chinese_nme" />
+		<result property="moduleName" column="module_name" />
+		<result property="moduleAlias" column="module_alias" />
+		<result property="tableName" column="table_name" />
+		<result property="tableChnName" column="table_chn_name" />
+		<result property="remark" column="remark" />
+		<result property="singleTableSql" column="single_table_sql" />
+		<result property="createDate" column="create_date" />
+		<result property="createUser" column="create_user" />
+		<result property="updateDate" column="update_date" />
+		<result property="updateUser" column="update_user" />
+		<collection property="ohsSingleQueryWhereInfoLst" ofType="com.jiangjie.ohs.entity.dataEntity.OhsSingleQueryWhereInfo">
+			<id property="id" column="id1" />
+			<result property="singleSqlId" column="id2" />
+			<result property="keyInfo" column="key_info" />
+			<result property="keyChnInfo" column="key_chn_info" />
+		</collection>
+	</resultMap>
+	
+	<select id="findOhsSingleSqlConfig" resultMap="singleSqlMap" parameterType="com.jiangjie.ohs.dto.SingleSql">
+		select 
+			singleSqlCfg.id,
+			sysCfg.sys_alias,
+			sysCfg.sys_chinese_nme,
+			moduleCfg.module_name,
+			moduleCfg.module_alias,
+			tableCfg.table_name,
+			tableCfg.table_chn_name,
+			singleSqlCfg.remark,
+			singleSqlCfg.single_table_sql,
+			singleSqlCfg.create_date,
+			singleSqlCfg.create_user,
+			singleSqlCfg.update_date,
+			singleSqlCfg.update_user,
+			singleQueryWhereInfo.id as id1,
+			singleQueryWhereInfo.single_sql_id as id2,
+			singleQueryWhereInfo.key_info,
+			singleQueryWhereInfo.key_chn_info
+		from 
+			ohs_single_sql_config singleSqlCfg
+		inner join 
+			ohs_sys_config sysCfg
+		on 
+			sysCfg.id = singleSqlCfg.sys_id
+			<if test="sysAlias != null and sysAlias != ''">
+				and sysCfg.sys_alias = #{sysAlias}
+			</if>
+			<if test="sysChineseNme != null and sysChineseNme != ''">
+				and sysCfg.sys_chinese_nme = #{sysChineseNme}
+			</if>
+		inner join 
+			ohs_module_config moduleCfg
+		on 
+			moduleCfg.id = singleSqlCfg.module_id
+			<if test="moduleAlias != null and moduleAlias != ''">
+				and moduleCfg.module_alias = #{moduleAlias}
+			</if>
+			<if test="moduleName != null and moduleName != ''">
+				and moduleCfg.module_name = #{moduleName}
+			</if>
+		inner join 
+			ohs_table_config tableCfg
+		on 
+			tableCfg.id = singleSqlCfg.table_id
+			<if test="tableName != null and tableName != ''">
+				and tableCfg.table_name = #{tableName}
+			</if>
+			<if test="tableChnName != null and tableChnName != ''">
+				and tableCfg.table_chn_name = #{tableChnName}
+			</if>
+		left join
+			ohs_single_query_where_info singleQueryWhereInfo 
+		on
+			singleQueryWhereInfo.single_sql_id = singleSqlCfg.id
+		where 
+			1 = 1
+			<if test="remark != null and remark != ''">
+				and singleSqlCfg.remark = #{remark}
+			</if>
+			<if test="singleTableSql != null and singleTableSql != ''">
+				and singleSqlCfg.single_table_sql = #{singleTableSql}
+			</if>
+	</select>
+</mapper>

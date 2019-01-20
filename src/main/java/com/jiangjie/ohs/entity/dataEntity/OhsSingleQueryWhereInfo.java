@@ -1,16 +1,11 @@
 package com.jiangjie.ohs.entity.dataEntity;
 
 import java.sql.Timestamp;
-import java.util.List;
 
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
 
 /**
  * 单表查询where条件信息
@@ -26,25 +21,22 @@ public class OhsSingleQueryWhereInfo {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 
+	/**
+	 * 单表sql主键
+	 */
+	private Integer singleSqlId;
+
 	/** 键 */
 	private String keyInfo;
+
+	/** 键中文名 */
+	private String keyChnInfo;
 
 	/** 比较关系符号 = > < >= <= */
 	private String symbol;
 
 	/** 值 */
 	private String valueInfo;
-
-	/**
-	 * 维护多对多关系
-	 */
-	@ManyToMany(fetch = FetchType.LAZY)
-	@JoinTable(name = "ohs_single_query_sql", // 表名
-			// joincolumns需要将此entity中的什么字段添加到表的什么字段，name是存储在多对多关系表中的字段名，referencedColumnName为此外键
-			joinColumns = { @JoinColumn(name = "single_query_id", referencedColumnName = "id") },
-			inverseJoinColumns = { @JoinColumn(name="single_sql_id", referencedColumnName = "id")}
-			)
-	private List<OhsSingleSqlConfig> ohsSingleSqlConfigs;
 
 	private Timestamp createDate;
 
@@ -54,6 +46,22 @@ public class OhsSingleQueryWhereInfo {
 
 	private String updateUser;
 
+	public String getKeyChnInfo() {
+		return keyChnInfo;
+	}
+
+	public void setKeyChnInfo(String keyChnInfo) {
+		this.keyChnInfo = keyChnInfo;
+	}
+
+	public Integer getSingleSqlId() {
+		return singleSqlId;
+	}
+
+	public void setSingleSqlId(Integer singleSqlId) {
+		this.singleSqlId = singleSqlId;
+	}
+
 	public Integer getId() {
 		return id;
 	}
@@ -61,7 +69,6 @@ public class OhsSingleQueryWhereInfo {
 	public void setId(Integer id) {
 		this.id = id;
 	}
-
 
 	public String getKeyInfo() {
 		return keyInfo;
@@ -86,7 +93,6 @@ public class OhsSingleQueryWhereInfo {
 	public void setSymbol(String symbol) {
 		this.symbol = symbol;
 	}
-
 
 	public Timestamp getCreateDate() {
 		return createDate;
@@ -119,13 +125,4 @@ public class OhsSingleQueryWhereInfo {
 	public void setUpdateUser(String updateUser) {
 		this.updateUser = updateUser;
 	}
-
-	public List<OhsSingleSqlConfig> getOhsSingleSqlConfigs() {
-		return ohsSingleSqlConfigs;
-	}
-
-	public void setOhsSingleSqlConfigs(List<OhsSingleSqlConfig> ohsSingleSqlConfigs) {
-		this.ohsSingleSqlConfigs = ohsSingleSqlConfigs;
-	}
-
 }
