@@ -19,6 +19,7 @@ import com.jiangjie.ohs.entity.dataEntity.OhsTableConfig;
 import com.jiangjie.ohs.exception.OhsException;
 import com.jiangjie.ohs.repository.OhsSysConfigRepository;
 import com.jiangjie.ohs.repository.OhsTableConfigRepository;
+import com.jiangjie.ohs.service.OhsDeleteService;
 import com.jiangjie.ohs.service.TableConfigService;
 import com.jiangjie.ohs.utils.OhsUtils;
 
@@ -30,6 +31,9 @@ public class TableConfigServiceImpl implements TableConfigService {
 	
 	@Autowired
 	private OhsTableConfigRepository ohsTableConfigRepository;
+	
+	@Autowired
+	private OhsDeleteService ohsDeleteService;
 	
 	private static final Function<Table, OhsTableConfig> toOhsTableConfig = table -> {
 		OhsTableConfig ohsTableConfig = new OhsTableConfig();
@@ -133,8 +137,14 @@ public class TableConfigServiceImpl implements TableConfigService {
 	public Table deleteById(int id) throws OhsException {
 		Optional<OhsTableConfig> ohsTableConfigOpt = ohsTableConfigRepository.findById(id);
 		if (!ohsTableConfigOpt.isPresent()) {
-			throw new OhsException("该表信息已经被删除，请重新查询！");
+//			throw new OhsException("该表信息已经被删除，请重新查询！");
+			Table table = new Table();
+			table.setId(id);
+			return table;
 		}
+		// 手动级联删除
+		ohsDeleteService.deleteAllColumns(column -> column.setTableId(ohsTableConfigOpt.get().getId()));
+		ohsDeleteService.deleteAllSingleSql(singleSql -> singleSql.setTableId(ohsTableConfigOpt.get().getId()));
 		ohsTableConfigRepository.deleteById(id);
 		Table table = new Table();
 		table.setId(id);

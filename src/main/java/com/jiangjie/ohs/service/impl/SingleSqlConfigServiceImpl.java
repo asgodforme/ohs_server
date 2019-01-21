@@ -81,12 +81,6 @@ public class SingleSqlConfigServiceImpl implements SingleSqlConfigService {
 			throw new OhsException("当前系统中不存在表配置信息，请先在“数据定制化配置-表配置”中配置表信息！");
 		}
 
-		// 校验是否存在同一系统的模块和表配置信息
-		List<OhsModuleConfig> result = ohsSingleSqlConfigMapper.findOhsTableConfigInnerOhsModuleConfig();
-		if (CollectionUtils.isEmpty(result)) {
-			throw new OhsException("当前系统中不存在相同父系统的模块配置和表配置信息，请先配置相同父系统的模块和表配置信息！");
-		}
-
 		// 实际查询的sql
 		List<SingleSql> singleSqlLst = ohsSingleSqlConfigMapper.findOhsSingleSqlConfig(singleSql);
 		if (CollectionUtils.isEmpty(singleSqlLst)) {
@@ -181,7 +175,10 @@ public class SingleSqlConfigServiceImpl implements SingleSqlConfigService {
 		if (!ohsSingleSqlConfigOpt.isPresent()) {
 			throw new OhsException("当前纪录已经被删除！");
 		}
-
+		// 删除单表sql下配置的查询条件字段
+		OhsSingleQueryWhereInfo ohsSingleQueryWhereInfo = new OhsSingleQueryWhereInfo();
+		ohsSingleQueryWhereInfo.setSingleSqlId(ohsSingleSqlConfigOpt.get().getId());
+		ohsSingleQueryWhereInfoRepository.deleteInBatch(ohsSingleQueryWhereInfoRepository.findAll(Example.of(ohsSingleQueryWhereInfo)));
 		ohsSingleSqlConfigRepository.deleteById(id);
 		SingleSql singleSql = new SingleSql();
 		singleSql.setId(id);

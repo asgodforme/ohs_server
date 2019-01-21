@@ -29,7 +29,7 @@ public class ModuleConfigServiceImpl implements ModuleConfigService {
 
 	@Autowired
 	private OhsSysConfigRepository ohsSysConfigRepository;
-
+	
 	@Override
 	public List<Module> getAllModule(Module module) throws OhsException {
 		OhsSysConfig ohsSysConfig = new OhsSysConfig();

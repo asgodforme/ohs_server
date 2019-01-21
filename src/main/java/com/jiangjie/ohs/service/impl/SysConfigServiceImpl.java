@@ -19,7 +19,6 @@ import com.jiangjie.ohs.dto.SysInfo;
 import com.jiangjie.ohs.dto.Table;
 import com.jiangjie.ohs.entity.OhsModuleConfig;
 import com.jiangjie.ohs.entity.OhsSysConfig;
-import com.jiangjie.ohs.entity.common.RelationUserInfo;
 import com.jiangjie.ohs.entity.dataEntity.OhsColumnConfig;
 import com.jiangjie.ohs.entity.dataEntity.OhsTableConfig;
 import com.jiangjie.ohs.exception.OhsException;
@@ -27,6 +26,7 @@ import com.jiangjie.ohs.repository.OhsColumnConfigRepository;
 import com.jiangjie.ohs.repository.OhsModuleConfigRepository;
 import com.jiangjie.ohs.repository.OhsSysConfigRepository;
 import com.jiangjie.ohs.repository.OhsTableConfigRepository;
+import com.jiangjie.ohs.service.OhsDeleteService;
 import com.jiangjie.ohs.service.SysConfigService;
 
 /**
@@ -48,6 +48,9 @@ public class SysConfigServiceImpl implements SysConfigService {
 	
 	@Autowired
 	private OhsModuleConfigRepository ohsModuleConfigRepository;
+	
+	@Autowired
+	private OhsDeleteService ohsDeleteService;
 	
 	private static final Function<OhsSysConfig, SysInfo> toSysInfo = ohsSysCfg -> {
 		SysInfo sysInfo = new SysInfo();
@@ -159,7 +162,8 @@ public class SysConfigServiceImpl implements SysConfigService {
 		ohsSysConfig.setCreateUser("姜杰");
 		return sysConfigRepository.save(ohsSysConfig);
 	}
-
+	
+	
 	@Override
 	public OhsSysConfig deleteById(OhsSysConfig ohsSysConfig) throws OhsException {
 		Optional<OhsSysConfig> ohsSysConfigOpt = sysConfigRepository.findById(ohsSysConfig.getId());
@@ -169,6 +173,18 @@ public class SysConfigServiceImpl implements SysConfigService {
 		ohsSysConfig.setCreateDate(ohsSysConfigOpt.get().getCreateDate());
 		ohsSysConfig.setCreateUser(ohsSysConfigOpt.get().getCreateUser());
 		sysConfigRepository.deleteById(ohsSysConfig.getId());
+		
+		// 手动级联删除
+		// 模块
+		ohsDeleteService.deleteAllModule(module -> module.setSysId(ohsSysConfig.getId()));
+		// 环境
+		ohsDeleteService.deleteAllEvn(evn -> evn.setSysId(ohsSysConfig.getId()));
+		// 表
+		ohsDeleteService.deleteAllTable(table -> table.setSysId(ohsSysConfig.getId()));
+		// 字段
+		ohsDeleteService.deleteAllColumns(column -> column.setSysId(ohsSysConfig.getId()));
+		// 单表SQL
+		ohsDeleteService.deleteAllSingleSql(singleSql -> singleSql.setSysId(ohsSysConfig.getId()));
 		return ohsSysConfigOpt.get();
 	}
 
