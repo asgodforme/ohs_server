@@ -90,6 +90,7 @@ public class ColumnConfigServiceImpl implements ColumnConfigService {
 							col.setSysChineseNme(ohsSysConfigOpt.get().getSysChineseNme());
 						}
 						col.setTableName(ohsTableCfg.getTableName());
+						col.setTableChnName(ohsTableCfg.getTableChnName());
 						col.setUpdateDate(ohsColumnCfg.getUpdateDate());
 						col.setUpdateUser(ohsColumnCfg.getUpdateUser());
 						columnLst.add(col);
@@ -114,6 +115,7 @@ public class ColumnConfigServiceImpl implements ColumnConfigService {
 				col.setSysAlias(ohsSysConfig.getSysAlias());
 				col.setSysChineseNme(ohsSysConfig.getSysChineseNme());
 				col.setTableName(ohsTableConfigLst.get(0).getTableName());
+				col.setTableChnName(ohsTableConfigLst.get(0).getTableChnName());
 				col.setUpdateDate(ohsColumnCfg.getUpdateDate());
 				col.setUpdateUser(ohsColumnCfg.getUpdateUser());
 				columnLst.add(col);

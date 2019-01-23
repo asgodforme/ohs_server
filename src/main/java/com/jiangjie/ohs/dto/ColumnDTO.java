@@ -14,6 +14,8 @@ public class ColumnDTO {
 
 	private String tableName;
 
+	private String tableChnName;
+
 	private String columnName;
 
 	private String columnAlias;
@@ -29,8 +31,16 @@ public class ColumnDTO {
 	private String createUser;
 
 	private Timestamp updateDate;
-
+	
 	private String updateUser;
+
+	public String getTableChnName() {
+		return tableChnName;
+	}
+
+	public void setTableChnName(String tableChnName) {
+		this.tableChnName = tableChnName;
+	}
 
 	public String getIsHide() {
 		return isHide;
