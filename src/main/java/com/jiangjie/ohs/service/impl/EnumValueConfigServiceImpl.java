@@ -5,7 +5,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
@@ -55,18 +57,25 @@ public class EnumValueConfigServiceImpl implements EnumValueConfigService {
 		}
 		List<ColumnDTO> columns = columnConfigService.getAllColumn(column);
 		List<ColumnDTO> returnCol = new ArrayList<>();
-		for (OhsEnumValueConfig ohsEnumValueCfg : ohsEnumValueConfigLst) {
-			Optional<ColumnDTO> matchColOpt = columns.stream().filter(col -> col.getId() == ohsEnumValueCfg.getColumnId().intValue()).findFirst();
-			if (matchColOpt.isPresent()) {
-				ColumnDTO temCol = matchColOpt.get();
-				temCol.setId(ohsEnumValueCfg.getId());
-				temCol.setEnumValue(ohsEnumValueCfg.getEnumValue());
-				temCol.setEnumChineseValue(ohsEnumValueCfg.getEnumChineseValue());
-				temCol.setCreateDate(ohsEnumValueCfg.getCreateDate());
-				temCol.setCreateUser(ohsEnumValueCfg.getCreateUser());
-				temCol.setUpdateDate(ohsEnumValueCfg.getUpdateDate());
-				temCol.setUpdateUser(ohsEnumValueCfg.getUpdateUser());
-				returnCol.add(temCol);
+		// 一个字段对应多个枚举值，以字段为基准开始遍历
+		for (ColumnDTO columnn : columns) {
+			// 提取对应字段下所有枚举值，收集到一个List中
+			List<OhsEnumValueConfig> enumValues = ohsEnumValueConfigLst.stream().filter(ohsEnumValueCfg ->  
+			columnn.getId() == ohsEnumValueCfg.getColumnId().intValue()).collect(Collectors.toList());
+			// 对收集到的枚举值进行包装
+			if (!CollectionUtils.isEmpty(enumValues)) {
+				for (OhsEnumValueConfig ohsEnumValueCfg : enumValues) {
+					ColumnDTO retCol = new ColumnDTO();
+					BeanUtils.copyProperties(columnn, retCol);
+					retCol.setId(ohsEnumValueCfg.getId());
+					retCol.setEnumValue(ohsEnumValueCfg.getEnumValue());
+					retCol.setEnumChineseValue(ohsEnumValueCfg.getEnumChineseValue());
+					retCol.setCreateDate(ohsEnumValueCfg.getCreateDate());
+					retCol.setCreateUser(ohsEnumValueCfg.getCreateUser());
+					retCol.setUpdateDate(ohsEnumValueCfg.getUpdateDate());
+					retCol.setUpdateUser(ohsEnumValueCfg.getUpdateUser());
+					returnCol.add(retCol);
+				}
 			}
 		}
 		if (CollectionUtils.isEmpty(returnCol)) {

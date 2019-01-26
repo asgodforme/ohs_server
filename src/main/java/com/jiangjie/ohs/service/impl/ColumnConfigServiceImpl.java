@@ -55,6 +55,7 @@ public class ColumnConfigServiceImpl implements ColumnConfigService {
 		OhsTableConfig ohsTableConfig = new OhsTableConfig();
 		ohsTableConfig.setSchemaName(OhsUtils.putIfNotBlank(column.getSchemaName()));
 		ohsTableConfig.setTableName(OhsUtils.putIfNotBlank(column.getTableName()));
+		ohsTableConfig.setTableChnName(OhsUtils.putIfNotBlank(column.getTableChnName()));
 		ohsTableConfig.setSysId(ohsSysConfig.getId());
 		
 		List<OhsTableConfig> ohsTableConfigLst = ohsTableConfigRepository.findAll(Example.of(ohsTableConfig));
@@ -98,27 +99,31 @@ public class ColumnConfigServiceImpl implements ColumnConfigService {
 				}
 			}
 		} else { 
-			ohsColumnConfig.setColumnAlias(OhsUtils.putIfNotBlank(column.getColumnAlias()));
-			ohsColumnConfig.setColumnName(OhsUtils.putIfNotBlank(column.getColumnName()));
-			ohsColumnConfig.setSysId(ohsSysConfig.getId());
-			ohsColumnConfig.setTableId(ohsTableConfigLst.get(0).getId());
-			List<OhsColumnConfig> ohsColumnConfigLst = ohsColumnConfigRepository.findAll(Example.of(ohsColumnConfig));	
-			for (OhsColumnConfig ohsColumnCfg : ohsColumnConfigLst) {
-				ColumnDTO col = new ColumnDTO();
-				col.setId(ohsColumnCfg.getId());
-				col.setColumnAlias(ohsColumnCfg.getColumnAlias());
-				col.setColumnName(ohsColumnCfg.getColumnName());
-				col.setCreateDate(ohsColumnCfg.getCreateDate());
-				col.setCreateUser(ohsColumnCfg.getCreateUser());
-				col.setSchemaName(ohsTableConfigLst.get(0).getSchemaName());
-				col.setIsHide(ohsColumnCfg.getIsHide());
-				col.setSysAlias(ohsSysConfig.getSysAlias());
-				col.setSysChineseNme(ohsSysConfig.getSysChineseNme());
-				col.setTableName(ohsTableConfigLst.get(0).getTableName());
-				col.setTableChnName(ohsTableConfigLst.get(0).getTableChnName());
-				col.setUpdateDate(ohsColumnCfg.getUpdateDate());
-				col.setUpdateUser(ohsColumnCfg.getUpdateUser());
-				columnLst.add(col);
+			for (OhsTableConfig ohsTableCfg : ohsTableConfigLst) {
+				ohsColumnConfig.setColumnAlias(OhsUtils.putIfNotBlank(column.getColumnAlias()));
+				ohsColumnConfig.setColumnName(OhsUtils.putIfNotBlank(column.getColumnName()));
+				ohsColumnConfig.setSysId(ohsSysConfig.getId());
+				ohsColumnConfig.setTableId(ohsTableCfg.getId());
+				List<OhsColumnConfig> ohsColumnConfigLst = ohsColumnConfigRepository.findAll(Example.of(ohsColumnConfig));	
+				if (!CollectionUtils.isEmpty(ohsColumnConfigLst)) {
+					for (OhsColumnConfig ohsColumnCfg : ohsColumnConfigLst) {
+						ColumnDTO col = new ColumnDTO();
+						col.setId(ohsColumnCfg.getId());
+						col.setColumnAlias(ohsColumnCfg.getColumnAlias());
+						col.setColumnName(ohsColumnCfg.getColumnName());
+						col.setCreateDate(ohsColumnCfg.getCreateDate());
+						col.setCreateUser(ohsColumnCfg.getCreateUser());
+						col.setSchemaName(ohsTableCfg.getSchemaName());
+						col.setIsHide(ohsColumnCfg.getIsHide());
+						col.setSysAlias(ohsSysConfig.getSysAlias());
+						col.setSysChineseNme(ohsSysConfig.getSysChineseNme());
+						col.setTableName(ohsTableCfg.getTableName());
+						col.setTableChnName(ohsTableCfg.getTableChnName());
+						col.setUpdateDate(ohsColumnCfg.getUpdateDate());
+						col.setUpdateUser(ohsColumnCfg.getUpdateUser());
+						columnLst.add(col);
+					}
+				}
 			}
 		}
 		

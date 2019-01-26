@@ -37,7 +37,6 @@ public class OhsSingleSqlConfigController {
 	 */
 	@GetMapping("/saveSingleSqlConfig")
 	public SingleSql saveSingleSqlConfig(SingleSql singleSql) throws OhsException {
-		System.out.println(singleSql);
 		return singleSqlConfigService.saveSingleSqlConfig(singleSql);
 	}
 	

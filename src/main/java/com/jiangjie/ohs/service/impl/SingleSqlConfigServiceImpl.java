@@ -95,8 +95,8 @@ public class SingleSqlConfigServiceImpl implements SingleSqlConfigService {
 			columnAliass.append("|");
 			columnNames.append("|");
 			for (OhsSingleQueryWhereInfo queryWhereInfo : ohsSingleQueryWhereInfoLst) {
-				columnAliass.append(queryWhereInfo.getKeyChnInfo());
-				columnNames.append(queryWhereInfo.getKeyInfo());
+				columnNames.append(queryWhereInfo.getKeyChnInfo());
+				columnAliass.append(queryWhereInfo.getKeyInfo());
 				columnAliass.append("|");
 				columnNames.append("|");
 			}
@@ -153,6 +153,7 @@ public class SingleSqlConfigServiceImpl implements SingleSqlConfigService {
 		if (CollectionUtils.isEmpty(ohsSingleSqlConfigLst)) {
 			ohsSingleSqlConfig.setRemark(singleSql.getRemark());
 			ohsSingleSqlConfig = ohsSingleSqlConfigRepository.save(ohsSingleSqlConfig);
+			ohsSingleQueryWhereInfo.setSingleSqlId(ohsSingleSqlConfig.getId());
 		} else {
 			ohsSingleQueryWhereInfo.setSingleSqlId(ohsSingleSqlConfigLst.get(0).getId());
 		}
