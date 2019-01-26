@@ -1,14 +1,17 @@
 package com.jiangjie.ohs.service.impl;
 
 import java.sql.Timestamp;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 
 import com.jiangjie.ohs.dto.SingleSql;
 import com.jiangjie.ohs.entity.OhsModuleConfig;
@@ -157,11 +160,17 @@ public class SingleSqlConfigServiceImpl implements SingleSqlConfigService {
 		} else {
 			ohsSingleQueryWhereInfo.setSingleSqlId(ohsSingleSqlConfigLst.get(0).getId());
 		}
-		ohsSingleQueryWhereInfo.setKeyInfo(singleSql.getColumnName());
+		
+		// 每个单表SQL只能添加3个查询条件 // TODO  参数化硬编码，后期考虑配置化
+		if (ohsSingleQueryWhereInfoRepository.count(Example.of(ohsSingleQueryWhereInfo)) >= 3) {
+			throw new OhsException("单表SQL查询只能配置三个查询条件，请知悉！");
+		}
+		
+		ohsSingleQueryWhereInfo.setKeyInfo(singleSql.getColumnAlias());
 		if (ohsSingleQueryWhereInfoRepository.exists(Example.of(ohsSingleQueryWhereInfo))) {
 			throw new OhsException("该单表查询SQL该字段查询条件已经存在！");
 		}
-		ohsSingleQueryWhereInfo.setKeyChnInfo(singleSql.getColumnAlias());
+		ohsSingleQueryWhereInfo.setKeyChnInfo(singleSql.getColumnName());
 		ohsSingleQueryWhereInfo.setCreateUser("姜杰");
 		ohsSingleQueryWhereInfo.setCreateDate(new Timestamp(new Date().getTime()));
 		ohsSingleQueryWhereInfoRepository.save(ohsSingleQueryWhereInfo);
@@ -223,12 +232,34 @@ public class SingleSqlConfigServiceImpl implements SingleSqlConfigService {
 		if (CollectionUtils.isEmpty(ohsTableConfigLst)) {
 			throw new OhsException("当前系统下不存在该表信息！");
 		}
+		
+		// 修改对应的查询条件
+		if (!StringUtils.isEmpty(singleSql.getColumnAlias()) && singleSql.getColumnAlias().indexOf(",") > -1) {
+			// 查询当前单表SQL下的查询条件
+			OhsSingleQueryWhereInfo whereInfo = new OhsSingleQueryWhereInfo();
+			whereInfo.setSingleSqlId(singleSql.getId());
+			List<OhsSingleQueryWhereInfo> ohsSingleQueryWhereInfoLst = ohsSingleQueryWhereInfoRepository.findAll(Example.of(whereInfo));
+			List<String> columnAliass = Arrays.asList(singleSql.getColumnAlias().split(",")).stream().filter(colAlias -> !StringUtils.isEmpty(colAlias)).collect(Collectors.toList());
+			List<OhsSingleQueryWhereInfo> resultAlias = ohsSingleQueryWhereInfoLst.stream().filter(ohsSingleSqlWhereInfo -> columnAliass.stream().allMatch(col -> !col.equals(ohsSingleSqlWhereInfo.getKeyInfo()))).collect(Collectors.toList());
+			if (!CollectionUtils.isEmpty(resultAlias)) {
+				for (OhsSingleQueryWhereInfo resltAlias : resultAlias) {
+					// 删除掉对应的查询条件
+					whereInfo.setKeyInfo(resltAlias.getKeyInfo());
+					Optional<OhsSingleQueryWhereInfo> ohsSingleQueryWhereInfoOpt = ohsSingleQueryWhereInfoRepository.findOne(Example.of(whereInfo));
+					if (ohsSingleQueryWhereInfoOpt.isPresent()) {
+						ohsSingleQueryWhereInfoRepository.delete(ohsSingleQueryWhereInfoOpt.get());
+					} else {
+						throw new OhsException("对应删除条件不存在！");
+					}
+				}
+			}
+		}
+		
 		OhsSingleSqlConfig ohsSingleSqlConfig = ohsSingleSqlConfigOpt.get();
 		ohsSingleSqlConfig.setSysId(sysId);
 		ohsSingleSqlConfig.setModuleId(ohsModuleConfigLst.get(0).getId());
-		ohsSingleSqlConfig.setTableId(ohsModuleConfigLst.get(0).getId());
+		ohsSingleSqlConfig.setTableId(ohsTableConfigLst.get(0).getId());
 		ohsSingleSqlConfig.setRemark(singleSql.getRemark());
-		ohsSingleSqlConfig.setSingleTableSql(singleSql.getSingleTableSql());
 		ohsSingleSqlConfig.setUpdateDate(new Timestamp(new Date().getTime()));
 		ohsSingleSqlConfig.setUpdateUser("修改者");
 		

@@ -3,6 +3,7 @@ package com.jiangjie.ohs.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -24,16 +25,17 @@ public class OhsSysConfigController {
 	private SysConfigService sysConfigService;
 
 	@GetMapping("/getAllSys")
-	public List<OhsSysConfig> getAllMenu(OhsSysConfig ohsSysConfig) throws OhsException {
+	public Page<OhsSysConfig> getAllMenu(OhsSysConfig ohsSysConfig) throws OhsException {
 		// 前端传送过来的空格也会当做查询条件去查询数据库，故在此置为null,过滤掉该条件，TODO 应该有更加先进的方法。
 		if (StringUtils.isEmpty(ohsSysConfig.getSysAlias())) ohsSysConfig.setSysAlias(null);
 		if (StringUtils.isEmpty(ohsSysConfig.getSysChineseNme())) ohsSysConfig.setSysChineseNme(null);
 		if (StringUtils.isEmpty(ohsSysConfig.getSchemaName())) ohsSysConfig.setSchemaName(null);
-		List<OhsSysConfig> ohsSysConfigLst = sysConfigService.getAllSys(ohsSysConfig);
-		if (CollectionUtils.isEmpty(ohsSysConfigLst)) {
+//		List<OhsSysConfig> ohsSysConfigLst = sysConfigService.getAllSys(ohsSysConfig);
+		Page<OhsSysConfig> ohsSysConfigPage = sysConfigService.getAllSys(ohsSysConfig);
+		if (CollectionUtils.isEmpty(ohsSysConfigPage.getContent())) {
 			throw new OhsException("当前系统中无系统配置信息，请点击新增新增系统配置信息！");
 		}
-		return ohsSysConfigLst;
+		return ohsSysConfigPage;
 	}
 	
 	@GetMapping("/getAllSysWhenInit")

@@ -10,6 +10,9 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -106,9 +109,12 @@ public class SysConfigServiceImpl implements SysConfigService {
 		
 	};
 	
-	public List<OhsSysConfig> getAllSys(OhsSysConfig ohsSysConfig) {
+	public Page<OhsSysConfig> getAllSys(OhsSysConfig ohsSysConfig) {
 		Example<OhsSysConfig> example = Example.of(ohsSysConfig);
-		return sysConfigRepository.findAll(example);
+		Pageable pageable = PageRequest.of(ohsSysConfig.getCurrent() - 1 < 0 ? 0 : ohsSysConfig.getCurrent() - 1, ohsSysConfig.getPageSize());
+		Page<OhsSysConfig> ohsSysConfigPage = sysConfigRepository.findAll(example, pageable);
+		return ohsSysConfigPage;
+//		return sysConfigRepository.findAll(example);
 	}
 	
 	public List<SysInfo> getAllSysInfo(OhsSysConfig ohsSysConfig) {

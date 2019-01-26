@@ -6,6 +6,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Transient;
 
 /**
  * 系统配置表： 一个系统对应多个环境（sit, uat, pro等等） 一个系统对应多个功能模块
@@ -46,6 +47,28 @@ public class OhsSysConfig {
 	private Timestamp updateDate;
 	/** 修改用户 */
 	private String updateUser;
+
+	@Transient
+	private int current;
+
+	@Transient
+	private int pageSize;
+
+	public int getCurrent() {
+		return current;
+	}
+
+	public void setCurrent(int current) {
+		this.current = current;
+	}
+
+	public int getPageSize() {
+		return pageSize;
+	}
+
+	public void setPageSize(int pageSize) {
+		this.pageSize = pageSize;
+	}
 
 	public String getSchemaName() {
 		return schemaName;

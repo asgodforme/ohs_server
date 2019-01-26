@@ -2,6 +2,8 @@ package com.jiangjie.ohs.service;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+
 import com.jiangjie.ohs.dto.SysInfo;
 import com.jiangjie.ohs.entity.OhsSysConfig;
 import com.jiangjie.ohs.exception.OhsException;
@@ -18,7 +20,7 @@ public interface SysConfigService {
 	 * @param ohsSysConfig
 	 * @return
 	 */
-	public List<OhsSysConfig> getAllSys(OhsSysConfig ohsSysConfig);
+	public Page<OhsSysConfig> getAllSys(OhsSysConfig ohsSysConfig);
 	
 	/**
 	 * 获得系统配置信息，包括系统下的所有表信息
