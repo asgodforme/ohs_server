@@ -3,11 +3,14 @@ package com.jiangjie.ohs.service;
 import java.util.List;
 
 import com.jiangjie.ohs.dto.ColumnDTO;
+import com.jiangjie.ohs.dto.PageResponse;
 import com.jiangjie.ohs.exception.OhsException;
 
 public interface ColumnConfigService {
 
-	List<ColumnDTO> getAllColumn(ColumnDTO column) throws OhsException ;
+	PageResponse<ColumnDTO> getAllColumn(ColumnDTO column) throws OhsException ;
+	
+	List<ColumnDTO> getAllColumnList(ColumnDTO column) throws OhsException ;
 
 	ColumnDTO saveColumnConfig(ColumnDTO column) throws OhsException ;
 

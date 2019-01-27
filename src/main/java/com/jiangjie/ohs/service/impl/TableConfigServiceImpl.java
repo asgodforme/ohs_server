@@ -9,10 +9,14 @@ import java.util.function.Function;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
+import com.jiangjie.ohs.dto.PageResponse;
 import com.jiangjie.ohs.dto.Table;
 import com.jiangjie.ohs.entity.OhsSysConfig;
 import com.jiangjie.ohs.entity.dataEntity.OhsTableConfig;
@@ -59,7 +63,7 @@ public class TableConfigServiceImpl implements TableConfigService {
 	};
 
 	@Override
-	public List<Table> getAllTable(Table table) throws OhsException {
+	public PageResponse<Table> getAllTable(Table table) throws OhsException {
 		OhsSysConfig ohsSysConfig = new OhsSysConfig();
 		ohsSysConfig.setSysAlias(StringUtils.isEmpty(table.getSysAlias()) ? null : table.getSysAlias());
 		ohsSysConfig.setSysChineseNme(StringUtils.isEmpty(table.getSysChineseNme()) ? null : table.getSysChineseNme());
@@ -79,7 +83,9 @@ public class TableConfigServiceImpl implements TableConfigService {
 		ohsTableConfig.setTableChnName(OhsUtils.putIfNotBlank(table.getTableChnName()));
 		ohsTableConfig.setSysId(ohsSysConfig.getId());
 		
-		List<OhsTableConfig> ohsTableConfigLst = ohsTableConfigRepository.findAll(Example.of(ohsTableConfig));
+		Pageable pageable = PageRequest.of(table.getCurrent() - 1 < 0 ? 0 : table.getCurrent() - 1, table.getPageSize());
+		Page<OhsTableConfig> ohsTableConfigPage = ohsTableConfigRepository.findAll(Example.of(ohsTableConfig), pageable);
+		List<OhsTableConfig> ohsTableConfigLst = ohsTableConfigPage.getContent();
 		
 		if (CollectionUtils.isEmpty(ohsTableConfigLst)) {
 			throw new OhsException("不存在表配置信息，请新增！");
@@ -107,7 +113,11 @@ public class TableConfigServiceImpl implements TableConfigService {
 				tab.setSysChineseNme(sysChineseNme);
 			});
 		}
-		return tables;
+		
+		PageResponse<Table> tableRsp = new PageResponse<>(tables, ohsTableConfigPage.getNumber(), 
+				ohsTableConfigPage.getSize(), ohsTableConfigPage.getTotalElements(), 
+				ohsTableConfigPage.getTotalPages());
+		return tableRsp;
 	}
 
 	@Override

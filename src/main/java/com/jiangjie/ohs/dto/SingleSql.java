@@ -39,6 +39,26 @@ public class SingleSql {
 
 	private String updateUser;
 
+	private int current;
+
+	private int pageSize;
+
+	public int getCurrent() {
+		return current;
+	}
+
+	public void setCurrent(int current) {
+		this.current = current;
+	}
+
+	public int getPageSize() {
+		return pageSize;
+	}
+
+	public void setPageSize(int pageSize) {
+		this.pageSize = pageSize;
+	}
+
 	public List<OhsSingleQueryWhereInfo> getOhsSingleQueryWhereInfoLst() {
 		return ohsSingleQueryWhereInfoLst;
 	}

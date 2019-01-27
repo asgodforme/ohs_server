@@ -1,7 +1,5 @@
 package com.jiangjie.ohs.controller;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -9,6 +7,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.jiangjie.ohs.dto.PageResponse;
 import com.jiangjie.ohs.dto.Table;
 import com.jiangjie.ohs.exception.OhsException;
 import com.jiangjie.ohs.service.TableConfigService;
@@ -28,7 +27,7 @@ public class OhsTableConfigController {
 	 * @throws OhsException
 	 */
 	@GetMapping("/getAllTable")
-	public List<Table> getAllTable(Table Table) throws OhsException {
+	public PageResponse<Table> getAllTable(Table Table) throws OhsException {
 		return tableConfigService.getAllTable(Table);
 	}
 	

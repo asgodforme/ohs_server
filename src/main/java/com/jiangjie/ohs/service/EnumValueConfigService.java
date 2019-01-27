@@ -1,13 +1,12 @@
 package com.jiangjie.ohs.service;
 
-import java.util.List;
-
 import com.jiangjie.ohs.dto.ColumnDTO;
+import com.jiangjie.ohs.dto.PageResponse;
 import com.jiangjie.ohs.exception.OhsException;
 
 public interface EnumValueConfigService {
 
-	List<ColumnDTO> getAllEnumValue(ColumnDTO column) throws OhsException;
+	PageResponse<ColumnDTO> getAllEnumValue(ColumnDTO column) throws OhsException;
 
 	ColumnDTO saveEnumValueConfig(ColumnDTO column) throws OhsException;
 

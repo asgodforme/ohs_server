@@ -10,10 +10,14 @@ import java.util.stream.Collectors;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import com.jiangjie.ohs.dto.ColumnDTO;
+import com.jiangjie.ohs.dto.PageResponse;
 import com.jiangjie.ohs.entity.OhsSysConfig;
 import com.jiangjie.ohs.entity.dataEntity.OhsColumnConfig;
 import com.jiangjie.ohs.entity.dataEntity.OhsEnumValueConfig;
@@ -46,16 +50,20 @@ public class EnumValueConfigServiceImpl implements EnumValueConfigService {
 	private OhsColumnConfigRepository ohsColumnConfigRepository;
 	
 	@Override
-	public List<ColumnDTO> getAllEnumValue(ColumnDTO column) throws OhsException {
+	public PageResponse<ColumnDTO> getAllEnumValue(ColumnDTO column) throws OhsException {
 		OhsEnumValueConfig ohsEnumValueConfig = new OhsEnumValueConfig();
 		ohsEnumValueConfig.setEnumValue(OhsUtils.putIfNotBlank(column.getEnumValue()));
 		ohsEnumValueConfig.setEnumChineseValue(OhsUtils.putIfNotBlank(column.getEnumChineseValue()));
 		
-		List<OhsEnumValueConfig> ohsEnumValueConfigLst = ohsEnumValueConfigRepository.findAll(Example.of(ohsEnumValueConfig));
+		Pageable pageable = PageRequest.of(column.getCurrent() - 1 < 0 ? 0 : column.getCurrent() - 1,
+				column.getPageSize());
+		
+		Page<OhsEnumValueConfig> ohsEnumValueConfigPage = ohsEnumValueConfigRepository.findAll(Example.of(ohsEnumValueConfig), pageable);
+		List<OhsEnumValueConfig> ohsEnumValueConfigLst = ohsEnumValueConfigPage.getContent();
 		if (CollectionUtils.isEmpty(ohsEnumValueConfigLst)) {
 			throw new OhsException("当前枚举值配置信息为空！请先添加后再查询！");
 		}
-		List<ColumnDTO> columns = columnConfigService.getAllColumn(column);
+		List<ColumnDTO> columns = columnConfigService.getAllColumnList(column);
 		List<ColumnDTO> returnCol = new ArrayList<>();
 		// 一个字段对应多个枚举值，以字段为基准开始遍历
 		for (ColumnDTO columnn : columns) {
@@ -81,7 +89,11 @@ public class EnumValueConfigServiceImpl implements EnumValueConfigService {
 		if (CollectionUtils.isEmpty(returnCol)) {
 			throw new OhsException("不存在枚举值，请新增！");
 		}
-		return returnCol;
+		
+		PageResponse<ColumnDTO> colRsp = new PageResponse<>(returnCol, ohsEnumValueConfigPage.getNumber(), 
+				ohsEnumValueConfigPage.getSize(), ohsEnumValueConfigPage.getTotalElements(), 
+				ohsEnumValueConfigPage.getTotalPages());
+		return colRsp;
 	}
 
 	@Override
