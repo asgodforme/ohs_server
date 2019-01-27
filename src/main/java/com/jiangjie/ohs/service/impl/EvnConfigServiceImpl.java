@@ -9,11 +9,15 @@ import java.util.function.Function;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import com.jiangjie.ohs.dto.Evn;
+import com.jiangjie.ohs.dto.PageResponse;
 import com.jiangjie.ohs.entity.OhsEnvironmentConfig;
 import com.jiangjie.ohs.entity.OhsSysConfig;
 import com.jiangjie.ohs.entity.common.RelationUserInfo;
@@ -59,7 +63,7 @@ public class EvnConfigServiceImpl implements EvnConfigService {
 	};
 
 	@Override
-	public List<Evn> getAllEvn(Evn evn) throws OhsException {
+	public PageResponse<Evn> getAllEvn(Evn evn) throws OhsException {
 
 		OhsSysConfig ohsSysConfig = new OhsSysConfig();
 		ohsSysConfig.setSysAlias(StringUtils.isEmpty(evn.getSysAlias()) ? null : evn.getSysAlias());
@@ -77,8 +81,10 @@ public class EvnConfigServiceImpl implements EvnConfigService {
 		if (!StringUtils.isEmpty(evn.getSysAlias()) || !StringUtils.isEmpty(evn.getSysChineseNme())) {
 			environmentConfig.setSysId(ohsSysConfig.getId());
 		} 
-		List<OhsEnvironmentConfig> ohsEnvironmentConfigLst = ohsEnvironmentConfigRepository.findAll(Example.of(environmentConfig));
-
+		
+		Pageable pageable = PageRequest.of(evn.getCurrent() - 1 < 0 ? 0 : evn.getCurrent() - 1, evn.getPageSize());
+		Page<OhsEnvironmentConfig> ohsEnvironmentConfigPage = ohsEnvironmentConfigRepository.findAll(Example.of(environmentConfig), pageable);
+		List<OhsEnvironmentConfig> ohsEnvironmentConfigLst = ohsEnvironmentConfigPage.getContent();
 		if (CollectionUtils.isEmpty(ohsEnvironmentConfigLst)) {
 			throw new OhsException("不存在对应的环境配置信息！");
 		} else {
@@ -103,7 +109,13 @@ public class EvnConfigServiceImpl implements EvnConfigService {
 				retEvn.setId(ohsEvn.getId());
 				EvnLst.add(retEvn);
 			}
-			return EvnLst;
+			
+			PageResponse<Evn> evnRsp = new PageResponse<>(EvnLst, 
+					ohsEnvironmentConfigPage.getNumber(),
+					ohsEnvironmentConfigPage.getSize(),
+					ohsEnvironmentConfigPage.getTotalElements(),
+					ohsEnvironmentConfigPage.getTotalPages());
+			return evnRsp;
 		}
 
 	}

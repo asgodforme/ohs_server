@@ -2,10 +2,6 @@ package com.jiangjie.ohs.dto;
 
 import java.sql.Timestamp;
 
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-
 /**
  * 环境信息
  * 
@@ -17,8 +13,6 @@ public class Evn {
 	/**
 	 * 主键
 	 */
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 
 	/**
@@ -76,6 +70,26 @@ public class Evn {
 	private Timestamp createDate;
 
 	private String createUser;
+
+	private int current;
+
+	private int pageSize;
+
+	public int getCurrent() {
+		return current;
+	}
+
+	public void setCurrent(int current) {
+		this.current = current;
+	}
+
+	public int getPageSize() {
+		return pageSize;
+	}
+
+	public void setPageSize(int pageSize) {
+		this.pageSize = pageSize;
+	}
 
 	public int getId() {
 		return id;

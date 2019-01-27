@@ -8,11 +8,15 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import com.jiangjie.ohs.dto.Module;
+import com.jiangjie.ohs.dto.PageResponse;
 import com.jiangjie.ohs.entity.OhsModuleConfig;
 import com.jiangjie.ohs.entity.OhsSysConfig;
 import com.jiangjie.ohs.entity.common.RelationUserInfo;
@@ -31,7 +35,7 @@ public class ModuleConfigServiceImpl implements ModuleConfigService {
 	private OhsSysConfigRepository ohsSysConfigRepository;
 	
 	@Override
-	public List<Module> getAllModule(Module module) throws OhsException {
+	public PageResponse<Module> getAllModule(Module module) throws OhsException {
 		OhsSysConfig ohsSysConfig = new OhsSysConfig();
 		ohsSysConfig.setSysAlias(StringUtils.isEmpty(module.getSysAlias()) ? null : module.getSysAlias());
 		ohsSysConfig.setSysChineseNme(StringUtils.isEmpty(module.getSysChineseNme()) ? null : module.getSysChineseNme());
@@ -52,7 +56,10 @@ public class ModuleConfigServiceImpl implements ModuleConfigService {
 			ohsModuleConfig.setSysId(ohsSysConfig.getId());
 		}
 
-		List<OhsModuleConfig> ohsModuleConfigList = ohsModuleConfigRepository.findAll(Example.of(ohsModuleConfig));
+		Pageable pageable = PageRequest.of(module.getCurrent() - 1 < 0 ? 0 : module.getCurrent() - 1, module.getPageSize());
+		
+		Page<OhsModuleConfig> ohsModuleConfigListPage = ohsModuleConfigRepository.findAll(Example.of(ohsModuleConfig), pageable);
+		List<OhsModuleConfig> ohsModuleConfigList = ohsModuleConfigListPage.getContent();
 		if (CollectionUtils.isEmpty(ohsModuleConfigList)) {
 			throw new OhsException("当前系统不存在对应模块配置信息，请自行添加模块！");
 		}
@@ -80,7 +87,12 @@ public class ModuleConfigServiceImpl implements ModuleConfigService {
 			moduleLst.add(mde);
 		}
 
-		return moduleLst;
+		PageResponse<Module> modulePageRsp = new PageResponse<Module>(moduleLst, 
+					ohsModuleConfigListPage.getNumber(), 
+					ohsModuleConfigListPage.getSize(),
+					ohsModuleConfigListPage.getTotalElements(),
+					ohsModuleConfigListPage.getTotalPages());
+		return modulePageRsp;
 	}
 
 	@Override
