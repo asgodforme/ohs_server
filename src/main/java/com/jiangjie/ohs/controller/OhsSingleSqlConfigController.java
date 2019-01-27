@@ -1,7 +1,5 @@
 package com.jiangjie.ohs.controller;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -9,6 +7,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.jiangjie.ohs.dto.PageResponse;
 import com.jiangjie.ohs.dto.SingleSql;
 import com.jiangjie.ohs.exception.OhsException;
 import com.jiangjie.ohs.service.SingleSqlConfigService;
@@ -28,7 +27,7 @@ public class OhsSingleSqlConfigController {
 	 * @throws OhsException
 	 */
 	@GetMapping("/getAllSingleSql")
-	public List<SingleSql> getAllSingleSql(SingleSql SingleSql) throws OhsException {
+	public PageResponse<SingleSql> getAllSingleSql(SingleSql SingleSql) throws OhsException {
 		return singleSqlConfigService.getAllSingleSql(SingleSql);
 	}
 	

@@ -9,10 +9,14 @@ import java.util.function.Function;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
+import com.jiangjie.ohs.dto.PageResponse;
 import com.jiangjie.ohs.dto.User;
 import com.jiangjie.ohs.entity.OhsUserConfig;
 import com.jiangjie.ohs.exception.OhsException;
@@ -26,13 +30,16 @@ public class UserConfigServiceImpl implements UserConfigService {
 	private OhsUserConfigRepository ohsUserConfigRepository;
 
 	@Override
-	public List<User> getAllUser(User user) throws OhsException {
+	public PageResponse<User> getAllUser(User user) throws OhsException {
 		OhsUserConfig ohsUserConfig = new OhsUserConfig();
 		ohsUserConfig.setName(StringUtils.isEmpty(user.getName()) ? null : user.getName());
 		ohsUserConfig.setLoginAccount(StringUtils.isEmpty(user.getLoginAccount()) ? null : user.getLoginAccount());
 		ohsUserConfig.setRole(StringUtils.isEmpty(user.getRole()) ? null : user.getRole());
 		
-		List<OhsUserConfig> ohsUserConfigLst = ohsUserConfigRepository.findAll(Example.of(ohsUserConfig));
+		Pageable pageable = PageRequest.of(user.getCurrent() - 1 < 0 ? 0 : user.getCurrent() - 1, user.getPageSize());
+		
+		Page<OhsUserConfig> ohsUserConfigPage = ohsUserConfigRepository.findAll(Example.of(ohsUserConfig), pageable);
+		List<OhsUserConfig> ohsUserConfigLst = ohsUserConfigPage.getContent();
 		if (CollectionUtils.isEmpty(ohsUserConfigLst)) {
 			throw new OhsException("不存在符合对应查询条件的人员信息！");
 		}
@@ -58,7 +65,10 @@ public class UserConfigServiceImpl implements UserConfigService {
 			userLst.add(transUser);
 		});
 		
-		return userLst;
+		PageResponse<User> userRsp = new PageResponse<>(userLst, ohsUserConfigPage.getNumber(), ohsUserConfigPage.getSize(),
+				ohsUserConfigPage.getTotalElements(), ohsUserConfigPage.getTotalPages());
+		
+		return userRsp;
 	}
 
 	@Override

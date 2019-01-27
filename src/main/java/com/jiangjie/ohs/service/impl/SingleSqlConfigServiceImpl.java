@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
+import com.jiangjie.ohs.dto.PageResponse;
 import com.jiangjie.ohs.dto.SingleSql;
 import com.jiangjie.ohs.entity.OhsModuleConfig;
 import com.jiangjie.ohs.entity.OhsSysConfig;
@@ -57,7 +58,7 @@ public class SingleSqlConfigServiceImpl implements SingleSqlConfigService {
 	private OhsSingleQueryWhereInfoRepository ohsSingleQueryWhereInfoRepository;
 
 	@Override
-	public List<SingleSql> getAllSingleSql(SingleSql singleSql) throws OhsException {
+	public PageResponse<SingleSql> getAllSingleSql(SingleSql singleSql) throws OhsException {
 		// 校验系统信息是否有
 		OhsSysConfig ohsSysConfig = new OhsSysConfig();
 		ohsSysConfig.setSysAlias(OhsUtils.putIfNotBlank(singleSql.getSysAlias()));
@@ -83,12 +84,18 @@ public class SingleSqlConfigServiceImpl implements SingleSqlConfigService {
 		if (CollectionUtils.isEmpty(ohsTableConfigLst)) {
 			throw new OhsException("当前系统中不存在表配置信息，请先在“数据定制化配置-表配置”中配置表信息！");
 		}
-
+		
+		singleSql.setCurrent(singleSql.getCurrent() - 1 < 0 ? 0 : singleSql.getCurrent() - 1);
+		singleSql.setOffsetSize(singleSql.getCurrent() * singleSql.getPageSize());
+		
 		// 实际查询的sql
 		List<SingleSql> singleSqlLst = ohsSingleSqlConfigMapper.findOhsSingleSqlConfig(singleSql);
 		if (CollectionUtils.isEmpty(singleSqlLst)) {
 			throw new OhsException("当前系统中不存在单表SQL信息，请新增！");
 		}
+		
+		Integer singleSqlSum = ohsSingleSqlConfigMapper.findOhsSingleSqlConfigCount(singleSql);
+		Integer totalPages = singleSqlSum % singleSql.getPageSize() == 0 ? singleSqlSum / singleSql.getPageSize() : singleSqlSum / singleSql.getPageSize() + 1; 
 		
 		for (int i = 0; i < singleSqlLst.size(); i++) {
 			SingleSql loopObject = singleSqlLst.get(i);
@@ -106,7 +113,10 @@ public class SingleSqlConfigServiceImpl implements SingleSqlConfigService {
 			loopObject.setColumnAlias(columnAliass.toString());
 			loopObject.setColumnName(columnNames.toString());
 		}
-		return singleSqlLst;
+		
+		PageResponse<SingleSql> pageRsp = new PageResponse<>(singleSqlLst, singleSql.getCurrent(), singleSql.getPageSize(), singleSqlSum, totalPages);
+		
+		return pageRsp;
 	}
 
 	@Override

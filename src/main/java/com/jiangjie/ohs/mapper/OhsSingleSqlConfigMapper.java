@@ -5,10 +5,30 @@ import java.util.List;
 import com.jiangjie.ohs.dto.SingleSql;
 import com.jiangjie.ohs.entity.OhsModuleConfig;
 
+/**
+ * 自定义查询单表sql Mapper:使用mybatis
+ * @author Administrator
+ *
+ */
 public interface OhsSingleSqlConfigMapper {
 
+	/**
+	 * 通过关系表关联查询：项目中未使用
+	 * @return
+	 */
 	List<OhsModuleConfig> findOhsTableConfigInnerOhsModuleConfig();
-	
+
+	/**
+	 * 查询单表SQL
+	 * @param singleSql
+	 * @return
+	 */
 	List<SingleSql> findOhsSingleSqlConfig(SingleSql singleSql);
 
+	/**
+	 * 查询单表SQL数量
+	 * @param singleSql
+	 * @return
+	 */
+	Integer findOhsSingleSqlConfigCount(SingleSql singleSql);
 }

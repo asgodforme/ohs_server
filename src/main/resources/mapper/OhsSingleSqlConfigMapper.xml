@@ -138,5 +138,55 @@
 			<if test="singleTableSql != null and singleTableSql != ''">
 				and singleSqlCfg.single_table_sql = #{singleTableSql}
 			</if>
+			limit #{pageSize} offset #{offsetSize}
+	</select>
+	
+	<select id="findOhsSingleSqlConfigCount" resultType="java.lang.Integer" parameterType="com.jiangjie.ohs.dto.SingleSql">
+		select 
+			count(1)
+		from 
+			ohs_single_sql_config singleSqlCfg
+		inner join 
+			ohs_sys_config sysCfg
+		on 
+			sysCfg.id = singleSqlCfg.sys_id
+			<if test="sysAlias != null and sysAlias != ''">
+				and sysCfg.sys_alias = #{sysAlias}
+			</if>
+			<if test="sysChineseNme != null and sysChineseNme != ''">
+				and sysCfg.sys_chinese_nme = #{sysChineseNme}
+			</if>
+		inner join 
+			ohs_module_config moduleCfg
+		on 
+			moduleCfg.id = singleSqlCfg.module_id
+			<if test="moduleAlias != null and moduleAlias != ''">
+				and moduleCfg.module_alias = #{moduleAlias}
+			</if>
+			<if test="moduleName != null and moduleName != ''">
+				and moduleCfg.module_name = #{moduleName}
+			</if>
+		inner join 
+			ohs_table_config tableCfg
+		on 
+			tableCfg.id = singleSqlCfg.table_id
+			<if test="tableName != null and tableName != ''">
+				and tableCfg.table_name = #{tableName}
+			</if>
+			<if test="tableChnName != null and tableChnName != ''">
+				and tableCfg.table_chn_name = #{tableChnName}
+			</if>
+		left join
+			ohs_single_query_where_info singleQueryWhereInfo 
+		on
+			singleQueryWhereInfo.single_sql_id = singleSqlCfg.id
+		where 
+			1 = 1
+			<if test="remark != null and remark != ''">
+				and singleSqlCfg.remark = #{remark}
+			</if>
+			<if test="singleTableSql != null and singleTableSql != ''">
+				and singleSqlCfg.single_table_sql = #{singleTableSql}
+			</if>
 	</select>
 </mapper>

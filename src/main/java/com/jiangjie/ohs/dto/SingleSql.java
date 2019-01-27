@@ -43,6 +43,16 @@ public class SingleSql {
 
 	private int pageSize;
 
+	private int offsetSize;
+
+	public int getOffsetSize() {
+		return offsetSize;
+	}
+
+	public void setOffsetSize(int offsetSize) {
+		this.offsetSize = offsetSize;
+	}
+
 	public int getCurrent() {
 		return current;
 	}

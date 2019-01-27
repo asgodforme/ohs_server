@@ -1,7 +1,6 @@
 package com.jiangjie.ohs.service;
 
-import java.util.List;
-
+import com.jiangjie.ohs.dto.PageResponse;
 import com.jiangjie.ohs.dto.User;
 import com.jiangjie.ohs.exception.OhsException;
 
@@ -13,7 +12,7 @@ import com.jiangjie.ohs.exception.OhsException;
  */
 public interface UserConfigService {
 
-	List<User> getAllUser(User user) throws OhsException;
+	PageResponse<User> getAllUser(User user) throws OhsException;
 
 	User saveUserConfig(User user);
 
