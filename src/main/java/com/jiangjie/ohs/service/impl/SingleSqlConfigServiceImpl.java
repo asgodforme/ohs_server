@@ -17,11 +17,13 @@ import com.jiangjie.ohs.dto.PageResponse;
 import com.jiangjie.ohs.dto.SingleSql;
 import com.jiangjie.ohs.entity.OhsModuleConfig;
 import com.jiangjie.ohs.entity.OhsSysConfig;
+import com.jiangjie.ohs.entity.dataEntity.OhsColumnConfig;
 import com.jiangjie.ohs.entity.dataEntity.OhsSingleQueryWhereInfo;
 import com.jiangjie.ohs.entity.dataEntity.OhsSingleSqlConfig;
 import com.jiangjie.ohs.entity.dataEntity.OhsTableConfig;
 import com.jiangjie.ohs.exception.OhsException;
 import com.jiangjie.ohs.mapper.OhsSingleSqlConfigMapper;
+import com.jiangjie.ohs.repository.OhsColumnConfigRepository;
 import com.jiangjie.ohs.repository.OhsModuleConfigRepository;
 import com.jiangjie.ohs.repository.OhsSingleQueryWhereInfoRepository;
 import com.jiangjie.ohs.repository.OhsSingleSqlConfigRepository;
@@ -169,6 +171,10 @@ public class SingleSqlConfigServiceImpl implements SingleSqlConfigService {
 			ohsSingleQueryWhereInfo.setSingleSqlId(ohsSingleSqlConfig.getId());
 		} else {
 			ohsSingleQueryWhereInfo.setSingleSqlId(ohsSingleSqlConfigLst.get(0).getId());
+			ohsSingleSqlConfig.setId(ohsSingleSqlConfigLst.get(0).getId());
+			ohsSingleSqlConfig.setRemark(ohsSingleSqlConfigLst.get(0).getRemark());
+			ohsSingleSqlConfig.setUpdateDate(new Timestamp(new Date().getTime()));			
+			ohsSingleSqlConfig.setUpdateUser("姜杰");
 		}
 		
 		// 每个单表SQL只能添加3个查询条件 // TODO  参数化硬编码，后期考虑配置化
@@ -186,7 +192,60 @@ public class SingleSqlConfigServiceImpl implements SingleSqlConfigService {
 		ohsSingleQueryWhereInfoRepository.save(ohsSingleQueryWhereInfo);
 		
 		singleSql.setId(ohsSingleSqlConfig.getId());
+		// 根据数据库中配置的信息生成单表sql
+		String singleSqlResult = generateSingleSql(ohsTableConfigLst.get(0).getId(), ohsSingleSqlConfig.getId());
+		ohsSingleSqlConfig.setSingleTableSql(singleSqlResult);
+		ohsSingleSqlConfigRepository.save(ohsSingleSqlConfig);
+		singleSql.setSingleTableSql(singleSqlResult);
+		singleSql.setCreateUser(ohsSingleSqlConfig.getCreateUser());
+		singleSql.setCreateDate(ohsSingleSqlConfig.getCreateDate());
 		return singleSql;
+	}
+
+	@Autowired
+	private OhsColumnConfigRepository ohsColumnConfigRepository;
+	
+	private String generateSingleSql(Integer tableId, Integer singleSqlId) throws OhsException {
+		StringBuffer singleSqlSb = new StringBuffer();
+		singleSqlSb.append("select ");
+		
+		// 查出当前表的所有配置字段
+		OhsColumnConfig queryObj = new OhsColumnConfig();
+		queryObj.setTableId(tableId);
+		List<OhsColumnConfig> ohsColumnConfigLst = ohsColumnConfigRepository.findAll(Example.of(queryObj));
+		
+		if (CollectionUtils.isEmpty(ohsColumnConfigLst)) {
+			singleSqlSb.append("* ");
+		} else {
+			for (OhsColumnConfig column : ohsColumnConfigLst) {
+				singleSqlSb.append(column.getColumnName()).append(", ");
+			}
+			singleSqlSb.delete(singleSqlSb.length() - 2, singleSqlSb.length());
+		}
+		singleSqlSb.append(" from ");
+		
+		OhsTableConfig ohsTableConfig = new OhsTableConfig();
+		ohsTableConfig.setId(tableId);
+		Optional<OhsTableConfig> ohsTableConfigOpt = ohsTableConfigRepository.findOne(Example.of(ohsTableConfig));
+		if (!ohsTableConfigOpt.isPresent()) {
+			throw new OhsException("当前表已经被删除！");
+		}
+		
+		singleSqlSb.append(ohsTableConfigOpt.get().getSchemaName()).append(".").append( ohsTableConfigOpt.get().getTableName()).append(" ");
+		
+		OhsSingleQueryWhereInfo ohsSingleQueryWhereInfo = new OhsSingleQueryWhereInfo();
+		ohsSingleQueryWhereInfo.setSingleSqlId(singleSqlId);
+		List<OhsSingleQueryWhereInfo> OhsSingleQueryWhereInfoLst = ohsSingleQueryWhereInfoRepository.findAll(Example.of(ohsSingleQueryWhereInfo));
+		
+		if (!CollectionUtils.isEmpty(OhsSingleQueryWhereInfoLst)) {
+			singleSqlSb.append("where ");
+			for (OhsSingleQueryWhereInfo whereInfo : OhsSingleQueryWhereInfoLst) {
+				singleSqlSb.append(whereInfo.getKeyInfo()).append("=").append("{").append(whereInfo.getKeyInfo()).append("}").append(" ").append("and ");
+			}
+			singleSqlSb.delete(singleSqlSb.length() - 4, singleSqlSb.length());
+		}
+		
+		return singleSqlSb.toString();
 	}
 
 	@Override
