@@ -169,6 +169,8 @@ public class SingleSqlConfigServiceImpl implements SingleSqlConfigService {
 			ohsSingleSqlConfig.setRemark(singleSql.getRemark());
 			ohsSingleSqlConfig = ohsSingleSqlConfigRepository.save(ohsSingleSqlConfig);
 			ohsSingleQueryWhereInfo.setSingleSqlId(ohsSingleSqlConfig.getId());
+			// 如果是新增的才返回主键，不是新增的不返回组件，前端根据此条件进行数据合并展示
+			singleSql.setId(ohsSingleSqlConfig.getId());
 		} else {
 			ohsSingleQueryWhereInfo.setSingleSqlId(ohsSingleSqlConfigLst.get(0).getId());
 			ohsSingleSqlConfig.setId(ohsSingleSqlConfigLst.get(0).getId());
@@ -191,7 +193,7 @@ public class SingleSqlConfigServiceImpl implements SingleSqlConfigService {
 		ohsSingleQueryWhereInfo.setCreateDate(new Timestamp(new Date().getTime()));
 		ohsSingleQueryWhereInfoRepository.save(ohsSingleQueryWhereInfo);
 		
-		singleSql.setId(ohsSingleSqlConfig.getId());
+		
 		// 根据数据库中配置的信息生成单表sql
 		String singleSqlResult = generateSingleSql(ohsTableConfigLst.get(0).getId(), ohsSingleSqlConfig.getId());
 		ohsSingleSqlConfig.setSingleTableSql(singleSqlResult);
