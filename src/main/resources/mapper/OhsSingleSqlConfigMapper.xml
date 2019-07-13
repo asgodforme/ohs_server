@@ -189,4 +189,8 @@
 				and singleSqlCfg.single_table_sql = #{singleTableSql}
 			</if>
 	</select>
+	
+	<select id="queryDataFields" resultType="java.util.Map" parameterType="java.lang.String">
+	 	${value}
+	</select>
 </mapper>

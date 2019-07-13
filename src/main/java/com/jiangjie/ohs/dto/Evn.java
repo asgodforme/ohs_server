@@ -44,6 +44,11 @@ public class Evn {
 	private String interfaceNme;
 
 	/**
+	 * 数据库名称
+	 */
+	private String dbSchema;
+
+	/**
 	 * 数据库用户名
 	 */
 	private String dbNme;
@@ -52,6 +57,11 @@ public class Evn {
 	 * 数据库密码
 	 */
 	private String dbPwd;
+
+	/**
+	 * 数据库类型
+	 */
+	private String dbType;
 
 	/**
 	 * 环境别名
@@ -74,6 +84,22 @@ public class Evn {
 	private int current;
 
 	private int pageSize;
+
+	public String getDbSchema() {
+		return dbSchema;
+	}
+
+	public void setDbSchema(String dbSchema) {
+		this.dbSchema = dbSchema;
+	}
+
+	public String getDbType() {
+		return dbType;
+	}
+
+	public void setDbType(String dbType) {
+		this.dbType = dbType;
+	}
 
 	public int getCurrent() {
 		return current;

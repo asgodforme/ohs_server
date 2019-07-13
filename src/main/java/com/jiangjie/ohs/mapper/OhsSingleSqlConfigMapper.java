@@ -1,6 +1,7 @@
 package com.jiangjie.ohs.mapper;
 
 import java.util.List;
+import java.util.Map;
 
 import com.jiangjie.ohs.dto.SingleSql;
 import com.jiangjie.ohs.entity.OhsModuleConfig;
@@ -31,4 +32,11 @@ public interface OhsSingleSqlConfigMapper {
 	 * @return
 	 */
 	Integer findOhsSingleSqlConfigCount(SingleSql singleSql);
+	
+	/**
+	 * 查询指定的sql
+	 * @param sql
+	 * @return
+	 */
+	List<Map<String, Object>> queryDataFields(String sql);
 }

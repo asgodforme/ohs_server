@@ -15,13 +15,21 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
+import com.jiangjie.ohs.dto.EnvInfo;
 import com.jiangjie.ohs.dto.Module;
 import com.jiangjie.ohs.dto.PageResponse;
+import com.jiangjie.ohs.dto.WhereInfo;
+import com.jiangjie.ohs.entity.OhsEnvironmentConfig;
 import com.jiangjie.ohs.entity.OhsModuleConfig;
 import com.jiangjie.ohs.entity.OhsSysConfig;
 import com.jiangjie.ohs.entity.common.RelationUserInfo;
+import com.jiangjie.ohs.entity.dataEntity.OhsSingleQueryWhereInfo;
+import com.jiangjie.ohs.entity.dataEntity.OhsSingleSqlConfig;
 import com.jiangjie.ohs.exception.OhsException;
+import com.jiangjie.ohs.repository.OhsEnvironmentConfigRepository;
 import com.jiangjie.ohs.repository.OhsModuleConfigRepository;
+import com.jiangjie.ohs.repository.OhsSingleQueryWhereInfoRepository;
+import com.jiangjie.ohs.repository.OhsSingleSqlConfigRepository;
 import com.jiangjie.ohs.repository.OhsSysConfigRepository;
 import com.jiangjie.ohs.service.ModuleConfigService;
 
@@ -33,6 +41,9 @@ public class ModuleConfigServiceImpl implements ModuleConfigService {
 
 	@Autowired
 	private OhsSysConfigRepository ohsSysConfigRepository;
+	
+	@Autowired
+	private OhsEnvironmentConfigRepository ohsEnvironmentConfigRepository;
 	
 	@Override
 	public PageResponse<Module> getAllModule(Module module) throws OhsException {
@@ -156,6 +167,84 @@ public class ModuleConfigServiceImpl implements ModuleConfigService {
 		module.setCreateUser(ohsModuleConfig.getRelationUserInfo().getCreateUser());
 		module.setId(ohsModuleConfig.getId());
 		return module;
+	}
+
+	@Autowired
+	private OhsSingleSqlConfigRepository ohsSingleSqlConfigRepository;
+	
+	@Autowired
+	private OhsSingleQueryWhereInfoRepository ohsSingleQueryWhereInfoRepository;
+	
+	@Override
+	public List<Module> getModuleBySysAlias(Module module) throws OhsException {
+		OhsSysConfig ohsSysConfig = new OhsSysConfig();
+		ohsSysConfig.setSysAlias(module.getSysAlias());
+		List<OhsSysConfig> ohsSysConfigLst = ohsSysConfigRepository.findAll(Example.of(ohsSysConfig));
+		if (CollectionUtils.isEmpty(ohsSysConfigLst)) {
+			throw new OhsException("系统中不存在该系统码！");
+		}
+		if (ohsSysConfigLst.size() > 1) {
+			throw new OhsException("数据库中系统码不唯一，请联系管理员检查系统数据！");
+		}
+		
+		OhsModuleConfig ohsModuleConfig = new OhsModuleConfig();
+		ohsModuleConfig.setSysId(ohsSysConfigLst.get(0).getId());
+		List<OhsModuleConfig> ohsModuleConfigLst = ohsModuleConfigRepository.findAll(Example.of(ohsModuleConfig));
+		if (CollectionUtils.isEmpty(ohsModuleConfigLst)) {
+			throw new OhsException("当前系统下不存在模块信息！");
+		}
+		List<Module> moduleLst = new ArrayList<>();
+		for (OhsModuleConfig  oshModuleConfig : ohsModuleConfigLst) {
+			Module newModule = new Module();
+			// 查询sql中的条件字段信息
+			List<WhereInfo> whereInfos = new ArrayList<WhereInfo>();
+			newModule.setWhereInfo(whereInfos);
+			
+			OhsSingleSqlConfig ohsConfigSqlConfig = new OhsSingleSqlConfig();
+			ohsConfigSqlConfig.setSysId(ohsSysConfigLst.get(0).getId());
+			ohsConfigSqlConfig.setModuleId(oshModuleConfig.getId());
+			List<OhsSingleSqlConfig> ohsSingleSqlConfigLst = ohsSingleSqlConfigRepository.findAll(Example.of(ohsConfigSqlConfig));
+			if (!CollectionUtils.isEmpty(ohsSingleSqlConfigLst)) {
+				for (OhsSingleSqlConfig singleSqlConfig : ohsSingleSqlConfigLst) {
+					OhsSingleQueryWhereInfo ohsSingleQueryWhereInfo  = new OhsSingleQueryWhereInfo();
+					ohsSingleQueryWhereInfo.setSingleSqlId(singleSqlConfig.getId());
+					List<OhsSingleQueryWhereInfo> ohsSingleQueryWhereInfoLst = ohsSingleQueryWhereInfoRepository.findAll(Example.of(ohsSingleQueryWhereInfo));
+					if (!StringUtils.isEmpty(ohsSingleQueryWhereInfoLst)) {
+						for (OhsSingleQueryWhereInfo whereInfo : ohsSingleQueryWhereInfoLst) {
+							WhereInfo wi = new WhereInfo();
+							wi.setKeyInfo(whereInfo.getKeyInfo());
+							wi.setKeyChnInfo(whereInfo.getKeyChnInfo());
+							whereInfos.add(wi);
+						}
+					}
+				}
+			}
+			
+			// 查询环境信息
+			OhsEnvironmentConfig ohsEnvironmentConfig = new OhsEnvironmentConfig();
+			ohsEnvironmentConfig.setSysId(ohsSysConfigLst.get(0).getId());
+			List<OhsEnvironmentConfig> ohsEnvironmentConfigLst = ohsEnvironmentConfigRepository.findAll(Example.of(ohsEnvironmentConfig));
+			if (!CollectionUtils.isEmpty(ohsEnvironmentConfigLst)) {
+				List<EnvInfo> envInfos = new ArrayList<EnvInfo>();
+				ohsEnvironmentConfigLst.stream().forEach(ohsEnv -> {
+					EnvInfo envInfo = new EnvInfo();
+					envInfo.setEnvId(ohsEnv.getId() + "");
+					envInfo.setEnvAlias(ohsEnv.getEvnName());
+					envInfos.add(envInfo);
+				});
+				newModule.setEnvInfo(envInfos);
+			}
+			
+			
+			
+			newModule.setSysId(ohsSysConfigLst.get(0).getId());
+			newModule.setSysAlias(ohsSysConfigLst.get(0).getSysAlias());
+			newModule.setSysChineseNme(ohsSysConfigLst.get(0).getSysChineseNme());
+			newModule.setModuleAlias(oshModuleConfig.getModuleAlias());
+			newModule.setModuleName(oshModuleConfig.getModuleName());
+			moduleLst.add(newModule);
+		}
+		return moduleLst;
 	}
 
 }

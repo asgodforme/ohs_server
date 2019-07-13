@@ -51,8 +51,10 @@ public class EvnConfigServiceImpl implements EvnConfigService {
 
 	private static final Function<OhsEnvironmentConfig, Evn> toEvn = ohsEvn -> {
 		Evn retEvn = new Evn();
+		retEvn.setDbSchema(OhsUtils.putIfNotBlank(ohsEvn.getDbSchema()));
 		retEvn.setDbNme(OhsUtils.putIfNotBlank(ohsEvn.getDbNme()));
 		retEvn.setDbPwd(OhsUtils.putIfNotBlank(ohsEvn.getDbPwd()));
+		retEvn.setDbType(OhsUtils.putIfNotBlank(ohsEvn.getDbType()));
 		retEvn.setEvnAlias(OhsUtils.putIfNotBlank(ohsEvn.getEvnAlias()));
 		retEvn.setEvnIp(OhsUtils.putIfNotBlank(ohsEvn.getEvnIp()));
 		retEvn.setEvnName(OhsUtils.putIfNotBlank(ohsEvn.getEvnName()));

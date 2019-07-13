@@ -1,6 +1,7 @@
 package com.jiangjie.ohs.dto;
 
 import java.sql.Timestamp;
+import java.util.List;
 
 /**
  * 前端传送过来的模块对象，与后端的数据库表对比，多了系统码和系统名
@@ -24,6 +25,10 @@ public class Module {
 
 	private Timestamp updateDate;
 
+	private List<WhereInfo> whereInfo;
+
+	private List<EnvInfo> envInfo;
+
 	private String updateUser;
 
 	private Timestamp createDate;
@@ -33,6 +38,22 @@ public class Module {
 	private int current;
 
 	private int pageSize;
+
+	public List<EnvInfo> getEnvInfo() {
+		return envInfo;
+	}
+
+	public void setEnvInfo(List<EnvInfo> envInfo) {
+		this.envInfo = envInfo;
+	}
+
+	public List<WhereInfo> getWhereInfo() {
+		return whereInfo;
+	}
+
+	public void setWhereInfo(List<WhereInfo> whereInfo) {
+		this.whereInfo = whereInfo;
+	}
 
 	public int getCurrent() {
 		return current;
