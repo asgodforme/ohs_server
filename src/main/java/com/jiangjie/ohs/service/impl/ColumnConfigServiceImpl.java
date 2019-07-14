@@ -175,7 +175,7 @@ public class ColumnConfigServiceImpl implements ColumnConfigService {
 		ohsColumnConfig.setColumnName(column.getColumnName());
 		ohsColumnConfig.setCreateDate(new Timestamp(new Date().getTime()));
 		ohsColumnConfig.setIsHide(column.getIsHide());
-		ohsColumnConfig.setCreateUser("姜杰");
+		ohsColumnConfig.setCreateUser("admin");
 		ohsColumnConfig.setSysId(ohsTableConfig.getSysId());
 		ohsColumnConfig.setTableId(ohsTableConfigLst.get(0).getId());
 
@@ -226,7 +226,7 @@ public class ColumnConfigServiceImpl implements ColumnConfigService {
 		ohsColumnConfig.setColumnAlias(column.getColumnAlias());
 		ohsColumnConfig.setColumnName(column.getColumnName());
 		ohsColumnConfig.setUpdateDate(new Timestamp(new Date().getTime()));
-		ohsColumnConfig.setUpdateUser("修改者");
+		ohsColumnConfig.setUpdateUser("admin");
 		ohsColumnConfig.setIsHide(column.getIsHide());
 		ohsColumnConfig.setCreateDate(ohsTableConfigLst.get(0).getCreateDate());
 		ohsColumnConfig.setCreateUser(ohsTableConfigLst.get(0).getCreateUser());

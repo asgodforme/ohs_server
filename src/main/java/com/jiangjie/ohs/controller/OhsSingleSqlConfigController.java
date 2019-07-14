@@ -1,10 +1,16 @@
 package com.jiangjie.ohs.controller;
 
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.jiangjie.ohs.dto.PageResponse;
@@ -31,11 +37,29 @@ public class OhsSingleSqlConfigController {
 		return singleSqlConfigService.getAllSingleSql(SingleSql);
 	}
 	
-	/**
-	 * TODO POST传值报错！！！麻蛋
-	 */
-	@GetMapping("/saveSingleSqlConfig")
-	public SingleSql saveSingleSqlConfig(SingleSql singleSql) throws OhsException {
+//	/**
+//	 * TODO POST传值报错！！！麻蛋
+//	 */
+//	@GetMapping("/saveSingleSqlConfig")
+//	public SingleSql saveSingleSqlConfig(SingleSql singleSql) throws OhsException {
+//		return singleSqlConfigService.saveSingleSqlConfig(singleSql);
+//	}
+
+	@PostMapping("/saveSingleSqlConfig")
+	@ResponseBody
+	public SingleSql saveSingleSqlConfig(@RequestBody Map<String, Object> requestParam) throws OhsException {
+		SingleSql singleSql = new SingleSql();
+		singleSql.setSysAlias((String) requestParam.get("sysAlias"));
+		singleSql.setSysChineseNme((String) requestParam.get("sysChineseNme"));
+		singleSql.setModuleAlias((String) requestParam.get("moduleAlias"));
+		singleSql.setModuleName((String) requestParam.get("moduleName"));
+		singleSql.setTableName((String) requestParam.get("tableName"));
+		singleSql.setTableChnName((String) requestParam.get("tableChnName"));
+		singleSql.setSingleTableSql((String) requestParam.get("singleTableSql"));
+		singleSql.setRemark((String) requestParam.get("remark"));
+		singleSql.setColumnAlias((String) requestParam.get("columnAlias"));
+		singleSql.setColumnName((String) requestParam.get("columnName"));
+		
 		return singleSqlConfigService.saveSingleSqlConfig(singleSql);
 	}
 	
@@ -44,14 +68,33 @@ public class OhsSingleSqlConfigController {
 		return singleSqlConfigService.deleteById(Integer.parseInt(id));
 	}
 	
-	/**
-	 * TODO PUT传值报错！！！麻蛋
-	 * @param ohsSysConfig
-	 * @return 
-	 * @throws OhsException 
-	 */
-	@GetMapping("/updateById")
-	public SingleSql updateById(SingleSql singleSql) throws OhsException {
+//	/**
+//	 * TODO PUT传值报错！！！麻蛋
+//	 * @param ohsSysConfig
+//	 * @return 
+//	 * @throws OhsException 
+//	 */
+//	@GetMapping("/updateById")
+//	public SingleSql updateById(SingleSql singleSql) throws OhsException {
+//		return singleSqlConfigService.updateById(singleSql);
+//	}
+	
+	@PutMapping("/updateById")
+	@ResponseBody
+	public SingleSql updateById(@RequestBody Map<String, Object> requestParam) throws OhsException {
+		SingleSql singleSql = new SingleSql();
+		singleSql.setId((Integer) requestParam.get("id"));
+		singleSql.setSysAlias((String) requestParam.get("sysAlias"));
+		singleSql.setSysChineseNme((String) requestParam.get("sysChineseNme"));
+		singleSql.setModuleAlias((String) requestParam.get("moduleAlias"));
+		singleSql.setModuleName((String) requestParam.get("moduleName"));
+		singleSql.setTableName((String) requestParam.get("tableName"));
+		singleSql.setTableChnName((String) requestParam.get("tableChnName"));
+		singleSql.setSingleTableSql((String) requestParam.get("singleTableSql"));
+		singleSql.setRemark((String) requestParam.get("remark"));
+		singleSql.setColumnAlias((String) requestParam.get("columnAlias"));
+		singleSql.setColumnName((String) requestParam.get("columnName"));
+		
 		return singleSqlConfigService.updateById(singleSql);
 	}
 

@@ -134,7 +134,7 @@ public class EnumValueConfigServiceImpl implements EnumValueConfigService {
 		ohsEnumValueConfig.setEnumValue(column.getEnumValue());
 		ohsEnumValueConfig.setColumnId(ohsColumnConfigLst.get(0).getId());
 		ohsEnumValueConfig.setCreateDate(new Timestamp(new Date().getTime()));
-		ohsEnumValueConfig.setCreateUser("姜杰");
+		ohsEnumValueConfig.setCreateUser("admin");
 		
 		ohsEnumValueConfig = ohsEnumValueConfigRepository.save(ohsEnumValueConfig);
 		
@@ -203,7 +203,7 @@ public class EnumValueConfigServiceImpl implements EnumValueConfigService {
 		ohsEnumValueConfig.setCreateDate(ohsEnumValueConfigOpt.get().getCreateDate());
 		ohsEnumValueConfig.setCreateUser(ohsEnumValueConfigOpt.get().getCreateUser());
 		ohsEnumValueConfig.setUpdateDate(new Timestamp(new Date().getTime()));
-		ohsEnumValueConfig.setUpdateUser("修改者");
+		ohsEnumValueConfig.setUpdateUser("admin");
 		
 		ohsEnumValueConfig = ohsEnumValueConfigRepository.save(ohsEnumValueConfig);
 		

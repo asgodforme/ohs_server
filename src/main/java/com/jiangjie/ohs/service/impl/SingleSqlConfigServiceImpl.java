@@ -161,7 +161,7 @@ public class SingleSqlConfigServiceImpl implements SingleSqlConfigService {
 		ohsSingleSqlConfig.setTableId(ohsTableConfigLst.get(0).getId());
 		List<OhsSingleSqlConfig> ohsSingleSqlConfigLst = ohsSingleSqlConfigRepository.findAll(Example.of(ohsSingleSqlConfig));
 		ohsSingleSqlConfig.setSingleTableSql(singleSql.getSingleTableSql());
-		ohsSingleSqlConfig.setCreateUser("姜杰");
+		ohsSingleSqlConfig.setCreateUser("admin");
 		ohsSingleSqlConfig.setCreateDate(new Timestamp(new Date().getTime()));
 		OhsSingleQueryWhereInfo ohsSingleQueryWhereInfo = new OhsSingleQueryWhereInfo();
 		// 不存在则去保存，存在就只保存查询键信息
@@ -176,7 +176,7 @@ public class SingleSqlConfigServiceImpl implements SingleSqlConfigService {
 			ohsSingleSqlConfig.setId(ohsSingleSqlConfigLst.get(0).getId());
 			ohsSingleSqlConfig.setRemark(ohsSingleSqlConfigLst.get(0).getRemark());
 			ohsSingleSqlConfig.setUpdateDate(new Timestamp(new Date().getTime()));			
-			ohsSingleSqlConfig.setUpdateUser("姜杰");
+			ohsSingleSqlConfig.setUpdateUser("admin");
 		}
 		
 		// 每个单表SQL只能添加3个查询条件 // TODO  参数化硬编码，后期考虑配置化
@@ -189,7 +189,7 @@ public class SingleSqlConfigServiceImpl implements SingleSqlConfigService {
 			throw new OhsException("该单表查询SQL该字段查询条件已经存在！");
 		}
 		ohsSingleQueryWhereInfo.setKeyChnInfo(singleSql.getColumnName());
-		ohsSingleQueryWhereInfo.setCreateUser("姜杰");
+		ohsSingleQueryWhereInfo.setCreateUser("admin");
 		ohsSingleQueryWhereInfo.setCreateDate(new Timestamp(new Date().getTime()));
 		ohsSingleQueryWhereInfoRepository.save(ohsSingleQueryWhereInfo);
 		
@@ -332,7 +332,7 @@ public class SingleSqlConfigServiceImpl implements SingleSqlConfigService {
 		ohsSingleSqlConfig.setTableId(ohsTableConfigLst.get(0).getId());
 		ohsSingleSqlConfig.setRemark(singleSql.getRemark());
 		ohsSingleSqlConfig.setUpdateDate(new Timestamp(new Date().getTime()));
-		ohsSingleSqlConfig.setUpdateUser("修改者");
+		ohsSingleSqlConfig.setUpdateUser("admin");
 		
 		ohsSingleSqlConfigRepository.save(ohsSingleSqlConfig);
 		singleSql.setUpdateDate(ohsSingleSqlConfig.getUpdateDate());

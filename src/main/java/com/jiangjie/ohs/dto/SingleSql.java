@@ -3,6 +3,7 @@ package com.jiangjie.ohs.dto;
 import java.sql.Timestamp;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.jiangjie.ohs.entity.dataEntity.OhsSingleQueryWhereInfo;
 
 public class SingleSql {
@@ -31,10 +32,12 @@ public class SingleSql {
 
 	private List<OhsSingleQueryWhereInfo> ohsSingleQueryWhereInfoLst;
 
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
 	private Timestamp createDate;
 
 	private String createUser;
 
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
 	private Timestamp updateDate;
 
 	private String updateUser;

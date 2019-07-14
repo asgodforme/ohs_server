@@ -183,7 +183,7 @@ public class TableConfigServiceImpl implements TableConfigService {
 		ohsTableConfig.setSchemaName(table.getSchemaName());
 		ohsTableConfig.setTableName(table.getTableName());
 		ohsTableConfig.setUpdateDate(new Timestamp(new Date().getTime()));
-		ohsTableConfig.setUpdateUser("修改者");
+		ohsTableConfig.setUpdateUser("admin");
 		ohsTableConfig.setCreateDate(ohsTableConfigOpt.get().getCreateDate());
 		ohsTableConfig.setCreateUser(ohsTableConfigOpt.get().getCreateUser());
 		ohsTableConfig.setTableChnName(table.getTableChnName());

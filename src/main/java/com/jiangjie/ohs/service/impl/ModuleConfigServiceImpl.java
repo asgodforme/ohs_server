@@ -218,7 +218,9 @@ public class ModuleConfigServiceImpl implements ModuleConfigService {
 							WhereInfo wi = new WhereInfo();
 							wi.setKeyInfo(whereInfo.getKeyInfo());
 							wi.setKeyChnInfo(whereInfo.getKeyChnInfo());
-							whereInfos.add(wi);
+							if (!whereInfos.contains(wi)) {
+								whereInfos.add(wi);
+							}
 						}
 					}
 				}

@@ -21,7 +21,6 @@ import com.jiangjie.ohs.entity.dataEntity.OhsColumnConfig;
 import com.jiangjie.ohs.entity.dataEntity.OhsSingleQueryWhereInfo;
 import com.jiangjie.ohs.entity.dataEntity.OhsSingleSqlConfig;
 import com.jiangjie.ohs.exception.OhsException;
-import com.jiangjie.ohs.mapper.OhsSingleSqlConfigMapper;
 import com.jiangjie.ohs.repository.OhsColumnConfigRepository;
 import com.jiangjie.ohs.repository.OhsEnvironmentConfigRepository;
 import com.jiangjie.ohs.repository.OhsModuleConfigRepository;
@@ -42,9 +41,6 @@ public class OhsDataQueryServiceImpl implements OhsDataQueryService {
 
 	@Autowired
 	private OhsSingleSqlConfigRepository ohsSingleSqlConfigRepository;
-
-	@Autowired
-	private OhsSingleSqlConfigMapper ohsSingleSqlConfigMapper;
 
 	@Autowired
 	private OhsEnvironmentConfigRepository ohsEnvironmentConfigRepository;
@@ -113,7 +109,7 @@ public class OhsDataQueryServiceImpl implements OhsDataQueryService {
 
 		for (OhsSingleSqlConfig ohsSingleSql : ohsSingleSqlConfigLst) {
 			DataQueryResponse dataQueryResponse = new DataQueryResponse();
-			dataQueryResponse.setTitle(ohsSingleSql.getRemark());
+			dataQueryResponse.setTitle(ohsSingleSql.getRemark() + "(" + ohsSingleSql.getSingleTableSql()  + ")");
 			dataQueryResponse.setRequestParam(param);
 
 			// 查询条件信息
@@ -126,7 +122,7 @@ public class OhsDataQueryServiceImpl implements OhsDataQueryService {
 
 			if (!CollectionUtils.isEmpty(ohsSingleQueryWhereInfoLst)) {
 				for (OhsSingleQueryWhereInfo whereInf : ohsSingleQueryWhereInfoLst) {
-					sql = sql.replace("{" + whereInf.getKeyInfo() + "}", (String) param.get(whereInf.getKeyInfo()));
+					sql = sql.replace("{" + whereInf.getKeyInfo() + "}", "\"" + (String) param.get(whereInf.getKeyInfo()) + "\"");
 				}
 			}
 

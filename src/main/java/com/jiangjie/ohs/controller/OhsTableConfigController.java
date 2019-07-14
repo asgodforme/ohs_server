@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -67,8 +68,21 @@ public class OhsTableConfigController {
 	 * @return 
 	 * @throws OhsException 
 	 */
-	@GetMapping("/updateById")
-	public Table updateById(Table table) throws OhsException {
+//	@GetMapping("/updateById")
+//	public Table updateById(Table table) throws OhsException {
+//		return tableConfigService.updateById(table);
+//	}
+//	
+	@PutMapping("/updateById")
+	@ResponseBody
+	public Table updateById(@RequestBody Map<String, Object> requestParam) throws OhsException {
+		Table table = new Table();
+		table.setId((Integer) requestParam.get("id"));
+		table.setSysAlias((String) requestParam.get("sysAlias"));
+		table.setSysChineseNme((String) requestParam.get("sysChineseNme"));
+		table.setSchemaName((String) requestParam.get("schemaName"));
+		table.setTableName((String) requestParam.get("tableName"));
+		table.setTableChnName((String) requestParam.get("tableChnName"));
 		return tableConfigService.updateById(table);
 	}
 
