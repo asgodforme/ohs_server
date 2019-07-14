@@ -9,6 +9,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.jiangjie.ohs.entity.OhsModuleConfig;
 
 /**
@@ -42,10 +43,12 @@ public class OhsTableConfig {
 	@ManyToMany(mappedBy = "ohsTableConfigs")
 	private List<OhsModuleConfig> ohsModuleConfigs;
 
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
 	private Timestamp createDate;
 
 	private String createUser;
 
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
 	private Timestamp updateDate;
 
 	private String updateUser;

@@ -30,7 +30,7 @@ public class OhsEnvironmentConfig {
 	private Integer sysId;
 
 	/**
-	 * 环境类型： 1-数据库查询的环境，用户动态数据源的配置和加载。 2-自动测试的请求地址环境
+	 * 环境类型：0-应用服务器  1-数据库服务器
 	 */
 	private String evnTyp;
 
@@ -43,16 +43,6 @@ public class OhsEnvironmentConfig {
 	 * 端口号
 	 */
 	private String evnPort;
-
-	/**
-	 * 接口名
-	 */
-	private String interfaceNme;
-
-	/**
-	 * 数据库名称
-	 */
-	private String dbSchema;
 
 	/**
 	 * 数据库用户名
@@ -85,14 +75,6 @@ public class OhsEnvironmentConfig {
 	@Embedded
 	private RelationUserInfo relationUserInfo;
 
-	public String getDbSchema() {
-		return dbSchema;
-	}
-
-	public void setDbSchema(String dbSchema) {
-		this.dbSchema = dbSchema;
-	}
-
 	public String getDbType() {
 		return dbType;
 	}
@@ -123,14 +105,6 @@ public class OhsEnvironmentConfig {
 
 	public void setEvnIp(String evnIp) {
 		this.evnIp = evnIp;
-	}
-
-	public String getInterfaceNme() {
-		return interfaceNme;
-	}
-
-	public void setInterfaceNme(String interfaceNme) {
-		this.interfaceNme = interfaceNme;
 	}
 
 	public String getDbNme() {

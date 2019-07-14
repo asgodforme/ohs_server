@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
+import com.jiangjie.ohs.datasource.DatasourceFactory;
 import com.jiangjie.ohs.dto.Evn;
 import com.jiangjie.ohs.dto.PageResponse;
 import com.jiangjie.ohs.entity.OhsEnvironmentConfig;
@@ -45,13 +46,12 @@ public class EvnConfigServiceImpl implements EvnConfigService {
 		ohsEnvironmentConfig.setEvnName(OhsUtils.putIfNotBlank(frontEvn.getEvnName()));
 		ohsEnvironmentConfig.setEvnPort(OhsUtils.putIfNotBlank(frontEvn.getEvnPort()));
 		ohsEnvironmentConfig.setEvnTyp(OhsUtils.putIfNotBlank(frontEvn.getEvnTyp()));
-		ohsEnvironmentConfig.setInterfaceNme(OhsUtils.putIfNotBlank(frontEvn.getInterfaceNme()));
+		ohsEnvironmentConfig.setDbType(OhsUtils.putIfNotBlank(frontEvn.getDbType()));
 		return ohsEnvironmentConfig;
 	};
 
 	private static final Function<OhsEnvironmentConfig, Evn> toEvn = ohsEvn -> {
 		Evn retEvn = new Evn();
-		retEvn.setDbSchema(OhsUtils.putIfNotBlank(ohsEvn.getDbSchema()));
 		retEvn.setDbNme(OhsUtils.putIfNotBlank(ohsEvn.getDbNme()));
 		retEvn.setDbPwd(OhsUtils.putIfNotBlank(ohsEvn.getDbPwd()));
 		retEvn.setDbType(OhsUtils.putIfNotBlank(ohsEvn.getDbType()));
@@ -59,8 +59,8 @@ public class EvnConfigServiceImpl implements EvnConfigService {
 		retEvn.setEvnIp(OhsUtils.putIfNotBlank(ohsEvn.getEvnIp()));
 		retEvn.setEvnName(OhsUtils.putIfNotBlank(ohsEvn.getEvnName()));
 		retEvn.setEvnPort(OhsUtils.putIfNotBlank(ohsEvn.getEvnPort()));
-		retEvn.setEvnTyp(OhsUtils.putIfNotBlank(ohsEvn.getEvnTyp()));
-		retEvn.setInterfaceNme(OhsUtils.putIfNotBlank(ohsEvn.getInterfaceNme()));
+		retEvn.setEvnTyp(DatasourceFactory.evnTypeMapping.get(ohsEvn.getEvnTyp()));
+		retEvn.setDbType(DatasourceFactory.dataBaseTypeMapping.get(ohsEvn.getDbType()));
 		return retEvn;
 	};
 
@@ -138,7 +138,7 @@ public class EvnConfigServiceImpl implements EvnConfigService {
 		environmentConfig.setSysId(ohsSysConfigLst.get(0).getId());
 		RelationUserInfo relationUserInfo = new RelationUserInfo();
 		relationUserInfo.setCreateDate(new Timestamp(new Date().getTime()));
-		relationUserInfo.setCreateUser("姜杰");
+		relationUserInfo.setCreateUser("admin");
 		environmentConfig.setRelationUserInfo(relationUserInfo);
 
 		environmentConfig = ohsEnvironmentConfigRepository.save(environmentConfig);
@@ -146,6 +146,9 @@ public class EvnConfigServiceImpl implements EvnConfigService {
 		evn.setId(environmentConfig.getId());
 		evn.setCreateDate(environmentConfig.getRelationUserInfo().getCreateDate());
 		evn.setCreateUser(environmentConfig.getRelationUserInfo().getCreateUser());
+
+		evn.setEvnTyp(DatasourceFactory.evnTypeMapping.get(evn.getEvnTyp()));
+		evn.setDbType(DatasourceFactory.dataBaseTypeMapping.get(evn.getDbType()));
 		
 		return evn;
 	}
@@ -182,7 +185,7 @@ public class EvnConfigServiceImpl implements EvnConfigService {
 		environmentConfig.setSysId(ohsSysConfigLst.get(0).getId());
 		RelationUserInfo relationUserInfo = new RelationUserInfo();
 		relationUserInfo.setUpdateDate(new Timestamp(new Date().getTime()));
-		relationUserInfo.setUpdateUser("修改者");
+		relationUserInfo.setUpdateUser("admin");
 		relationUserInfo.setCreateDate(ohsSysConfigLst.get(0).getCreateDate());
 		relationUserInfo.setCreateUser(ohsSysConfigLst.get(0).getCreateUser());
 		environmentConfig.setRelationUserInfo(relationUserInfo);
@@ -194,6 +197,10 @@ public class EvnConfigServiceImpl implements EvnConfigService {
 		evn.setUpdateUser(environmentConfig.getRelationUserInfo().getUpdateUser());
 		evn.setCreateDate(environmentConfig.getRelationUserInfo().getCreateDate());
 		evn.setCreateUser(environmentConfig.getRelationUserInfo().getCreateUser());
+		
+		evn.setDbType(DatasourceFactory.dataBaseTypeMapping.get(evn.getDbType()));
+		evn.setEvnTyp(DatasourceFactory.evnTypeMapping.get(evn.getEvnTyp()));
+		
 		return evn;
 	}
 

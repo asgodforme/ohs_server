@@ -42,7 +42,7 @@ public class TableConfigServiceImpl implements TableConfigService {
 	private static final Function<Table, OhsTableConfig> toOhsTableConfig = table -> {
 		OhsTableConfig ohsTableConfig = new OhsTableConfig();
 		ohsTableConfig.setCreateDate(new Timestamp(new Date().getTime()));
-		ohsTableConfig.setCreateUser("姜杰");
+		ohsTableConfig.setCreateUser("admin");
 		ohsTableConfig.setSchemaName(table.getSchemaName());
 		ohsTableConfig.setTableName(table.getTableName());
 		ohsTableConfig.setTableChnName(table.getTableChnName());

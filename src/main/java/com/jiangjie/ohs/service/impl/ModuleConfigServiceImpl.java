@@ -112,11 +112,15 @@ public class ModuleConfigServiceImpl implements ModuleConfigService {
 		if (!ohsModuleConfigOpt.isPresent()) {
 			throw new OhsException("该模块不存在！可能被其他人删除了！");
 		}
+		
+		if (CollectionUtils.isEmpty(ohsSysConfigRepository.findBySysAliasAndSysChineseNme(module.getSysAlias(), module.getSysChineseNme()))) {
+			throw new OhsException("该系统不存在！可能被其他人删除了！");
+		}
 		OhsModuleConfig ohsModuleConfig = ohsModuleConfigOpt.get();
 		ohsModuleConfig.setModuleAlias(module.getModuleAlias());
 		ohsModuleConfig.setModuleName(module.getModuleName());
 
-		ohsModuleConfig.getRelationUserInfo().setUpdateUser("修改者");
+		ohsModuleConfig.getRelationUserInfo().setUpdateUser("admin");
 		ohsModuleConfig.getRelationUserInfo().setUpdateDate(new Timestamp(new Date().getTime()));
 		
 		module.setUpdateDate(ohsModuleConfig.getRelationUserInfo().getUpdateDate());
@@ -159,7 +163,7 @@ public class ModuleConfigServiceImpl implements ModuleConfigService {
 		ohsModuleConfig.setModuleName(module.getModuleName());
 		RelationUserInfo relationUserInfo = new RelationUserInfo();
 		relationUserInfo.setCreateDate(new Timestamp(new Date().getTime()));
-		relationUserInfo.setCreateUser("姜杰");
+		relationUserInfo.setCreateUser("admin");
 		ohsModuleConfig.setRelationUserInfo(relationUserInfo);
 		ohsModuleConfig = ohsModuleConfigRepository.save(ohsModuleConfig);
 		

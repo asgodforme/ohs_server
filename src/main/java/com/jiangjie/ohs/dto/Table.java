@@ -3,6 +3,8 @@ package com.jiangjie.ohs.dto;
 import java.sql.Timestamp;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 public class Table {
 
 	private int id;
@@ -21,10 +23,12 @@ public class Table {
 
 	private List<Column> columns;
 
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
 	private Timestamp updateDate;
 
 	private String updateUser;
 
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
 	private Timestamp createDate;
 
 	private String createUser;

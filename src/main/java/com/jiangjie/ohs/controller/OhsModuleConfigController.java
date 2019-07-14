@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -37,11 +38,25 @@ public class OhsModuleConfigController {
 		return moduleConfigService.getAllModule(Module);
 	}
 	
+//	/**
+//	 * TODO POST传值报错！！！麻蛋
+//	 */
+//	@GetMapping("/saveModuleConfig")
+//	public Module saveModuleConfig(Module module) throws OhsException {
+//		return moduleConfigService.saveModuleConfig(module);
+//	}
+	
 	/**
 	 * TODO POST传值报错！！！麻蛋
 	 */
-	@GetMapping("/saveModuleConfig")
-	public Module saveModuleConfig(Module module) throws OhsException {
+	@PostMapping("/saveModuleConfig")
+	@ResponseBody
+	public Module saveModuleConfig(@RequestBody Map<String, Object> requestParam) throws OhsException {
+		Module module = new Module();
+		module.setSysAlias(((String) requestParam.get("sysAlias")).toUpperCase());
+		module.setSysChineseNme(((String) requestParam.get("sysChineseNme")).toUpperCase());
+		module.setModuleAlias(((String) requestParam.get("moduleAlias")).toUpperCase());
+		module.setModuleName(((String) requestParam.get("moduleName")).toUpperCase());
 		return moduleConfigService.saveModuleConfig(module);
 	}
 	
@@ -50,14 +65,26 @@ public class OhsModuleConfigController {
 		return moduleConfigService.deleteById(Integer.parseInt(id));
 	}
 	
-	/**
-	 * TODO PUT传值报错！！！麻蛋
-	 * @param ohsSysConfig
-	 * @return 
-	 * @throws OhsException 
-	 */
-	@GetMapping("/updateById")
-	public Module updateById(Module module) throws OhsException {
+//	/**
+//	 * TODO PUT传值报错！！！麻蛋
+//	 * @param ohsSysConfig
+//	 * @return 
+//	 * @throws OhsException 
+//	 */
+//	@GetMapping("/updateById")
+//	public Module updateById(Module module) throws OhsException {
+//		return moduleConfigService.updateById(module);
+//	}
+
+	@PutMapping("/updateById")
+	@ResponseBody
+	public Module updateById(@RequestBody Map<String, Object> requestParam) throws OhsException {
+		Module module = new Module();
+		module.setId((Integer) requestParam.get("id"));
+		module.setSysAlias((String) requestParam.get("sysAlias"));
+		module.setSysChineseNme((String) requestParam.get("sysChineseNme"));
+		module.setModuleAlias((String) requestParam.get("moduleAlias"));
+		module.setModuleName((String) requestParam.get("moduleName")); 
 		return moduleConfigService.updateById(module);
 	}
 	

@@ -4,6 +4,8 @@ import java.sql.Timestamp;
 
 import javax.persistence.Embeddable;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 /**
  * 公共的创建人，创建时间，修改人，修改时间
  * 
@@ -13,10 +15,12 @@ import javax.persistence.Embeddable;
 @Embeddable
 public class RelationUserInfo {
 
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
 	private Timestamp createDate;
 
 	private String createUser;
 
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
 	private Timestamp updateDate;
 
 	private String updateUser;

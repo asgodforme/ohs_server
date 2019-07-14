@@ -3,6 +3,8 @@ package com.jiangjie.ohs.dto;
 import java.sql.Timestamp;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 /**
  * 前端传送过来的模块对象，与后端的数据库表对比，多了系统码和系统名
  * 
@@ -23,6 +25,7 @@ public class Module {
 
 	private String moduleAlias;
 
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
 	private Timestamp updateDate;
 
 	private List<WhereInfo> whereInfo;
@@ -31,6 +34,7 @@ public class Module {
 
 	private String updateUser;
 
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
 	private Timestamp createDate;
 
 	private String createUser;

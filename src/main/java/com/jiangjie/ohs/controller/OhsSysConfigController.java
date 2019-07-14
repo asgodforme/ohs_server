@@ -1,6 +1,7 @@
 package com.jiangjie.ohs.controller;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -9,7 +10,11 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.jiangjie.ohs.dto.SysInfo;
@@ -47,12 +52,25 @@ public class OhsSysConfigController {
 		return sysConfigService.getAllSysInfo(ohsSysConfig);
 	}
 	
+//	/**
+//	 * TODO POST传值报错！！！麻蛋
+//	 * @param ohsSysConfig
+//	 */
+//	@GetMapping("/saveSysConfig")
+//	public OhsSysConfig saveSysConfig(OhsSysConfig ohsSysConfig) throws OhsException {
+//		return sysConfigService.saveSysConfig(ohsSysConfig);
+//	}
+	
 	/**
-	 * TODO POST传值报错！！！麻蛋
-	 * @param ohsSysConfig
+	 * 保存系统信息
 	 */
-	@GetMapping("/saveSysConfig")
-	public OhsSysConfig saveSysConfig(OhsSysConfig ohsSysConfig) throws OhsException {
+	@PostMapping("/saveSysConfig")
+	@ResponseBody
+	public OhsSysConfig saveSysConfig(@RequestBody Map<String, Object> requestParam) throws OhsException {
+		OhsSysConfig ohsSysConfig = new OhsSysConfig();
+		ohsSysConfig.setSysAlias(((String) requestParam.get("sysAlias")).toUpperCase());
+		ohsSysConfig.setSysChineseNme(((String) requestParam.get("sysChineseNme")).toUpperCase());
+		ohsSysConfig.setSchemaName(((String) requestParam.get("schemaName")).toUpperCase());
 		return sysConfigService.saveSysConfig(ohsSysConfig);
 	}
 	
@@ -69,9 +87,20 @@ public class OhsSysConfigController {
 	 * @return 
 	 * @throws OhsException 
 	 */
-	@GetMapping("/updateById")
-	public OhsSysConfig updateById(OhsSysConfig ohsSysConfig) throws OhsException {
-		System.out.println("---->" + ohsSysConfig);
+//	@GetMapping("/updateById")
+//	public OhsSysConfig updateById(OhsSysConfig ohsSysConfig) throws OhsException {
+//		System.out.println("---->" + ohsSysConfig);
+//		return sysConfigService.updateById(ohsSysConfig);
+//	}
+	
+	@PutMapping("/updateById")
+	@ResponseBody
+	public OhsSysConfig updateById(@RequestBody Map<String, Object> requestParam) throws OhsException {
+		OhsSysConfig ohsSysConfig = new OhsSysConfig();
+		ohsSysConfig.setId((Integer) requestParam.get("id"));
+		ohsSysConfig.setSysAlias(((String) requestParam.get("sysAlias")).toUpperCase());
+		ohsSysConfig.setSysChineseNme(((String) requestParam.get("sysChineseNme")).toUpperCase());
+		ohsSysConfig.setSchemaName(((String) requestParam.get("schemaName")).toUpperCase());
 		return sysConfigService.updateById(ohsSysConfig);
 	}
 

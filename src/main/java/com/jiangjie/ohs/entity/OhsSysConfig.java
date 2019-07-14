@@ -8,6 +8,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Transient;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 /**
  * 系统配置表： 一个系统对应多个环境（sit, uat, pro等等） 一个系统对应多个功能模块
  * 
@@ -40,10 +42,12 @@ public class OhsSysConfig {
 	private String schemaName;
 
 	/** 创建时间 */
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
 	private Timestamp createDate;
 	/** 创建用户 */
 	private String createUser;
 	/** 修改时间 */
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
 	private Timestamp updateDate;
 	/** 修改用户 */
 	private String updateUser;

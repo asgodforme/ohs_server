@@ -20,12 +20,15 @@ import com.jiangjie.ohs.dto.Column;
 import com.jiangjie.ohs.dto.Module;
 import com.jiangjie.ohs.dto.SysInfo;
 import com.jiangjie.ohs.dto.Table;
+import com.jiangjie.ohs.entity.OhsMenu;
 import com.jiangjie.ohs.entity.OhsModuleConfig;
 import com.jiangjie.ohs.entity.OhsSysConfig;
+import com.jiangjie.ohs.entity.common.RelationUserInfo;
 import com.jiangjie.ohs.entity.dataEntity.OhsColumnConfig;
 import com.jiangjie.ohs.entity.dataEntity.OhsTableConfig;
 import com.jiangjie.ohs.exception.OhsException;
 import com.jiangjie.ohs.repository.OhsColumnConfigRepository;
+import com.jiangjie.ohs.repository.OhsMenuRepository;
 import com.jiangjie.ohs.repository.OhsModuleConfigRepository;
 import com.jiangjie.ohs.repository.OhsSysConfigRepository;
 import com.jiangjie.ohs.repository.OhsTableConfigRepository;
@@ -54,6 +57,9 @@ public class SysConfigServiceImpl implements SysConfigService {
 	
 	@Autowired
 	private OhsDeleteService ohsDeleteService;
+	
+	@Autowired
+	private OhsMenuRepository ohsMenuRepository;
 	
 	private static final Function<OhsSysConfig, SysInfo> toSysInfo = ohsSysCfg -> {
 		SysInfo sysInfo = new SysInfo();
@@ -164,8 +170,30 @@ public class SysConfigServiceImpl implements SysConfigService {
 		if (!CollectionUtils.isEmpty(sysConfigRepository.findAll(Example.of(ohsSysConfig)))) {
 			throw new OhsException("该系统已经存在！");
 		}
+		if (!CollectionUtils.isEmpty(sysConfigRepository.findBySysAlias(ohsSysConfig.getSysAlias()))) {
+			throw new OhsException("该系统码已经存在！");
+		}
+		if (!CollectionUtils.isEmpty(sysConfigRepository.findBySysChineseNme(ohsSysConfig.getSysChineseNme()))) {
+			throw new OhsException("该系统中文名称已经存在！");
+		}
+		if (!CollectionUtils.isEmpty(sysConfigRepository.findBySchemaName(ohsSysConfig.getSchemaName()))) {
+			throw new OhsException("该schema已经存在！");
+		}
 		ohsSysConfig.setCreateDate(new Timestamp(new Date().getTime()));
-		ohsSysConfig.setCreateUser("姜杰");
+		ohsSysConfig.setCreateUser("admin");
+		// 将该系统插入目录的数据查询中，以系统码作为展示
+		OhsMenu ohsMenu = new OhsMenu();
+		ohsMenu.setParentMenuId("4");
+		RelationUserInfo relationUserInfo = new RelationUserInfo();
+		relationUserInfo.setCreateDate(new Timestamp(new Date().getTime()));
+		relationUserInfo.setCreateUser("admin");
+		ohsMenu.setRelationUserInfo(relationUserInfo);
+		ohsMenu.setRole("1");
+		ohsMenu.setSubMenuName(ohsSysConfig.getSysAlias());
+		ohsMenu.setSubMenuUrl("dataQuery");
+		ohsMenu.setIsHide("0");
+		ohsMenuRepository.save(ohsMenu);
+		
 		return sysConfigRepository.save(ohsSysConfig);
 	}
 	
@@ -203,7 +231,7 @@ public class SysConfigServiceImpl implements SysConfigService {
 		ohsSysConfig.setCreateDate(ohsSysConfigOpt.get().getCreateDate());
 		ohsSysConfig.setCreateUser(ohsSysConfigOpt.get().getCreateUser());
 		ohsSysConfig.setUpdateDate(new Timestamp(new Date().getTime()));
-		ohsSysConfig.setUpdateUser("修改者");
+		ohsSysConfig.setUpdateUser("admin");
 		return sysConfigRepository.save(ohsSysConfig);
 	}
 }

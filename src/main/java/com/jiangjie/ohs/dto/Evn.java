@@ -2,6 +2,8 @@ package com.jiangjie.ohs.dto;
 
 import java.sql.Timestamp;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 /**
  * 环境信息
  * 
@@ -24,7 +26,7 @@ public class Evn {
 	private String sysChineseNme;
 
 	/**
-	 * 环境类型： 1-数据库查询的环境，用户动态数据源的配置和加载。 2-自动测试的请求地址环境
+	 * 环境类型： 0-应用服务器 1-数据库
 	 */
 	private String evnTyp;
 
@@ -37,16 +39,6 @@ public class Evn {
 	 * 端口号
 	 */
 	private String evnPort;
-
-	/**
-	 * 接口名
-	 */
-	private String interfaceNme;
-
-	/**
-	 * 数据库名称
-	 */
-	private String dbSchema;
 
 	/**
 	 * 数据库用户名
@@ -73,10 +65,12 @@ public class Evn {
 	 */
 	private String evnName;
 
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
 	private Timestamp updateDate;
 
 	private String updateUser;
 
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
 	private Timestamp createDate;
 
 	private String createUser;
@@ -84,14 +78,6 @@ public class Evn {
 	private int current;
 
 	private int pageSize;
-
-	public String getDbSchema() {
-		return dbSchema;
-	}
-
-	public void setDbSchema(String dbSchema) {
-		this.dbSchema = dbSchema;
-	}
 
 	public String getDbType() {
 		return dbType;
@@ -139,14 +125,6 @@ public class Evn {
 
 	public void setSysChineseNme(String sysChineseNme) {
 		this.sysChineseNme = sysChineseNme;
-	}
-
-	public String getInterfaceNme() {
-		return interfaceNme;
-	}
-
-	public void setInterfaceNme(String interfaceNme) {
-		this.interfaceNme = interfaceNme;
 	}
 
 	public String getDbNme() {
