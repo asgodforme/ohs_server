@@ -21,7 +21,7 @@ public class OhsInterfaceConfig {
 	 */
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int id;
+	private Integer id;
 
 	/** 接口类型： restful接口， webservice接口 */
 	private String interfaceType;
@@ -46,11 +46,11 @@ public class OhsInterfaceConfig {
 
 	private String updateUser;
 
-	public int getId() {
+	public Integer getId() {
 		return id;
 	}
 
-	public void setId(int id) {
+	public void setId(Integer id) {
 		this.id = id;
 	}
 
