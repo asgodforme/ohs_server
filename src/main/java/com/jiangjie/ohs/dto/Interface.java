@@ -15,6 +15,12 @@ public class Interface {
 	private String moduleAlias;
 
 	private String moduleName;
+	
+	private String interfaceAlias;
+	
+	private String interfaceName;
+	
+	private String interfaceType;
 
 	private String urlPath;
 
@@ -33,6 +39,30 @@ public class Interface {
 	private Timestamp updateDate;
 
 	private String updateUser;
+	
+	public String getInterfaceType() {
+		return interfaceType;
+	}
+
+	public void setInterfaceType(String interfaceType) {
+		this.interfaceType = interfaceType;
+	}
+
+	public String getInterfaceAlias() {
+		return interfaceAlias;
+	}
+
+	public void setInterfaceAlias(String interfaceAlias) {
+		this.interfaceAlias = interfaceAlias;
+	}
+
+	public String getInterfaceName() {
+		return interfaceName;
+	}
+
+	public void setInterfaceName(String interfaceName) {
+		this.interfaceName = interfaceName;
+	}
 
 	public Timestamp getCreateDate() {
 		return createDate;

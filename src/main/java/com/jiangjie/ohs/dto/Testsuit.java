@@ -1,36 +1,24 @@
-package com.jiangjie.ohs.entity.autoTest;
+package com.jiangjie.ohs.dto;
 
 import java.sql.Timestamp;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import com.fasterxml.jackson.annotation.JsonFormat;
 
-/**
- * 测试案列配置
- * 
- * @author Administrator
- *
- */
-@Entity
-public class OhsTestsuitConfig {
+public class Testsuit {
 
-	/**
-	 * 主键
-	 */
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer id;
+	private String id;
 
-	/** 归属系统id */
-	private Integer sysId;
+	private String sysAlias;
 
-	/** 归属模块id */
-	private Integer moduleId;
+	private String sysChineseNme;
 
-	/** 归属接口id */
-	private Integer interfaceId;
+	private String moduleAlias;
+
+	private String moduleName;
+
+	private String interfaceAlias;
+
+	private String interfaceName;
 
 	/** 测试案列名称 */
 	private String testsuitName;
@@ -71,13 +59,75 @@ public class OhsTestsuitConfig {
 	/** 响应数据域 */
 	private String responseData;
 
+	private int current;
+
+	private int pageSize;
+
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
 	private Timestamp createDate;
 
 	private String createUser;
 
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
 	private Timestamp updateDate;
 
 	private String updateUser;
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
+
+	public String getSysAlias() {
+		return sysAlias;
+	}
+
+	public void setSysAlias(String sysAlias) {
+		this.sysAlias = sysAlias;
+	}
+
+	public String getSysChineseNme() {
+		return sysChineseNme;
+	}
+
+	public void setSysChineseNme(String sysChineseNme) {
+		this.sysChineseNme = sysChineseNme;
+	}
+
+	public String getModuleAlias() {
+		return moduleAlias;
+	}
+
+	public void setModuleAlias(String moduleAlias) {
+		this.moduleAlias = moduleAlias;
+	}
+
+	public String getModuleName() {
+		return moduleName;
+	}
+
+	public void setModuleName(String moduleName) {
+		this.moduleName = moduleName;
+	}
+
+	public String getInterfaceAlias() {
+		return interfaceAlias;
+	}
+
+	public void setInterfaceAlias(String interfaceAlias) {
+		this.interfaceAlias = interfaceAlias;
+	}
+
+	public String getInterfaceName() {
+		return interfaceName;
+	}
+
+	public void setInterfaceName(String interfaceName) {
+		this.interfaceName = interfaceName;
+	}
 
 	public String getTestsuitName() {
 		return testsuitName;
@@ -135,38 +185,6 @@ public class OhsTestsuitConfig {
 		this.afterRspDataRegx = afterRspDataRegx;
 	}
 
-	public Integer getId() {
-		return id;
-	}
-
-	public void setId(Integer id) {
-		this.id = id;
-	}
-
-	public Integer getSysId() {
-		return sysId;
-	}
-
-	public void setSysId(Integer sysId) {
-		this.sysId = sysId;
-	}
-
-	public Integer getModuleId() {
-		return moduleId;
-	}
-
-	public void setModuleId(Integer moduleId) {
-		this.moduleId = moduleId;
-	}
-
-	public Integer getInterfaceId() {
-		return interfaceId;
-	}
-
-	public void setInterfaceId(Integer interfaceId) {
-		this.interfaceId = interfaceId;
-	}
-
 	public String getRequestData() {
 		return requestData;
 	}
@@ -181,6 +199,22 @@ public class OhsTestsuitConfig {
 
 	public void setResponseData(String responseData) {
 		this.responseData = responseData;
+	}
+
+	public int getCurrent() {
+		return current;
+	}
+
+	public void setCurrent(int current) {
+		this.current = current;
+	}
+
+	public int getPageSize() {
+		return pageSize;
+	}
+
+	public void setPageSize(int pageSize) {
+		this.pageSize = pageSize;
 	}
 
 	public Timestamp getCreateDate() {

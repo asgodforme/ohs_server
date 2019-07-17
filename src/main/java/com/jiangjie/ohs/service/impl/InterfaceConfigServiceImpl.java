@@ -20,7 +20,6 @@ import com.jiangjie.ohs.dto.PageResponse;
 import com.jiangjie.ohs.entity.OhsModuleConfig;
 import com.jiangjie.ohs.entity.OhsSysConfig;
 import com.jiangjie.ohs.entity.autoTest.OhsInterfaceConfig;
-import com.jiangjie.ohs.entity.dataEntity.OhsEnumValueConfig;
 import com.jiangjie.ohs.exception.OhsException;
 import com.jiangjie.ohs.repository.OhsInterfaceConfigRepository;
 import com.jiangjie.ohs.repository.OhsModuleConfigRepository;
