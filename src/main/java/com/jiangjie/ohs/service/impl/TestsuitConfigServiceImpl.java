@@ -11,6 +11,7 @@ import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
@@ -25,6 +26,7 @@ import com.jiangjie.ohs.repository.OhsSysConfigRepository;
 import com.jiangjie.ohs.repository.OhsTestsuitConfigRepository;
 import com.jiangjie.ohs.service.TestsuitConfigService;
 
+@Service
 public class TestsuitConfigServiceImpl implements TestsuitConfigService {
 	
 	@Autowired

@@ -29,11 +29,13 @@ public class OhsTestsuitConfig {
 	/** 归属模块id */
 	private Integer moduleId;
 
-	/** 归属接口id */
-	private Integer interfaceId;
-
 	/** 测试案列名称 */
 	private String testsuitName;
+
+	/**
+	 * 版本号
+	 */
+	private String versionNo;
 
 	/**
 	 * 前置操作
@@ -65,12 +67,6 @@ public class OhsTestsuitConfig {
 	 */
 	private String afterRspDataRegx;
 
-	/** 请求数据域 */
-	private String requestData;
-
-	/** 响应数据域 */
-	private String responseData;
-
 	private Timestamp createDate;
 
 	private String createUser;
@@ -79,12 +75,44 @@ public class OhsTestsuitConfig {
 
 	private String updateUser;
 
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
+
+	public Integer getSysId() {
+		return sysId;
+	}
+
+	public void setSysId(Integer sysId) {
+		this.sysId = sysId;
+	}
+
+	public Integer getModuleId() {
+		return moduleId;
+	}
+
+	public void setModuleId(Integer moduleId) {
+		this.moduleId = moduleId;
+	}
+
 	public String getTestsuitName() {
 		return testsuitName;
 	}
 
 	public void setTestsuitName(String testsuitName) {
 		this.testsuitName = testsuitName;
+	}
+
+	public String getVersionNo() {
+		return versionNo;
+	}
+
+	public void setVersionNo(String versionNo) {
+		this.versionNo = versionNo;
 	}
 
 	public String getPreOprUrl() {
@@ -133,54 +161,6 @@ public class OhsTestsuitConfig {
 
 	public void setAfterRspDataRegx(String afterRspDataRegx) {
 		this.afterRspDataRegx = afterRspDataRegx;
-	}
-
-	public Integer getId() {
-		return id;
-	}
-
-	public void setId(Integer id) {
-		this.id = id;
-	}
-
-	public Integer getSysId() {
-		return sysId;
-	}
-
-	public void setSysId(Integer sysId) {
-		this.sysId = sysId;
-	}
-
-	public Integer getModuleId() {
-		return moduleId;
-	}
-
-	public void setModuleId(Integer moduleId) {
-		this.moduleId = moduleId;
-	}
-
-	public Integer getInterfaceId() {
-		return interfaceId;
-	}
-
-	public void setInterfaceId(Integer interfaceId) {
-		this.interfaceId = interfaceId;
-	}
-
-	public String getRequestData() {
-		return requestData;
-	}
-
-	public void setRequestData(String requestData) {
-		this.requestData = requestData;
-	}
-
-	public String getResponseData() {
-		return responseData;
-	}
-
-	public void setResponseData(String responseData) {
-		this.responseData = responseData;
 	}
 
 	public Timestamp getCreateDate() {

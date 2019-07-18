@@ -26,6 +26,16 @@ public class OhsInterfaceConfig {
 	/** 接口类型： restful接口， webservice接口 */
 	private String interfaceType;
 
+	/**
+	 * 接口名
+	 */
+	private String interfaceName;
+
+	/**
+	 * 接口别名
+	 */
+	private String interfaceAlias;
+
 	/** 归属系统id */
 	private Integer sysId;
 
@@ -38,6 +48,16 @@ public class OhsInterfaceConfig {
 	/** 如果是restful接口，接口请求方法 POST PUT GET DELETE */
 	private String method;
 
+	/**
+	 * 请求报文模板
+	 */
+	private String requestTemplate;
+
+	/**
+	 * 响应报文模板
+	 */
+	private String responseTemplate;
+
 	private Timestamp createDate;
 
 	private String createUser;
@@ -45,6 +65,38 @@ public class OhsInterfaceConfig {
 	private Timestamp updateDate;
 
 	private String updateUser;
+
+	public String getRequestTemplate() {
+		return requestTemplate;
+	}
+
+	public void setRequestTemplate(String requestTemplate) {
+		this.requestTemplate = requestTemplate;
+	}
+
+	public String getResponseTemplate() {
+		return responseTemplate;
+	}
+
+	public void setResponseTemplate(String responseTemplate) {
+		this.responseTemplate = responseTemplate;
+	}
+
+	public String getInterfaceName() {
+		return interfaceName;
+	}
+
+	public void setInterfaceName(String interfaceName) {
+		this.interfaceName = interfaceName;
+	}
+
+	public String getInterfaceAlias() {
+		return interfaceAlias;
+	}
+
+	public void setInterfaceAlias(String interfaceAlias) {
+		this.interfaceAlias = interfaceAlias;
+	}
 
 	public Integer getId() {
 		return id;

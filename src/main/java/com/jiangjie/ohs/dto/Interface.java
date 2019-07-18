@@ -25,7 +25,7 @@ public class Interface {
 	private String urlPath;
 
 	private String method;
-
+	
 	private int current;
 
 	private int pageSize;

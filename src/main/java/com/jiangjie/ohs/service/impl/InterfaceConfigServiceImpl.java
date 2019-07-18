@@ -106,6 +106,9 @@ public class InterfaceConfigServiceImpl implements InterfaceConfigService {
 			interfaceRetObj.setCreateUser(ohsIter.getCreateUser());
 			interfaceRetObj.setUpdateDate(ohsIter.getUpdateDate());
 			interfaceRetObj.setUpdateUser(ohsIter.getUpdateUser());
+			interfaceRetObj.setInterfaceType(ohsIter.getInterfaceType());
+			interfaceRetObj.setInterfaceAlias(ohsIter.getInterfaceAlias());
+			interfaceRetObj.setInterfaceName(ohsIter.getInterfaceName());
 			
 			interfaceLst.add(interfaceRetObj);
 		}
@@ -156,6 +159,9 @@ public class InterfaceConfigServiceImpl implements InterfaceConfigService {
 		ohsInterfaceConfig.setMethod(interfaceObj.getMethod());
 		ohsInterfaceConfig.setCreateDate(new Timestamp(new Date().getTime()));
 		ohsInterfaceConfig.setCreateUser("admin");
+		ohsInterfaceConfig.setInterfaceAlias(interfaceObj.getInterfaceAlias());
+		ohsInterfaceConfig.setInterfaceName(interfaceObj.getInterfaceName());
+		ohsInterfaceConfig.setInterfaceType(interfaceObj.getInterfaceType());
 		
 		ohsInterfaceConfig = ohsInterfaceConfigRepository.save(ohsInterfaceConfig);
 		
@@ -224,6 +230,9 @@ public class InterfaceConfigServiceImpl implements InterfaceConfigService {
 		ohsInterfaceConfig.setCreateUser(ohsInterfaceConfigOpt.get().getCreateUser());
 		ohsInterfaceConfig.setUpdateDate(new Timestamp(new Date().getTime()));
 		ohsInterfaceConfig.setUpdateUser("admin");
+		ohsInterfaceConfig.setInterfaceType(interfaceObj.getInterfaceType());
+		ohsInterfaceConfig.setInterfaceAlias(interfaceObj.getInterfaceAlias());
+		ohsInterfaceConfig.setInterfaceName(interfaceObj.getInterfaceName());
 		
 		ohsInterfaceConfig = ohsInterfaceConfigRepository.save(ohsInterfaceConfig);
 		
