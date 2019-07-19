@@ -18,6 +18,8 @@ public class OhsTestsuitRecords {
 
 	private Integer testsuitId;
 
+	private Integer testSeq;
+
 	private Integer interfaceId;
 
 	private String requestData;
@@ -31,6 +33,14 @@ public class OhsTestsuitRecords {
 	private Timestamp updateDate;
 
 	private String updateUser;
+
+	public Integer getTestSeq() {
+		return testSeq;
+	}
+
+	public void setTestSeq(Integer testSeq) {
+		this.testSeq = testSeq;
+	}
 
 	public Integer getId() {
 		return id;

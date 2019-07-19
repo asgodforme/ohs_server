@@ -109,6 +109,8 @@ public class InterfaceConfigServiceImpl implements InterfaceConfigService {
 			interfaceRetObj.setInterfaceType(ohsIter.getInterfaceType());
 			interfaceRetObj.setInterfaceAlias(ohsIter.getInterfaceAlias());
 			interfaceRetObj.setInterfaceName(ohsIter.getInterfaceName());
+			interfaceRetObj.setRequestTemplate(ohsIter.getRequestTemplate());
+			interfaceRetObj.setResponseTemplate(ohsIter.getResponseTemplate());
 			
 			interfaceLst.add(interfaceRetObj);
 		}
@@ -162,6 +164,8 @@ public class InterfaceConfigServiceImpl implements InterfaceConfigService {
 		ohsInterfaceConfig.setInterfaceAlias(interfaceObj.getInterfaceAlias());
 		ohsInterfaceConfig.setInterfaceName(interfaceObj.getInterfaceName());
 		ohsInterfaceConfig.setInterfaceType(interfaceObj.getInterfaceType());
+		ohsInterfaceConfig.setRequestTemplate(interfaceObj.getRequestTemplate());
+		ohsInterfaceConfig.setResponseTemplate(interfaceObj.getResponseTemplate());
 		
 		ohsInterfaceConfig = ohsInterfaceConfigRepository.save(ohsInterfaceConfig);
 		
@@ -233,6 +237,9 @@ public class InterfaceConfigServiceImpl implements InterfaceConfigService {
 		ohsInterfaceConfig.setInterfaceType(interfaceObj.getInterfaceType());
 		ohsInterfaceConfig.setInterfaceAlias(interfaceObj.getInterfaceAlias());
 		ohsInterfaceConfig.setInterfaceName(interfaceObj.getInterfaceName());
+		ohsInterfaceConfig.setRequestTemplate(interfaceObj.getRequestTemplate());
+		ohsInterfaceConfig.setResponseTemplate(interfaceObj.getResponseTemplate());
+		
 		
 		ohsInterfaceConfig = ohsInterfaceConfigRepository.save(ohsInterfaceConfig);
 		

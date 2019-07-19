@@ -23,6 +23,8 @@ public class Testsuit {
 	/** 测试案列名称 */
 	private String testsuitName;
 
+	private String versionNo;
+
 	/**
 	 * 前置操作
 	 */
@@ -72,6 +74,14 @@ public class Testsuit {
 	private Timestamp updateDate;
 
 	private String updateUser;
+
+	public String getVersionNo() {
+		return versionNo;
+	}
+
+	public void setVersionNo(String versionNo) {
+		this.versionNo = versionNo;
+	}
 
 	public String getId() {
 		return id;

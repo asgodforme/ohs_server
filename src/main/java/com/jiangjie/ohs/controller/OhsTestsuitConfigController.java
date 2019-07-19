@@ -40,6 +40,14 @@ public class OhsTestsuitConfigController {
 		testsuitObj.setSysChineseNme((String) requestParam.get("sysChineseNme"));
 		testsuitObj.setModuleAlias((String) requestParam.get("moduleAlias"));
 		testsuitObj.setModuleName((String) requestParam.get("moduleName"));
+		testsuitObj.setVersionNo((String) requestParam.get("versionNo"));
+		testsuitObj.setTestsuitName((String) requestParam.get("testsuitName"));
+		testsuitObj.setPreOprUrl((String) requestParam.get("preOprUrl"));
+		testsuitObj.setPreReqOprData((String) requestParam.get("preReqOprData"));
+		testsuitObj.setPreRspDataRegx((String) requestParam.get("preRspDataRegx"));
+		testsuitObj.setAfterOperUrl((String) requestParam.get("afterOperUrl"));
+		testsuitObj.setAfterReqOprData((String) requestParam.get("afterReqOprData"));
+		testsuitObj.setAfterRspDataRegx((String) requestParam.get("afterRspDataRegx"));
 		return testsuitConfigService.saveTestsuitConfig(testsuitObj);
 	}
 	
@@ -58,6 +66,14 @@ public class OhsTestsuitConfigController {
 		testsuitObj.setSysChineseNme((String) requestParam.get("sysChineseNme"));
 		testsuitObj.setModuleAlias((String) requestParam.get("moduleAlias"));
 		testsuitObj.setModuleName((String) requestParam.get("moduleName"));
+		testsuitObj.setVersionNo((String) requestParam.get("versionNo"));
+		testsuitObj.setTestsuitName((String) requestParam.get("testsuitName"));
+		testsuitObj.setPreOprUrl((String) requestParam.get("preOprUrl"));
+		testsuitObj.setPreReqOprData((String) requestParam.get("preReqOprData"));
+		testsuitObj.setPreRspDataRegx((String) requestParam.get("preRspDataRegx"));
+		testsuitObj.setAfterOperUrl((String) requestParam.get("afterOperUrl"));
+		testsuitObj.setAfterReqOprData((String) requestParam.get("afterReqOprData"));
+		testsuitObj.setAfterRspDataRegx((String) requestParam.get("afterRspDataRegx"));
 		return testsuitConfigService.updateById(testsuitObj);
 	}
 }

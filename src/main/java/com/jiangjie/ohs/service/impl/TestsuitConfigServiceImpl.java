@@ -81,7 +81,7 @@ public class TestsuitConfigServiceImpl implements TestsuitConfigService {
 				.findAll(Example.of(ohsTestsuitConfig), pageable);
 		List<OhsTestsuitConfig> ohsTestsuitConfigList = ohsTestsuitConfigListPage.getContent();
 		if (CollectionUtils.isEmpty(ohsTestsuitConfigList)) {
-			throw new OhsException("当前系统不存在对应接口配置信息，请自行添加接口！");
+			throw new OhsException("当前系统不存在对应测试案例配置信息，请自行添加测试案例！");
 		}
 
 		List<Testsuit> interfaceLst = new ArrayList<>();
@@ -93,6 +93,14 @@ public class TestsuitConfigServiceImpl implements TestsuitConfigService {
 
 			interfaceRetObj.setModuleAlias(ohsModuleConfig.getModuleAlias());
 			interfaceRetObj.setModuleName(ohsModuleConfig.getModuleName());
+			interfaceRetObj.setTestsuitName(ohsIter.getTestsuitName());
+			interfaceRetObj.setVersionNo(ohsIter.getVersionNo());
+			interfaceRetObj.setPreOprUrl(ohsIter.getPreOprUrl());
+			interfaceRetObj.setPreReqOprData(ohsIter.getPreReqOprData());
+			interfaceRetObj.setPreRspDataRegx(ohsIter.getPreRspDataRegx());
+			interfaceRetObj.setAfterOperUrl(ohsIter.getAfterOperUrl());
+			interfaceRetObj.setAfterReqOprData(ohsIter.getAfterReqOprData());
+			interfaceRetObj.setAfterRspDataRegx(ohsIter.getAfterRspDataRegx());
 
 			interfaceRetObj.setCreateDate(ohsIter.getCreateDate());
 			interfaceRetObj.setCreateUser(ohsIter.getCreateUser());
@@ -145,6 +153,14 @@ public class TestsuitConfigServiceImpl implements TestsuitConfigService {
 		ohsTestsuitConfig.setModuleId(ohsModuleConfig.getId());
 		ohsTestsuitConfig.setCreateDate(new Timestamp(new Date().getTime()));
 		ohsTestsuitConfig.setCreateUser("admin");
+		ohsTestsuitConfig.setTestsuitName(testsuitObj.getTestsuitName());
+		ohsTestsuitConfig.setVersionNo(testsuitObj.getVersionNo());
+		ohsTestsuitConfig.setPreOprUrl(testsuitObj.getPreOprUrl());
+		ohsTestsuitConfig.setPreReqOprData(testsuitObj.getPreReqOprData());
+		ohsTestsuitConfig.setPreRspDataRegx(testsuitObj.getPreRspDataRegx());
+		ohsTestsuitConfig.setAfterOperUrl(testsuitObj.getAfterOperUrl());
+		ohsTestsuitConfig.setAfterReqOprData(testsuitObj.getAfterReqOprData());
+		ohsTestsuitConfig.setAfterRspDataRegx(testsuitObj.getAfterRspDataRegx());
 		
 		ohsTestsuitConfig = ohsTestsuitConfigRepository.save(ohsTestsuitConfig);
 		
@@ -211,6 +227,14 @@ public class TestsuitConfigServiceImpl implements TestsuitConfigService {
 		ohsTestsuitConfig.setCreateUser(ohsTestsuitConfigOpt.get().getCreateUser());
 		ohsTestsuitConfig.setUpdateDate(new Timestamp(new Date().getTime()));
 		ohsTestsuitConfig.setUpdateUser("admin");
+		ohsTestsuitConfig.setTestsuitName(testsuitObj.getTestsuitName());
+		ohsTestsuitConfig.setVersionNo(testsuitObj.getVersionNo());
+		ohsTestsuitConfig.setPreOprUrl(testsuitObj.getPreOprUrl());
+		ohsTestsuitConfig.setPreReqOprData(testsuitObj.getPreReqOprData());
+		ohsTestsuitConfig.setPreRspDataRegx(testsuitObj.getPreRspDataRegx());
+		ohsTestsuitConfig.setAfterOperUrl(testsuitObj.getAfterOperUrl());
+		ohsTestsuitConfig.setAfterReqOprData(testsuitObj.getAfterReqOprData());
+		ohsTestsuitConfig.setAfterRspDataRegx(testsuitObj.getAfterRspDataRegx());
 		
 		ohsTestsuitConfig = ohsTestsuitConfigRepository.save(ohsTestsuitConfig);
 		

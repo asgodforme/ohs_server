@@ -45,6 +45,8 @@ public class OhsInterfaceConfigController {
 		interfaceObj.setInterfaceType((String) requestParam.get("interfaceType"));
 		interfaceObj.setInterfaceName((String) requestParam.get("interfaceName"));
 		interfaceObj.setInterfaceAlias((String) requestParam.get("interfaceAlias"));
+		interfaceObj.setRequestTemplate((String) requestParam.get("requestTemplate"));
+		interfaceObj.setResponseTemplate((String) requestParam.get("responseTemplate"));
 		return interfaceConfigService.saveInterfaceConfig(interfaceObj);
 	}
 	
@@ -68,6 +70,8 @@ public class OhsInterfaceConfigController {
 		interfaceObj.setInterfaceType((String) requestParam.get("interfaceType"));
 		interfaceObj.setInterfaceName((String) requestParam.get("interfaceName"));
 		interfaceObj.setInterfaceAlias((String) requestParam.get("interfaceAlias"));
+		interfaceObj.setRequestTemplate((String) requestParam.get("requestTemplate"));
+		interfaceObj.setResponseTemplate((String) requestParam.get("responseTemplate"));
 		return interfaceConfigService.updateById(interfaceObj);
 	}
 }

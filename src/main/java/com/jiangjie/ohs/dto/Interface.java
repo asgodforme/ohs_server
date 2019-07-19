@@ -15,17 +15,27 @@ public class Interface {
 	private String moduleAlias;
 
 	private String moduleName;
-	
+
 	private String interfaceAlias;
-	
+
 	private String interfaceName;
-	
+
 	private String interfaceType;
 
 	private String urlPath;
 
 	private String method;
-	
+
+	/**
+	 * 请求报文模板
+	 */
+	private String requestTemplate;
+
+	/**
+	 * 响应报文模板
+	 */
+	private String responseTemplate;
+
 	private int current;
 
 	private int pageSize;
@@ -39,7 +49,23 @@ public class Interface {
 	private Timestamp updateDate;
 
 	private String updateUser;
-	
+
+	public String getRequestTemplate() {
+		return requestTemplate;
+	}
+
+	public void setRequestTemplate(String requestTemplate) {
+		this.requestTemplate = requestTemplate;
+	}
+
+	public String getResponseTemplate() {
+		return responseTemplate;
+	}
+
+	public void setResponseTemplate(String responseTemplate) {
+		this.responseTemplate = responseTemplate;
+	}
+
 	public String getInterfaceType() {
 		return interfaceType;
 	}
