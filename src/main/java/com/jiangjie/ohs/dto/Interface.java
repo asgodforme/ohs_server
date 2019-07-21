@@ -16,6 +16,8 @@ public class Interface {
 
 	private String moduleName;
 
+	private String testSeq;
+
 	private String interfaceAlias;
 
 	private String interfaceName;
@@ -49,6 +51,14 @@ public class Interface {
 	private Timestamp updateDate;
 
 	private String updateUser;
+
+	public String getTestSeq() {
+		return testSeq;
+	}
+
+	public void setTestSeq(String testSeq) {
+		this.testSeq = testSeq;
+	}
 
 	public String getRequestTemplate() {
 		return requestTemplate;

@@ -1,6 +1,7 @@
 package com.jiangjie.ohs.dto;
 
 import java.sql.Timestamp;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
@@ -61,6 +62,10 @@ public class Testsuit {
 	/** 响应数据域 */
 	private String responseData;
 
+	private List<Interface> inInterfaces;
+
+	private List<Interface> notInInterface;
+
 	private int current;
 
 	private int pageSize;
@@ -74,6 +79,22 @@ public class Testsuit {
 	private Timestamp updateDate;
 
 	private String updateUser;
+
+	public List<Interface> getInInterfaces() {
+		return inInterfaces;
+	}
+
+	public void setInInterfaces(List<Interface> inInterfaces) {
+		this.inInterfaces = inInterfaces;
+	}
+
+	public List<Interface> getNotInInterface() {
+		return notInInterface;
+	}
+
+	public void setNotInInterface(List<Interface> notInInterface) {
+		this.notInInterface = notInInterface;
+	}
 
 	public String getVersionNo() {
 		return versionNo;

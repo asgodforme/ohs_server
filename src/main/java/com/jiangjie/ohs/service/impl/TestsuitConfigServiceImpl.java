@@ -15,15 +15,20 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
+import com.jiangjie.ohs.dto.Interface;
 import com.jiangjie.ohs.dto.PageResponse;
 import com.jiangjie.ohs.dto.Testsuit;
 import com.jiangjie.ohs.entity.OhsModuleConfig;
 import com.jiangjie.ohs.entity.OhsSysConfig;
+import com.jiangjie.ohs.entity.autoTest.OhsInterfaceConfig;
 import com.jiangjie.ohs.entity.autoTest.OhsTestsuitConfig;
+import com.jiangjie.ohs.entity.autoTest.OhsTestsuitRecords;
 import com.jiangjie.ohs.exception.OhsException;
+import com.jiangjie.ohs.repository.OhsInterfaceConfigRepository;
 import com.jiangjie.ohs.repository.OhsModuleConfigRepository;
 import com.jiangjie.ohs.repository.OhsSysConfigRepository;
 import com.jiangjie.ohs.repository.OhsTestsuitConfigRepository;
+import com.jiangjie.ohs.repository.OhsTestsuitRecordsRepository;
 import com.jiangjie.ohs.service.TestsuitConfigService;
 
 @Service
@@ -37,6 +42,12 @@ public class TestsuitConfigServiceImpl implements TestsuitConfigService {
 
 	@Autowired
 	private OhsModuleConfigRepository ohsModuleConfigRepository;
+	
+	@Autowired
+	private OhsTestsuitRecordsRepository ohsTestsuitRecordsRepository;
+	
+	@Autowired
+	private OhsInterfaceConfigRepository ohsInterfaceConfigRepository;
 
 	@Override
 	public PageResponse<Testsuit> getAllTestsuit(Testsuit testsuitObj) throws OhsException {
@@ -101,6 +112,50 @@ public class TestsuitConfigServiceImpl implements TestsuitConfigService {
 			interfaceRetObj.setAfterOperUrl(ohsIter.getAfterOperUrl());
 			interfaceRetObj.setAfterReqOprData(ohsIter.getAfterReqOprData());
 			interfaceRetObj.setAfterRspDataRegx(ohsIter.getAfterRspDataRegx());
+
+			
+			// 查询当前测试案例下的接口信息
+			OhsTestsuitRecords ohsTestsuitRecords = new OhsTestsuitRecords();
+			ohsTestsuitRecords.setTestsuitId(ohsIter.getId());
+			List<OhsTestsuitRecords> testsuitRecordsLst = ohsTestsuitRecordsRepository.findAll(Example.of(ohsTestsuitRecords));
+			
+			// 查询当前系统以及模块下的接口信息
+			OhsInterfaceConfig ohsInterfaceConfig = new OhsInterfaceConfig();
+			ohsInterfaceConfig.setSysId(ohsSysConfig.getId());
+			ohsInterfaceConfig.setModuleId(ohsModuleConfig.getId());
+			List<OhsInterfaceConfig> ohsInterfaceConfigLst = ohsInterfaceConfigRepository.findAll(Example.of(ohsInterfaceConfig));
+			
+			List<Interface> inInterface = new ArrayList<>();
+			interfaceRetObj.setInInterfaces(inInterface);
+			List<Interface> notInInterface = new ArrayList<>();
+			interfaceRetObj.setNotInInterface(notInInterface);
+			
+			if (!CollectionUtils.isEmpty(ohsInterfaceConfigLst)) {
+				for (OhsInterfaceConfig interConfig : ohsInterfaceConfigLst) {
+					Interface inter = new Interface();
+					boolean isInCurrent = false;
+					for (OhsTestsuitRecords testsuitRec : testsuitRecordsLst) {
+						if (interConfig.getId().intValue() == testsuitRec.getInterfaceId().intValue()) {
+							inter.setId(testsuitRec.getId() + "");
+							inter.setTestSeq(testsuitRec.getTestSeq() + "");
+							inter.setInterfaceAlias(interConfig.getInterfaceAlias());
+							inter.setInterfaceName(interConfig.getInterfaceName());
+							inInterface.add(inter);
+							isInCurrent = true;
+							break;
+						}
+					}
+					
+					if (!isInCurrent) {
+						inter.setId(interConfig.getId() + "");
+						inter.setInterfaceAlias(interConfig.getInterfaceAlias());
+						inter.setInterfaceName(interConfig.getInterfaceName());
+						notInInterface.add(inter);
+					}
+				}
+			}
+			
+			
 
 			interfaceRetObj.setCreateDate(ohsIter.getCreateDate());
 			interfaceRetObj.setCreateUser(ohsIter.getCreateUser());
