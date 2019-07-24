@@ -7,5 +7,7 @@ public interface OhsTestsuitRecordsService {
 
 	TestsuitRecords deleteById(String id) throws OhsException;
 
+	TestsuitRecords saveTestsuitRecords(TestsuitRecords testsuitRecords) throws OhsException;
+
 
 }
