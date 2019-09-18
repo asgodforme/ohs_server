@@ -37,6 +37,7 @@ public class InterfaceConfigServiceImpl implements InterfaceConfigService {
 
 	@Autowired
 	private OhsModuleConfigRepository ohsModuleConfigRepository;
+	
 
 	@Override
 	public PageResponse<Interface> getAllInterface(Interface interfaceObj) throws OhsException {
@@ -112,9 +113,13 @@ public class InterfaceConfigServiceImpl implements InterfaceConfigService {
 			interfaceRetObj.setRequestTemplate(ohsIter.getRequestTemplate());
 			interfaceRetObj.setResponseTemplate(ohsIter.getResponseTemplate());
 			
+			if ("Y".equals(interfaceObj.getIsTest())) {
+				
+			}
 			interfaceLst.add(interfaceRetObj);
 		}
 
+		
 		PageResponse<Interface> modulePageRsp = new PageResponse<Interface>(interfaceLst,
 				ohsInterfaceConfigListPage.getNumber(), ohsInterfaceConfigListPage.getSize(),
 				ohsInterfaceConfigListPage.getTotalElements(), ohsInterfaceConfigListPage.getTotalPages());

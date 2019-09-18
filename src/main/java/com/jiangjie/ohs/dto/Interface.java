@@ -1,6 +1,7 @@
 package com.jiangjie.ohs.dto;
 
 import java.sql.Timestamp;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
@@ -42,6 +43,10 @@ public class Interface {
 
 	private int pageSize;
 
+	private String isTest;
+
+	private List<String> parameters;
+
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
 	private Timestamp createDate;
 
@@ -51,6 +56,22 @@ public class Interface {
 	private Timestamp updateDate;
 
 	private String updateUser;
+
+	public List<String> getParameters() {
+		return parameters;
+	}
+
+	public void setParameters(List<String> parameters) {
+		this.parameters = parameters;
+	}
+
+	public String getIsTest() {
+		return isTest;
+	}
+
+	public void setIsTest(String isTest) {
+		this.isTest = isTest;
+	}
 
 	public String getTestSeq() {
 		return testSeq;
