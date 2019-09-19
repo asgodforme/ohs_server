@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
@@ -37,6 +39,8 @@ public class InterfaceConfigServiceImpl implements InterfaceConfigService {
 
 	@Autowired
 	private OhsModuleConfigRepository ohsModuleConfigRepository;
+	
+	private static final Pattern pattern = Pattern.compile("\\$\\{(.+?)\\}");
 	
 
 	@Override
@@ -114,7 +118,13 @@ public class InterfaceConfigServiceImpl implements InterfaceConfigService {
 			interfaceRetObj.setResponseTemplate(ohsIter.getResponseTemplate());
 			
 			if ("Y".equals(interfaceObj.getIsTest())) {
-				
+				List<String> parameters = new ArrayList<>();
+				Matcher matcher = pattern.matcher(ohsIter.getRequestTemplate());
+				while (matcher.find()) {
+					String keyName = matcher.group(1);
+					parameters.add(keyName);
+				}
+				interfaceRetObj.setParameters(parameters);
 			}
 			interfaceLst.add(interfaceRetObj);
 		}
