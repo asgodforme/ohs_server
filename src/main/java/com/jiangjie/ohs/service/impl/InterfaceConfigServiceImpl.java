@@ -2,6 +2,7 @@ package com.jiangjie.ohs.service.impl;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -19,11 +20,13 @@ import org.springframework.util.StringUtils;
 
 import com.jiangjie.ohs.dto.Interface;
 import com.jiangjie.ohs.dto.PageResponse;
+import com.jiangjie.ohs.entity.OhsInterfaceSingleRecords;
 import com.jiangjie.ohs.entity.OhsModuleConfig;
 import com.jiangjie.ohs.entity.OhsSysConfig;
 import com.jiangjie.ohs.entity.autoTest.OhsInterfaceConfig;
 import com.jiangjie.ohs.exception.OhsException;
 import com.jiangjie.ohs.repository.OhsInterfaceConfigRepository;
+import com.jiangjie.ohs.repository.OhsInterfaceSingleRecordsRepository;
 import com.jiangjie.ohs.repository.OhsModuleConfigRepository;
 import com.jiangjie.ohs.repository.OhsSysConfigRepository;
 import com.jiangjie.ohs.service.InterfaceConfigService;
@@ -39,6 +42,9 @@ public class InterfaceConfigServiceImpl implements InterfaceConfigService {
 
 	@Autowired
 	private OhsModuleConfigRepository ohsModuleConfigRepository;
+	
+	@Autowired
+	private OhsInterfaceSingleRecordsRepository ohsInterfaceSingleRecordsRepository;
 	
 	private static final Pattern pattern = Pattern.compile("\\$\\{(.+?)\\}");
 	
@@ -125,6 +131,14 @@ public class InterfaceConfigServiceImpl implements InterfaceConfigService {
 					parameters.add(keyName);
 				}
 				interfaceRetObj.setParameters(parameters);
+				
+				OhsInterfaceSingleRecords ohsInterfaceSingleRecords = new OhsInterfaceSingleRecords();
+				ohsInterfaceSingleRecords.setInterfaceId(ohsIter.getId());
+				List<OhsInterfaceSingleRecords> ohsInterfaceSingleRecordsLst = ohsInterfaceSingleRecordsRepository.findAll(Example.of(ohsInterfaceSingleRecords));
+				if (!CollectionUtils.isEmpty(ohsInterfaceSingleRecordsLst)) {
+					ohsInterfaceSingleRecordsLst.sort(Comparator.comparing(OhsInterfaceSingleRecords::getId));
+					interfaceRetObj.setRequestTemplate(ohsInterfaceSingleRecordsLst.get(ohsInterfaceSingleRecordsLst.size()-1).getRequestData());
+				}
 			}
 			interfaceLst.add(interfaceRetObj);
 		}

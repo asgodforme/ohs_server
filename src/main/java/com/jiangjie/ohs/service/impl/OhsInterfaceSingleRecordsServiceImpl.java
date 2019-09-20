@@ -52,11 +52,7 @@ public class OhsInterfaceSingleRecordsServiceImpl implements OhsInterfaceSingleR
 		while (matcher.find()) {
 			String keyNme = matcher.group(1);
 			String value = requestParam.get(keyNme) + "";
-			if (value != null) {
-				matcher.appendReplacement(newSb, value);
-			} else {
-				matcher.appendReplacement(newSb, "");
-			}
+			matcher.appendReplacement(newSb, value);
 			lastIndex = matcher.end();
 			
 		}
