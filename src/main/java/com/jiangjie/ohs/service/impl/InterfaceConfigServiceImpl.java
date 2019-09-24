@@ -17,14 +17,17 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
+import org.springframework.web.client.RestTemplate;
 
 import com.jiangjie.ohs.dto.Interface;
 import com.jiangjie.ohs.dto.PageResponse;
+import com.jiangjie.ohs.entity.OhsEnvironmentConfig;
 import com.jiangjie.ohs.entity.OhsInterfaceSingleRecords;
 import com.jiangjie.ohs.entity.OhsModuleConfig;
 import com.jiangjie.ohs.entity.OhsSysConfig;
 import com.jiangjie.ohs.entity.autoTest.OhsInterfaceConfig;
 import com.jiangjie.ohs.exception.OhsException;
+import com.jiangjie.ohs.repository.OhsEnvironmentConfigRepository;
 import com.jiangjie.ohs.repository.OhsInterfaceConfigRepository;
 import com.jiangjie.ohs.repository.OhsInterfaceSingleRecordsRepository;
 import com.jiangjie.ohs.repository.OhsModuleConfigRepository;
@@ -47,6 +50,9 @@ public class InterfaceConfigServiceImpl implements InterfaceConfigService {
 	private OhsInterfaceSingleRecordsRepository ohsInterfaceSingleRecordsRepository;
 	
 	private static final Pattern pattern = Pattern.compile("\\$\\{(.+?)\\}");
+	
+	@Autowired
+	private OhsEnvironmentConfigRepository ohsEnvironmentConfigRepository;
 	
 
 	@Override
@@ -123,6 +129,7 @@ public class InterfaceConfigServiceImpl implements InterfaceConfigService {
 			interfaceRetObj.setRequestTemplate(ohsIter.getRequestTemplate());
 			interfaceRetObj.setResponseTemplate(ohsIter.getResponseTemplate());
 			
+			// 如果是接口测试，则返回对应实际的请求响应数据
 			if ("Y".equals(interfaceObj.getIsTest())) {
 				List<String> parameters = new ArrayList<>();
 				Matcher matcher = pattern.matcher(ohsIter.getRequestTemplate());
@@ -138,8 +145,26 @@ public class InterfaceConfigServiceImpl implements InterfaceConfigService {
 				if (!CollectionUtils.isEmpty(ohsInterfaceSingleRecordsLst)) {
 					ohsInterfaceSingleRecordsLst.sort(Comparator.comparing(OhsInterfaceSingleRecords::getId));
 					interfaceRetObj.setRequestTemplate(ohsInterfaceSingleRecordsLst.get(ohsInterfaceSingleRecordsLst.size()-1).getRequestData());
+					interfaceRetObj.setResponseTemplate(ohsInterfaceSingleRecordsLst.get(ohsInterfaceSingleRecordsLst.size()-1).getResponseData());
+				} else {
+					interfaceRetObj.setRequestTemplate(null);
+					interfaceRetObj.setResponseTemplate(null);
 				}
 			}
+			
+			
+			OhsEnvironmentConfig ohsEnvironmentConfig = new OhsEnvironmentConfig();
+			ohsEnvironmentConfig.setSysId(ohsSysConfig.getId());
+			List<OhsEnvironmentConfig> ohsEnvironmentConfigLst = ohsEnvironmentConfigRepository.findAll(Example.of(ohsEnvironmentConfig));
+			List<Interface.EnvironmentInfo> environmentInfoLst = new ArrayList<>();
+			ohsEnvironmentConfigLst.stream().forEach(env -> {
+				Interface.EnvironmentInfo environmentInfo = new Interface().new EnvironmentInfo();
+				environmentInfo.setId(env.getId());
+				environmentInfo.setEvnName(env.getEvnName());
+				environmentInfoLst.add(environmentInfo);
+			});
+			interfaceRetObj.setEnvironmentInfos(environmentInfoLst);
+			
 			interfaceLst.add(interfaceRetObj);
 		}
 
@@ -278,5 +303,51 @@ public class InterfaceConfigServiceImpl implements InterfaceConfigService {
 		interfaceObj.setCreateUser(ohsInterfaceConfig.getCreateUser());
 		interfaceObj.setCreateDate(ohsInterfaceConfig.getCreateDate());
 		return interfaceObj;
+	}
+	
+	@Autowired
+	private RestTemplate restTemplate;
+
+	public Interface restfulRequest(Interface interfaceObj) throws OhsException {
+		Optional<OhsEnvironmentConfig> ohsEnv = ohsEnvironmentConfigRepository.findById(Integer.parseInt(interfaceObj.getTargetServerId()));
+		if (!ohsEnv.isPresent()) {
+			throw new OhsException("目标服务器不存在！");
+		}
+		Optional<OhsInterfaceConfig> ohsInterface = ohsInterfaceConfigRepository.findById(Integer.parseInt(interfaceObj.getId()));
+		if (!ohsInterface.isPresent()) {
+			throw new OhsException("接口配置信息不存在！");
+		}
+		StringBuffer reqUrlSb = new StringBuffer();
+		reqUrlSb.append("http://").append(ohsEnv.get().getEvnIp()).append(":").append(ohsEnv.get().getEvnPort()).append("/").append(ohsInterface.get().getUrlPath());
+		if ("GET".equals(ohsInterface.get().getMethod().toUpperCase())) {
+			String msg = restTemplate.getForObject(reqUrlSb.toString(), String.class);
+			if (!StringUtils.isEmpty(interfaceObj.getSingleRecordsId())) {
+				Optional<OhsInterfaceSingleRecords> ohsSingleRecords = ohsInterfaceSingleRecordsRepository.findById(interfaceObj.getSingleRecordsId());
+				if (ohsSingleRecords.isPresent()) {
+					ohsSingleRecords.get().setResponseData(msg);
+					ohsInterfaceSingleRecordsRepository.save(ohsSingleRecords.get());
+				}
+			} else {
+				OhsInterfaceSingleRecords ohsInterfaceSingleRecords = new OhsInterfaceSingleRecords();
+				ohsInterfaceSingleRecords.setInterfaceId(Integer.parseInt(interfaceObj.getId()));
+				List<OhsInterfaceSingleRecords> ohsInterfaceSingleRecordsLst = ohsInterfaceSingleRecordsRepository.findAll(Example.of(ohsInterfaceSingleRecords));
+				if (!CollectionUtils.isEmpty(ohsInterfaceSingleRecordsLst)) {
+					ohsInterfaceSingleRecordsLst.sort(Comparator.comparing(OhsInterfaceSingleRecords::getId));
+					ohsInterfaceSingleRecords = ohsInterfaceSingleRecordsLst.get(ohsInterfaceSingleRecordsLst.size() - 1);
+					ohsInterfaceSingleRecords.setResponseData(msg);
+				} else {
+					ohsInterfaceSingleRecords.setResponseData(msg);
+					ohsInterfaceSingleRecords.setCreateUser("admin");
+					ohsInterfaceSingleRecords.setCreateDate(new Timestamp(new Date().getTime()));
+				}
+				ohsInterfaceSingleRecordsRepository.save(ohsInterfaceSingleRecords);
+				interfaceObj.setResponseTemplate(msg);
+			}
+		} else if ("POST".equals(ohsInterface.get().getMethod().toUpperCase())) {
+//			restTemplate.postForObject(url, request, responseType);
+		}
+		
+		return interfaceObj;
+
 	}
 }

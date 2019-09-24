@@ -18,20 +18,18 @@ import com.jiangjie.ohs.dto.PageResponse;
 import com.jiangjie.ohs.exception.OhsException;
 import com.jiangjie.ohs.service.InterfaceConfigService;
 
-
 @RestController
 @RequestMapping("/api/interfaceConfig")
 public class OhsInterfaceConfigController {
 
-	
 	@Autowired
 	private InterfaceConfigService interfaceConfigService;
-	
+
 	@GetMapping("/getAllInterface")
 	public PageResponse<Interface> getAllInterface(Interface interfaceObj) throws OhsException {
 		return interfaceConfigService.getAllInterface(interfaceObj);
 	}
-	
+
 	@PostMapping("/saveInterfaceConfig")
 	@ResponseBody
 	public Interface saveInterfaceConfig(@RequestBody Map<String, Object> requestParam) throws OhsException {
@@ -49,12 +47,11 @@ public class OhsInterfaceConfigController {
 		interfaceObj.setResponseTemplate((String) requestParam.get("responseTemplate"));
 		return interfaceConfigService.saveInterfaceConfig(interfaceObj);
 	}
-	
+
 	@DeleteMapping("/deleteById/{id}")
 	public Interface deleteById(@PathVariable("id") String id) throws OhsException {
 		return interfaceConfigService.deleteById(Integer.parseInt(id));
 	}
-	
 
 	@PutMapping("/updateById")
 	@ResponseBody
@@ -73,5 +70,15 @@ public class OhsInterfaceConfigController {
 		interfaceObj.setRequestTemplate((String) requestParam.get("requestTemplate"));
 		interfaceObj.setResponseTemplate((String) requestParam.get("responseTemplate"));
 		return interfaceConfigService.updateById(interfaceObj);
+	}
+
+	@PostMapping("/executeInterface")
+	@ResponseBody
+	public Interface executeInterface(@RequestBody Map<String, Object> requestParam) throws OhsException {
+		Interface interfaceObj = new Interface();
+		interfaceObj.setTargetServerId(requestParam.get("targetServerId") + "");
+		interfaceObj.setId(requestParam.get("id") + "");
+		interfaceObj.setSingleRecordsId((Integer) requestParam.get("singleRecordsId"));
+		return interfaceConfigService.restfulRequest(interfaceObj);
 	}
 }

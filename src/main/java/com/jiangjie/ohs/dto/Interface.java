@@ -57,6 +57,58 @@ public class Interface {
 
 	private String updateUser;
 
+	private List<EnvironmentInfo> environmentInfos;
+
+	private String targetServerId;
+
+	private Integer singleRecordsId;
+
+	public Integer getSingleRecordsId() {
+		return singleRecordsId;
+	}
+
+	public void setSingleRecordsId(Integer singleRecordsId) {
+		this.singleRecordsId = singleRecordsId;
+	}
+
+	public String getTargetServerId() {
+		return targetServerId;
+	}
+
+	public void setTargetServerId(String targetServerId) {
+		this.targetServerId = targetServerId;
+	}
+
+	public class EnvironmentInfo {
+		private Integer id;
+		private String evnName;
+
+		public Integer getId() {
+			return id;
+		}
+
+		public void setId(Integer id) {
+			this.id = id;
+		}
+
+		public String getEvnName() {
+			return evnName;
+		}
+
+		public void setEvnName(String evnName) {
+			this.evnName = evnName;
+		}
+
+	}
+
+	public List<EnvironmentInfo> getEnvironmentInfos() {
+		return environmentInfos;
+	}
+
+	public void setEnvironmentInfos(List<EnvironmentInfo> environmentInfos) {
+		this.environmentInfos = environmentInfos;
+	}
+
 	public List<String> getParameters() {
 		return parameters;
 	}

@@ -14,4 +14,5 @@ public interface InterfaceConfigService {
 
 	Interface updateById(Interface interfaceObj) throws OhsException;
 
+	Interface restfulRequest(Interface interfaceObj) throws OhsException;
 }
