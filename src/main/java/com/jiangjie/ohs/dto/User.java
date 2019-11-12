@@ -32,6 +32,26 @@ public class User {
 
 	private int pageSize;
 
+	private String ipAddr;
+
+	private String isFirstLogin;
+
+	public String getIsFirstLogin() {
+		return isFirstLogin;
+	}
+
+	public void setIsFirstLogin(String isFirstLogin) {
+		this.isFirstLogin = isFirstLogin;
+	}
+
+	public String getIpAddr() {
+		return ipAddr;
+	}
+
+	public void setIpAddr(String ipAddr) {
+		this.ipAddr = ipAddr;
+	}
+
 	public int getCurrent() {
 		return current;
 	}

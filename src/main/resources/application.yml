@@ -5,7 +5,7 @@ spring:
   driverClassName: com.mysql.jdbc.Driver
   url: jdbc:mysql://127.0.0.1:3306/ohs?serverTimezone=GMT%2B8&useUnicode=true&characterEncoding=utf-8
   username: root
-  password: root
+  password: jiangjie1
  jpa: 
   hibernate: 
    ddl-auto: update

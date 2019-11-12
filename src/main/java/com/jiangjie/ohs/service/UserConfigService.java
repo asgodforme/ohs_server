@@ -19,5 +19,7 @@ public interface UserConfigService {
 	User deleteById(int parseInt) throws OhsException;
 
 	User updateById(User user);
+	
+	User getUserByIPAddr(String ip);
 
 }

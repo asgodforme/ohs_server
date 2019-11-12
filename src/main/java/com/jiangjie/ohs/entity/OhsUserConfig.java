@@ -39,6 +39,11 @@ public class OhsUserConfig {
 	private String loginAccount;
 
 	/**
+	 * IP地址
+	 */
+	private String ipAddr;
+
+	/**
 	 * 密码
 	 */
 	private String password;
@@ -51,6 +56,14 @@ public class OhsUserConfig {
 	private Timestamp updateDate;
 	/** 修改用户 */
 	private String updateUser;
+
+	public String getIpAddr() {
+		return ipAddr;
+	}
+
+	public void setIpAddr(String ipAddr) {
+		this.ipAddr = ipAddr;
+	}
 
 	public Integer getId() {
 		return id;

@@ -80,6 +80,7 @@ public class UserConfigServiceImpl implements UserConfigService {
 			newUser.setName(usr.getName());
 			newUser.setPassword(usr.getPassword());
 			newUser.setRole(usr.getRole());
+			newUser.setIpAddr(user.getIpAddr());
 			newUser.setCreateDate(new Timestamp(new Date().getTime()));
 			newUser.setCreateUser("姜杰");
 			return newUser;
@@ -125,6 +126,18 @@ public class UserConfigServiceImpl implements UserConfigService {
 		ohsUserConfig = ohsUserConfigRepository.save(ohsUserConfig);
 		user.setCreateDate(ohsUserConfig.getCreateDate());
 		user.setCreateUser(ohsUserConfig.getCreateUser());
+		return user;
+	}
+
+	@Override
+	public User getUserByIPAddr(String ip) {
+		OhsUserConfig ohsUserConfig = new OhsUserConfig();
+		ohsUserConfig.setIpAddr(ip);
+		Optional<OhsUserConfig> ohsUserConfigOpt = ohsUserConfigRepository.findOne(Example.of(ohsUserConfig));
+		User user = new User();
+		if (ohsUserConfigOpt.isPresent()) {
+			user.setName(ohsUserConfigOpt.get().getName());
+		}
 		return user;
 	}
 

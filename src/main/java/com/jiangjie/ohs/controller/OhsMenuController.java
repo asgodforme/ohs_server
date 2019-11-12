@@ -2,6 +2,8 @@ package com.jiangjie.ohs.controller;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,7 +21,7 @@ public class OhsMenuController {
 	private MenuService menuService;
 	
 	@GetMapping("/getAllMenu")
-	public List<Menu> getAllMenu() {
+	public List<Menu> getAllMenu(HttpServletRequest request) {
 		return menuService.packageMenu();
 	}
 

@@ -1,10 +1,15 @@
 package com.jiangjie.ohs.controller;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.jiangjie.ohs.dto.PageResponse;
@@ -20,6 +25,11 @@ public class OhsUserConfigController {
 	@Autowired
 	private UserConfigService userConfigService;
 	
+	@GetMapping("/getUser")
+	public User getUser(HttpServletRequest request) {
+		return userConfigService.getUserByIPAddr(request.getRemoteAddr());
+	}
+	
 	/**
 	 * 根据指定的条件查询所有的用户
 	 * @param User
@@ -31,11 +41,12 @@ public class OhsUserConfigController {
 		return userConfigService.getAllUser(User);
 	}
 	
-	/**
-	 * TODO POST传值报错！！！麻蛋
-	 */
-	@GetMapping("/saveUserConfig")
-	public User saveUserConfig(User user) throws OhsException {
+	@PostMapping("/saveUserConfig")
+	@ResponseBody
+	public User saveUserConfig(@RequestBody User user, HttpServletRequest request) throws OhsException {
+		if ("Y".equals(user.getIsFirstLogin())) {
+			user.setIpAddr(request.getRemoteAddr());
+		}
 		return userConfigService.saveUserConfig(user);
 	}
 	
