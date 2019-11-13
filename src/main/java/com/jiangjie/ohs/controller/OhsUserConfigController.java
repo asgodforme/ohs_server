@@ -1,5 +1,7 @@
 package com.jiangjie.ohs.controller;
 
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +28,7 @@ public class OhsUserConfigController {
 	private UserConfigService userConfigService;
 	
 	@GetMapping("/getUser")
-	public User getUser(HttpServletRequest request) {
+	public List<User> getUser(HttpServletRequest request) {
 		return userConfigService.getUserByIPAddr(request.getRemoteAddr());
 	}
 	

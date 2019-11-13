@@ -82,12 +82,22 @@ public class UserConfigServiceImpl implements UserConfigService {
 			newUser.setRole(usr.getRole());
 			newUser.setIpAddr(user.getIpAddr());
 			newUser.setCreateDate(new Timestamp(new Date().getTime()));
-			newUser.setCreateUser("姜杰");
+			newUser.setCreateUser("admin");
 			return newUser;
 		};
 		
 		OhsUserConfig ohsUserConfig = toOhsUserConfig.apply(user);
 		
+		if ("Y".equals(user.getIsFirstLogin())) {
+			OhsUserConfig queryObj = new OhsUserConfig();
+			queryObj.setName(user.getName());
+			Optional<OhsUserConfig> ohsUserConfigOpt = ohsUserConfigRepository.findOne(Example.of(queryObj));
+			if (ohsUserConfigOpt.isPresent()) {
+				ohsUserConfig.setId(ohsUserConfigOpt.get().getId());
+				ohsUserConfig.setUpdateDate(new Timestamp(new Date().getTime()));
+				ohsUserConfig.setUpdateUser(user.getIpAddr());
+			}
+		}
 		ohsUserConfig = ohsUserConfigRepository.save(ohsUserConfig);
 		
 		user.setId(ohsUserConfig.getId());
@@ -118,7 +128,7 @@ public class UserConfigServiceImpl implements UserConfigService {
 			newUser.setPassword(usr.getPassword());
 			newUser.setRole(usr.getRole());
 			newUser.setUpdateDate(new Timestamp(new Date().getTime()));
-			newUser.setUpdateUser("修改者");
+			newUser.setUpdateUser("admin");
 			return newUser;
 		};
 		
@@ -130,15 +140,19 @@ public class UserConfigServiceImpl implements UserConfigService {
 	}
 
 	@Override
-	public User getUserByIPAddr(String ip) {
+	public List<User> getUserByIPAddr(String ip) {
 		OhsUserConfig ohsUserConfig = new OhsUserConfig();
 		ohsUserConfig.setIpAddr(ip);
-		Optional<OhsUserConfig> ohsUserConfigOpt = ohsUserConfigRepository.findOne(Example.of(ohsUserConfig));
-		User user = new User();
-		if (ohsUserConfigOpt.isPresent()) {
-			user.setName(ohsUserConfigOpt.get().getName());
+		List<OhsUserConfig> ohsUserConfigList = ohsUserConfigRepository.findAll(Example.of(ohsUserConfig));
+		List<User> userList = new ArrayList<User>();
+		if (!CollectionUtils.isEmpty(ohsUserConfigList)) {
+			ohsUserConfigList.stream().forEach(usercfg -> {
+				User user = new User();
+				user.setName(usercfg.getName());
+				userList.add(user);
+			});
 		}
-		return user;
+		return userList;
 	}
 
 }

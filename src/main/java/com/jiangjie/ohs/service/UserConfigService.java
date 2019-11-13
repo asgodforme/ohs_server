@@ -1,5 +1,7 @@
 package com.jiangjie.ohs.service;
 
+import java.util.List;
+
 import com.jiangjie.ohs.dto.PageResponse;
 import com.jiangjie.ohs.dto.User;
 import com.jiangjie.ohs.exception.OhsException;
@@ -20,6 +22,6 @@ public interface UserConfigService {
 
 	User updateById(User user);
 	
-	User getUserByIPAddr(String ip);
+	List<User> getUserByIPAddr(String ip);
 
 }
