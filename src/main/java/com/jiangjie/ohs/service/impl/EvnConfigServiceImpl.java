@@ -70,6 +70,7 @@ public class EvnConfigServiceImpl implements EvnConfigService {
 		OhsSysConfig ohsSysConfig = new OhsSysConfig();
 		ohsSysConfig.setSysAlias(StringUtils.isEmpty(evn.getSysAlias()) ? null : evn.getSysAlias());
 		ohsSysConfig.setSysChineseNme(StringUtils.isEmpty(evn.getSysChineseNme()) ? null : evn.getSysChineseNme());
+		ohsSysConfig.setCreateUser(evn.getCreateUser());
 
 		List<OhsSysConfig> ohsSysConfigLst = ohsSysConfigRepository.findAll(Example.of(ohsSysConfig));
 		if (CollectionUtils.isEmpty(ohsSysConfigLst)) {
@@ -83,6 +84,9 @@ public class EvnConfigServiceImpl implements EvnConfigService {
 		if (!StringUtils.isEmpty(evn.getSysAlias()) || !StringUtils.isEmpty(evn.getSysChineseNme())) {
 			environmentConfig.setSysId(ohsSysConfig.getId());
 		} 
+		RelationUserInfo relationUserInfo = new RelationUserInfo();
+		relationUserInfo.setCreateUser(evn.getCreateUser());
+		environmentConfig.setRelationUserInfo(relationUserInfo);
 		
 		Pageable pageable = PageRequest.of(evn.getCurrent() - 1 < 0 ? 0 : evn.getCurrent() - 1, evn.getPageSize());
 		Page<OhsEnvironmentConfig> ohsEnvironmentConfigPage = ohsEnvironmentConfigRepository.findAll(Example.of(environmentConfig), pageable);
@@ -128,6 +132,7 @@ public class EvnConfigServiceImpl implements EvnConfigService {
 		OhsSysConfig ohsSysConfig = new OhsSysConfig();
 		ohsSysConfig.setSysAlias(StringUtils.isEmpty(evn.getSysAlias()) ? null : evn.getSysAlias());
 		ohsSysConfig.setSysChineseNme(StringUtils.isEmpty(evn.getSysChineseNme()) ? null : evn.getSysChineseNme());
+		ohsSysConfig.setCreateUser(evn.getCreateUser());
 
 		List<OhsSysConfig> ohsSysConfigLst = ohsSysConfigRepository.findAll(Example.of(ohsSysConfig));
 		if (CollectionUtils.isEmpty(ohsSysConfigLst)) {
@@ -138,7 +143,7 @@ public class EvnConfigServiceImpl implements EvnConfigService {
 		environmentConfig.setSysId(ohsSysConfigLst.get(0).getId());
 		RelationUserInfo relationUserInfo = new RelationUserInfo();
 		relationUserInfo.setCreateDate(new Timestamp(new Date().getTime()));
-		relationUserInfo.setCreateUser("admin");
+		relationUserInfo.setCreateUser(evn.getCreateUser());
 		environmentConfig.setRelationUserInfo(relationUserInfo);
 
 		environmentConfig = ohsEnvironmentConfigRepository.save(environmentConfig);
@@ -154,10 +159,13 @@ public class EvnConfigServiceImpl implements EvnConfigService {
 	}
 
 	@Override
-	public Evn deleteById(int id) throws OhsException {
+	public Evn deleteById(int id, String tokenName) throws OhsException {
 		Optional<OhsEnvironmentConfig> ohsEnvironmentConfigOpt = ohsEnvironmentConfigRepository.findById(id);
 		if (!ohsEnvironmentConfigOpt.isPresent()) {
 			throw new OhsException("该配置信息已经被删除，请重新查询！");
+		}
+		if (!ohsEnvironmentConfigOpt.get().getRelationUserInfo().getCreateUser().equals(tokenName)) {
+			throw new OhsException("禁止删除非当前用户数据！");
 		}
 		ohsEnvironmentConfigRepository.deleteById(id);
 		Evn evn = new Evn();
@@ -171,10 +179,14 @@ public class EvnConfigServiceImpl implements EvnConfigService {
 		if (!ohsEnvironmentConfigOpt.isPresent()) {
 			throw new OhsException("该配置信息已经被删除，请重新查询！");
 		}
+		if (!ohsEnvironmentConfigOpt.get().getRelationUserInfo().getCreateUser().equals(evn.getCreateUser())) {
+			throw new OhsException("禁止修改非当前用户数据！");
+		}
 		
 		OhsSysConfig ohsSysConfig = new OhsSysConfig();
 		ohsSysConfig.setSysAlias(StringUtils.isEmpty(evn.getSysAlias()) ? null : evn.getSysAlias());
 		ohsSysConfig.setSysChineseNme(StringUtils.isEmpty(evn.getSysChineseNme()) ? null : evn.getSysChineseNme());
+		ohsSysConfig.setCreateUser(evn.getCreateUser());
 
 		List<OhsSysConfig> ohsSysConfigLst = ohsSysConfigRepository.findAll(Example.of(ohsSysConfig));
 		if (CollectionUtils.isEmpty(ohsSysConfigLst)) {
@@ -185,7 +197,7 @@ public class EvnConfigServiceImpl implements EvnConfigService {
 		environmentConfig.setSysId(ohsSysConfigLst.get(0).getId());
 		RelationUserInfo relationUserInfo = new RelationUserInfo();
 		relationUserInfo.setUpdateDate(new Timestamp(new Date().getTime()));
-		relationUserInfo.setUpdateUser("admin");
+		relationUserInfo.setUpdateUser(evn.getCreateUser());
 		relationUserInfo.setCreateDate(ohsSysConfigLst.get(0).getCreateDate());
 		relationUserInfo.setCreateUser(ohsSysConfigLst.get(0).getCreateUser());
 		environmentConfig.setRelationUserInfo(relationUserInfo);

@@ -30,12 +30,13 @@ public class OhsSysConfigController {
 	private SysConfigService sysConfigService;
 
 	@GetMapping("/getAllSys")
-	public Page<OhsSysConfig> getAllMenu(OhsSysConfig ohsSysConfig) throws OhsException {
+	public Page<OhsSysConfig> getAllMenu(OhsSysConfig ohsSysConfig, String tokenName) throws OhsException {
 		// 前端传送过来的空格也会当做查询条件去查询数据库，故在此置为null,过滤掉该条件，TODO 应该有更加先进的方法。
 		if (StringUtils.isEmpty(ohsSysConfig.getSysAlias())) ohsSysConfig.setSysAlias(null);
 		if (StringUtils.isEmpty(ohsSysConfig.getSysChineseNme())) ohsSysConfig.setSysChineseNme(null);
 		if (StringUtils.isEmpty(ohsSysConfig.getSchemaName())) ohsSysConfig.setSchemaName(null);
 //		List<OhsSysConfig> ohsSysConfigLst = sysConfigService.getAllSys(ohsSysConfig);
+		ohsSysConfig.setCreateUser(tokenName);
 		Page<OhsSysConfig> ohsSysConfigPage = sysConfigService.getAllSys(ohsSysConfig);
 		if (CollectionUtils.isEmpty(ohsSysConfigPage.getContent())) {
 			throw new OhsException("当前系统中无系统配置信息，请点击新增新增系统配置信息！");
@@ -44,11 +45,12 @@ public class OhsSysConfigController {
 	}
 	
 	@GetMapping("/getAllSysWhenInit")
-	public List<SysInfo> getAllSysInfo(OhsSysConfig ohsSysConfig) {
+	public List<SysInfo> getAllSysInfo(OhsSysConfig ohsSysConfig, String tokenName) {
 		// 前端传送过来的空格也会当做查询条件去查询数据库，故在此置为null,过滤掉该条件，TODO 应该有更加先进的方法。
 		if (StringUtils.isEmpty(ohsSysConfig.getSysAlias())) ohsSysConfig.setSysAlias(null);
 		if (StringUtils.isEmpty(ohsSysConfig.getSysChineseNme())) ohsSysConfig.setSysChineseNme(null);
 		if (StringUtils.isEmpty(ohsSysConfig.getSchemaName())) ohsSysConfig.setSchemaName(null);
+		ohsSysConfig.setCreateUser(tokenName);
 		return sysConfigService.getAllSysInfo(ohsSysConfig);
 	}
 	
@@ -71,27 +73,17 @@ public class OhsSysConfigController {
 		ohsSysConfig.setSysAlias(((String) requestParam.get("sysAlias")).toUpperCase());
 		ohsSysConfig.setSysChineseNme(((String) requestParam.get("sysChineseNme")).toUpperCase());
 		ohsSysConfig.setSchemaName(((String) requestParam.get("schemaName")).toUpperCase());
+		ohsSysConfig.setCreateUser((String) requestParam.get("tokenName"));
 		return sysConfigService.saveSysConfig(ohsSysConfig);
 	}
 	
 	@DeleteMapping("/deleteById/{id}")
-	public OhsSysConfig deleteById(@PathVariable("id") String id) throws OhsException {
+	public OhsSysConfig deleteById(@PathVariable("id") String id, String tokenName) throws OhsException {
 		OhsSysConfig ohsSysConfig = new OhsSysConfig();
 		ohsSysConfig.setId(Integer.parseInt(id));
-		return sysConfigService.deleteById(ohsSysConfig);
+		return sysConfigService.deleteById(ohsSysConfig, tokenName);
 	}
 	
-	/**
-	 * TODO PUT传值报错！！！麻蛋
-	 * @param ohsSysConfig
-	 * @return 
-	 * @throws OhsException 
-	 */
-//	@GetMapping("/updateById")
-//	public OhsSysConfig updateById(OhsSysConfig ohsSysConfig) throws OhsException {
-//		System.out.println("---->" + ohsSysConfig);
-//		return sysConfigService.updateById(ohsSysConfig);
-//	}
 	
 	@PutMapping("/updateById")
 	@ResponseBody
@@ -101,6 +93,7 @@ public class OhsSysConfigController {
 		ohsSysConfig.setSysAlias(((String) requestParam.get("sysAlias")).toUpperCase());
 		ohsSysConfig.setSysChineseNme(((String) requestParam.get("sysChineseNme")).toUpperCase());
 		ohsSysConfig.setSchemaName(((String) requestParam.get("schemaName")).toUpperCase());
+		ohsSysConfig.setCreateUser((String) requestParam.get("tokenName"));
 		return sysConfigService.updateById(ohsSysConfig);
 	}
 

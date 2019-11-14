@@ -33,17 +33,10 @@ public class OhsEvnConfigController {
 	 * @throws OhsException
 	 */
 	@GetMapping("/getAllEvn")
-	public PageResponse<Evn> getAllEvn(Evn Evn) throws OhsException {
+	public PageResponse<Evn> getAllEvn(Evn Evn, String tokenName) throws OhsException {
+		Evn.setCreateUser(tokenName);
 		return evnConfigService.getAllEvn(Evn);
 	}
-	
-//	/**
-//	 * TODO POST传值报错！！！麻蛋
-//	 */
-//	@GetMapping("/saveEvnConfig")
-//	public Evn saveEvnConfig(Evn evn) throws OhsException {
-//		return evnConfigService.saveEvnConfig(evn);
-//	}
 	
 	@PostMapping("/saveEvnConfig")
 	@ResponseBody
@@ -59,25 +52,14 @@ public class OhsEvnConfigController {
 		evn.setEvnPort((String) requestParam.get("evnPort"));
 		evn.setEvnTyp((String) requestParam.get("evnTyp"));
 		evn.setDbType((String) requestParam.get("dbType"));
+		evn.setCreateUser((String) requestParam.get("tokenName"));
 		return evnConfigService.saveEvnConfig(evn);
 	}
 	
 	@DeleteMapping("/deleteById/{id}")
-	public Evn deleteById(@PathVariable("id") String id) throws OhsException {
-		return evnConfigService.deleteById(Integer.parseInt(id));
+	public Evn deleteById(@PathVariable("id") String id, String tokenName) throws OhsException {
+		return evnConfigService.deleteById(Integer.parseInt(id), tokenName);
 	}
-	
-//	/**
-//	 * TODO PUT传值报错！！！麻蛋
-//	 * @param ohsSysConfig
-//	 * @return 
-//	 * @throws OhsException 
-//	 */
-//	@GetMapping("/updateById")
-//	public Evn updateById(Evn evn) throws OhsException {
-//		return evnConfigService.updateById(evn);
-//	}
-
 	
 	@PutMapping("/updateById")
 	@ResponseBody
@@ -94,6 +76,7 @@ public class OhsEvnConfigController {
 		evn.setEvnPort((String) requestParam.get("evnPort"));
 		evn.setEvnTyp((String) requestParam.get("evnTyp"));
 		evn.setDbType((String) requestParam.get("dbType"));
+		evn.setCreateUser((String) requestParam.get("tokenName"));
 		return evnConfigService.updateById(evn);
 	}
 }

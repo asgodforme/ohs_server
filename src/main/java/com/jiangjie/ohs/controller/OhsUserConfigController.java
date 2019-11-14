@@ -53,16 +53,10 @@ public class OhsUserConfigController {
 	}
 	
 	@DeleteMapping("/deleteById/{id}")
-	public User deleteById(@PathVariable("id") String id) throws OhsException {
-		return userConfigService.deleteById(Integer.parseInt(id));
+	public User deleteById(@PathVariable("id") String id, String tokenName) throws OhsException {
+		return userConfigService.deleteById(Integer.parseInt(id), tokenName);
 	}
 	
-	/**
-	 * TODO PUT传值报错！！！麻蛋
-	 * @param ohsSysConfig
-	 * @return 
-	 * @throws OhsException 
-	 */
 	@GetMapping("/updateById")
 	public User updateById(User user) throws OhsException {
 		return userConfigService.updateById(user);

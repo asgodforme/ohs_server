@@ -67,6 +67,7 @@ public class TableConfigServiceImpl implements TableConfigService {
 		OhsSysConfig ohsSysConfig = new OhsSysConfig();
 		ohsSysConfig.setSysAlias(StringUtils.isEmpty(table.getSysAlias()) ? null : table.getSysAlias());
 		ohsSysConfig.setSysChineseNme(StringUtils.isEmpty(table.getSysChineseNme()) ? null : table.getSysChineseNme());
+		ohsSysConfig.setCreateUser(table.getTokenName());
 
 		List<OhsSysConfig> ohsSysConfigLst = ohsSysConfigRepository.findAll(Example.of(ohsSysConfig));
 		if (CollectionUtils.isEmpty(ohsSysConfigLst)) {
@@ -82,6 +83,7 @@ public class TableConfigServiceImpl implements TableConfigService {
 		ohsTableConfig.setTableName(OhsUtils.putIfNotBlank(table.getTableName()));
 		ohsTableConfig.setTableChnName(OhsUtils.putIfNotBlank(table.getTableChnName()));
 		ohsTableConfig.setSysId(ohsSysConfig.getId());
+		ohsTableConfig.setCreateUser(table.getTokenName());
 		
 		Pageable pageable = PageRequest.of(table.getCurrent() - 1 < 0 ? 0 : table.getCurrent() - 1, table.getPageSize());
 		Page<OhsTableConfig> ohsTableConfigPage = ohsTableConfigRepository.findAll(Example.of(ohsTableConfig), pageable);
@@ -125,6 +127,7 @@ public class TableConfigServiceImpl implements TableConfigService {
 		OhsSysConfig ohsSysConfig = new OhsSysConfig();
 		ohsSysConfig.setSysAlias(OhsUtils.putIfNotBlank(table.getSysAlias()));
 		ohsSysConfig.setSysChineseNme(OhsUtils.putIfNotBlank(table.getSysChineseNme()));
+		ohsSysConfig.setCreateUser(table.getCreateUser());
 
 		List<OhsSysConfig> ohsSysConfigLst = ohsSysConfigRepository.findAll(Example.of(ohsSysConfig));
 		if (CollectionUtils.isEmpty(ohsSysConfigLst)) {
@@ -133,6 +136,7 @@ public class TableConfigServiceImpl implements TableConfigService {
 		
 		OhsTableConfig ohsTableConfig = toOhsTableConfig.apply(table);
 		ohsTableConfig.setSysId(ohsSysConfigLst.get(0).getId());
+		ohsTableConfig.setCreateUser(table.getCreateUser());
 		
 		ohsTableConfig = ohsTableConfigRepository.save(ohsTableConfig);
 		
@@ -166,6 +170,7 @@ public class TableConfigServiceImpl implements TableConfigService {
 		OhsSysConfig ohsSysConfig = new OhsSysConfig();
 		ohsSysConfig.setSysAlias(OhsUtils.putIfNotBlank(table.getSysAlias()));
 		ohsSysConfig.setSysChineseNme(OhsUtils.putIfNotBlank(table.getSysChineseNme()));
+		ohsSysConfig.setCreateUser(table.getCreateUser());
 
 		List<OhsSysConfig> ohsSysConfigLst = ohsSysConfigRepository.findAll(Example.of(ohsSysConfig));
 		if (CollectionUtils.isEmpty(ohsSysConfigLst)) {
@@ -183,7 +188,7 @@ public class TableConfigServiceImpl implements TableConfigService {
 		ohsTableConfig.setSchemaName(table.getSchemaName());
 		ohsTableConfig.setTableName(table.getTableName());
 		ohsTableConfig.setUpdateDate(new Timestamp(new Date().getTime()));
-		ohsTableConfig.setUpdateUser("admin");
+		ohsTableConfig.setUpdateUser(table.getCreateUser());
 		ohsTableConfig.setCreateDate(ohsTableConfigOpt.get().getCreateDate());
 		ohsTableConfig.setCreateUser(ohsTableConfigOpt.get().getCreateUser());
 		ohsTableConfig.setTableChnName(table.getTableChnName());

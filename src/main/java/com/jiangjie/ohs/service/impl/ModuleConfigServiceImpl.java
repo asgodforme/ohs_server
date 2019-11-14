@@ -50,6 +50,7 @@ public class ModuleConfigServiceImpl implements ModuleConfigService {
 		OhsSysConfig ohsSysConfig = new OhsSysConfig();
 		ohsSysConfig.setSysAlias(StringUtils.isEmpty(module.getSysAlias()) ? null : module.getSysAlias());
 		ohsSysConfig.setSysChineseNme(StringUtils.isEmpty(module.getSysChineseNme()) ? null : module.getSysChineseNme());
+		ohsSysConfig.setCreateUser(module.getCreateUser());
 
 		List<OhsSysConfig> ohsSysConfigLst = ohsSysConfigRepository.findAll(Example.of(ohsSysConfig));
 		if (CollectionUtils.isEmpty(ohsSysConfigLst)) {
@@ -62,6 +63,9 @@ public class ModuleConfigServiceImpl implements ModuleConfigService {
 		OhsModuleConfig ohsModuleConfig = new OhsModuleConfig();
 		ohsModuleConfig.setModuleAlias(StringUtils.isEmpty(module.getModuleAlias()) ? null : module.getModuleAlias());
 		ohsModuleConfig.setModuleName(StringUtils.isEmpty(module.getModuleName()) ? null : module.getModuleName());
+		RelationUserInfo userInfo = new RelationUserInfo();
+		userInfo.setCreateUser(module.getCreateUser());
+		ohsModuleConfig.setRelationUserInfo(userInfo);
 		// 如果送了系统码或者系统名，表示不是查询全部的模块
 		if (!StringUtils.isEmpty(module.getSysAlias()) || !StringUtils.isEmpty(module.getSysChineseNme())) {
 			ohsModuleConfig.setSysId(ohsSysConfig.getId());
@@ -120,7 +124,7 @@ public class ModuleConfigServiceImpl implements ModuleConfigService {
 		ohsModuleConfig.setModuleAlias(module.getModuleAlias());
 		ohsModuleConfig.setModuleName(module.getModuleName());
 
-		ohsModuleConfig.getRelationUserInfo().setUpdateUser("admin");
+		ohsModuleConfig.getRelationUserInfo().setUpdateUser(module.getCreateUser());
 		ohsModuleConfig.getRelationUserInfo().setUpdateDate(new Timestamp(new Date().getTime()));
 		
 		module.setUpdateDate(ohsModuleConfig.getRelationUserInfo().getUpdateDate());
@@ -132,10 +136,13 @@ public class ModuleConfigServiceImpl implements ModuleConfigService {
 	}
 
 	@Override
-	public Module deleteById(Integer id) throws OhsException {
+	public Module deleteById(Integer id, String tokenName) throws OhsException {
 		Optional<OhsModuleConfig> ohsModuleConfigOpt = ohsModuleConfigRepository.findById(id);
 		if (!ohsModuleConfigOpt.isPresent()) {
 			throw new OhsException("该模块不存在！可能被其他人删除了！");
+		}
+		if (!ohsModuleConfigOpt.get().getRelationUserInfo().getCreateUser().equals(tokenName)) {
+			throw new OhsException("无法删除非当前用户的数据！");
 		}
 		ohsModuleConfigRepository.deleteById(id);
 		Module module = new Module();
@@ -148,6 +155,7 @@ public class ModuleConfigServiceImpl implements ModuleConfigService {
 		OhsSysConfig ohsSysConfig = new OhsSysConfig();
 		ohsSysConfig.setSysAlias(StringUtils.isEmpty(module.getSysAlias()) ? null : module.getSysAlias());
 		ohsSysConfig.setSysChineseNme(StringUtils.isEmpty(module.getSysChineseNme()) ? null : module.getSysChineseNme());
+		ohsSysConfig.setCreateUser(module.getCreateUser());
 
 		List<OhsSysConfig> ohsSysConfigLst = ohsSysConfigRepository.findAll(Example.of(ohsSysConfig));
 		if (CollectionUtils.isEmpty(ohsSysConfigLst)) {
@@ -163,7 +171,7 @@ public class ModuleConfigServiceImpl implements ModuleConfigService {
 		ohsModuleConfig.setModuleName(module.getModuleName());
 		RelationUserInfo relationUserInfo = new RelationUserInfo();
 		relationUserInfo.setCreateDate(new Timestamp(new Date().getTime()));
-		relationUserInfo.setCreateUser("admin");
+		relationUserInfo.setCreateUser(module.getCreateUser());
 		ohsModuleConfig.setRelationUserInfo(relationUserInfo);
 		ohsModuleConfig = ohsModuleConfigRepository.save(ohsModuleConfig);
 		
@@ -183,6 +191,7 @@ public class ModuleConfigServiceImpl implements ModuleConfigService {
 	public List<Module> getModuleBySysAlias(Module module) throws OhsException {
 		OhsSysConfig ohsSysConfig = new OhsSysConfig();
 		ohsSysConfig.setSysAlias(module.getSysAlias());
+		ohsSysConfig.setCreateUser(module.getCreateUser());
 		List<OhsSysConfig> ohsSysConfigLst = ohsSysConfigRepository.findAll(Example.of(ohsSysConfig));
 		if (CollectionUtils.isEmpty(ohsSysConfigLst)) {
 			throw new OhsException("系统中不存在该系统码！");
@@ -193,6 +202,10 @@ public class ModuleConfigServiceImpl implements ModuleConfigService {
 		
 		OhsModuleConfig ohsModuleConfig = new OhsModuleConfig();
 		ohsModuleConfig.setSysId(ohsSysConfigLst.get(0).getId());
+		RelationUserInfo relationUserInfo = new RelationUserInfo();
+		relationUserInfo.setCreateUser(module.getCreateUser());
+		ohsModuleConfig.setRelationUserInfo(relationUserInfo);
+		
 		List<OhsModuleConfig> ohsModuleConfigLst = ohsModuleConfigRepository.findAll(Example.of(ohsModuleConfig));
 		if (CollectionUtils.isEmpty(ohsModuleConfigLst)) {
 			throw new OhsException("当前系统下不存在模块信息！");

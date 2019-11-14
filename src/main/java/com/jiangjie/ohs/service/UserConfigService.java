@@ -18,7 +18,7 @@ public interface UserConfigService {
 
 	User saveUserConfig(User user);
 
-	User deleteById(int parseInt) throws OhsException;
+	User deleteById(int parseInt, String tokenName) throws OhsException;
 
 	User updateById(User user);
 	

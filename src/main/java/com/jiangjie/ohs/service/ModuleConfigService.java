@@ -12,7 +12,7 @@ public interface ModuleConfigService {
 	
 	public Module updateById(Module module) throws OhsException;
 	
-	public Module deleteById(Integer id) throws OhsException;
+	public Module deleteById(Integer id, String tokenName) throws OhsException;
 	
 	public Module saveModuleConfig(Module module) throws OhsException;
 	

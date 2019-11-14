@@ -180,13 +180,12 @@ public class SysConfigServiceImpl implements SysConfigService {
 			throw new OhsException("该schema已经存在！");
 		}
 		ohsSysConfig.setCreateDate(new Timestamp(new Date().getTime()));
-		ohsSysConfig.setCreateUser("admin");
 		// 将该系统插入目录的数据查询中，以系统码作为展示
 		OhsMenu ohsMenu = new OhsMenu();
 		ohsMenu.setParentMenuId("4");
 		RelationUserInfo relationUserInfo = new RelationUserInfo();
 		relationUserInfo.setCreateDate(new Timestamp(new Date().getTime()));
-		relationUserInfo.setCreateUser("admin");
+		relationUserInfo.setCreateUser(ohsSysConfig.getCreateUser());
 		ohsMenu.setRelationUserInfo(relationUserInfo);
 		ohsMenu.setRole("1");
 		ohsMenu.setSubMenuName(ohsSysConfig.getSysAlias());
@@ -199,10 +198,13 @@ public class SysConfigServiceImpl implements SysConfigService {
 	
 	
 	@Override
-	public OhsSysConfig deleteById(OhsSysConfig ohsSysConfig) throws OhsException {
+	public OhsSysConfig deleteById(OhsSysConfig ohsSysConfig, String tokenName) throws OhsException {
 		Optional<OhsSysConfig> ohsSysConfigOpt = sysConfigRepository.findById(ohsSysConfig.getId());
 		if (!ohsSysConfigOpt.isPresent()) {
 			throw new OhsException("该系统已被删除！");
+		}
+		if (!ohsSysConfigOpt.get().getCreateUser().equals(tokenName)) {
+			throw new OhsException("无权限删除非当前用户的数据！");
 		}
 		ohsSysConfig.setCreateDate(ohsSysConfigOpt.get().getCreateDate());
 		ohsSysConfig.setCreateUser(ohsSysConfigOpt.get().getCreateUser());
@@ -227,6 +229,9 @@ public class SysConfigServiceImpl implements SysConfigService {
 		Optional<OhsSysConfig> ohsSysConfigOpt = sysConfigRepository.findById(ohsSysConfig.getId());
 		if (!ohsSysConfigOpt.isPresent()) {
 			throw new OhsException("该系统不存在！");
+		}
+		if (!ohsSysConfigOpt.get().getCreateUser().equals(ohsSysConfig.getCreateUser())) {
+			throw new OhsException("无权限修改非当前用户的数据！");
 		}
 		ohsSysConfig.setCreateDate(ohsSysConfigOpt.get().getCreateDate());
 		ohsSysConfig.setCreateUser(ohsSysConfigOpt.get().getCreateUser());

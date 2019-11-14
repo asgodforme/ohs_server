@@ -34,21 +34,11 @@ public class OhsModuleConfigController {
 	 * @throws OhsException
 	 */
 	@GetMapping("/getAllModule")
-	public PageResponse<Module> getAllModule(Module Module) throws OhsException {
-		return moduleConfigService.getAllModule(Module);
+	public PageResponse<Module> getAllModule(Module module, String tokenName) throws OhsException {
+		module.setCreateUser(tokenName);
+		return moduleConfigService.getAllModule(module);
 	}
 	
-//	/**
-//	 * TODO POST传值报错！！！麻蛋
-//	 */
-//	@GetMapping("/saveModuleConfig")
-//	public Module saveModuleConfig(Module module) throws OhsException {
-//		return moduleConfigService.saveModuleConfig(module);
-//	}
-	
-	/**
-	 * TODO POST传值报错！！！麻蛋
-	 */
 	@PostMapping("/saveModuleConfig")
 	@ResponseBody
 	public Module saveModuleConfig(@RequestBody Map<String, Object> requestParam) throws OhsException {
@@ -57,25 +47,15 @@ public class OhsModuleConfigController {
 		module.setSysChineseNme(((String) requestParam.get("sysChineseNme")).toUpperCase());
 		module.setModuleAlias(((String) requestParam.get("moduleAlias")).toUpperCase());
 		module.setModuleName(((String) requestParam.get("moduleName")).toUpperCase());
+		module.setCreateUser((String) requestParam.get("tokenName"));
 		return moduleConfigService.saveModuleConfig(module);
 	}
 	
 	@DeleteMapping("/deleteById/{id}")
-	public Module deleteById(@PathVariable("id") String id) throws OhsException {
-		return moduleConfigService.deleteById(Integer.parseInt(id));
+	public Module deleteById(@PathVariable("id") String id, String tokenName) throws OhsException {
+		return moduleConfigService.deleteById(Integer.parseInt(id), tokenName);
 	}
 	
-//	/**
-//	 * TODO PUT传值报错！！！麻蛋
-//	 * @param ohsSysConfig
-//	 * @return 
-//	 * @throws OhsException 
-//	 */
-//	@GetMapping("/updateById")
-//	public Module updateById(Module module) throws OhsException {
-//		return moduleConfigService.updateById(module);
-//	}
-
 	@PutMapping("/updateById")
 	@ResponseBody
 	public Module updateById(@RequestBody Map<String, Object> requestParam) throws OhsException {
@@ -85,6 +65,7 @@ public class OhsModuleConfigController {
 		module.setSysChineseNme((String) requestParam.get("sysChineseNme"));
 		module.setModuleAlias((String) requestParam.get("moduleAlias"));
 		module.setModuleName((String) requestParam.get("moduleName")); 
+		module.setCreateUser((String) requestParam.get("tokenName"));
 		return moduleConfigService.updateById(module);
 	}
 	
@@ -95,7 +76,8 @@ public class OhsModuleConfigController {
 	 * @throws OhsException 
 	 */
 	@GetMapping("/getModuleBySysAlias")
-	public List<Module> getModuleBySysAlias(Module module) throws OhsException {
+	public List<Module> getModuleBySysAlias(Module module, String tokenName) throws OhsException {
+		module.setCreateUser(tokenName);
 		return moduleConfigService.getModuleBySysAlias(module);
 	}
 

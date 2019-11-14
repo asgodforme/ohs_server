@@ -45,6 +45,7 @@ public class ColumnConfigServiceImpl implements ColumnConfigService {
 		OhsSysConfig ohsSysConfig = new OhsSysConfig();
 		ohsSysConfig.setSysAlias(OhsUtils.putIfNotBlank(column.getSysAlias()));
 		ohsSysConfig.setSysChineseNme(OhsUtils.putIfNotBlank(column.getSysChineseNme()));
+		ohsSysConfig.setCreateUser(column.getTokenName());
 
 		List<OhsSysConfig> ohsSysConfigLst = ohsSysConfigRepository.findAll(Example.of(ohsSysConfig));
 		if (CollectionUtils.isEmpty(ohsSysConfigLst)) {
@@ -60,6 +61,7 @@ public class ColumnConfigServiceImpl implements ColumnConfigService {
 		ohsTableConfig.setTableName(OhsUtils.putIfNotBlank(column.getTableName()));
 		ohsTableConfig.setTableChnName(OhsUtils.putIfNotBlank(column.getTableChnName()));
 		ohsTableConfig.setSysId(ohsSysConfig.getId());
+		ohsTableConfig.setCreateUser(column.getTokenName());
 
 		List<OhsTableConfig> ohsTableConfigLst = ohsTableConfigRepository.findAll(Example.of(ohsTableConfig));
 
@@ -153,6 +155,7 @@ public class ColumnConfigServiceImpl implements ColumnConfigService {
 		OhsSysConfig ohsSysConfig = new OhsSysConfig();
 		ohsSysConfig.setSysAlias(OhsUtils.putIfNotBlank(column.getSysAlias()));
 		ohsSysConfig.setSysChineseNme(OhsUtils.putIfNotBlank(column.getSysChineseNme()));
+		ohsSysConfig.setCreateUser(column.getCreateUser());
 
 		List<OhsSysConfig> ohsSysConfigLst = ohsSysConfigRepository.findAll(Example.of(ohsSysConfig));
 		if (CollectionUtils.isEmpty(ohsSysConfigLst)) {
@@ -163,6 +166,7 @@ public class ColumnConfigServiceImpl implements ColumnConfigService {
 		ohsTableConfig.setSchemaName(OhsUtils.putIfNotBlank(column.getSchemaName()));
 		ohsTableConfig.setTableName(OhsUtils.putIfNotBlank(column.getTableName()));
 		ohsTableConfig.setSysId(ohsSysConfigLst.get(0).getId());
+		ohsTableConfig.setCreateUser(column.getCreateUser());
 
 		List<OhsTableConfig> ohsTableConfigLst = ohsTableConfigRepository.findAll(Example.of(ohsTableConfig));
 
@@ -175,7 +179,7 @@ public class ColumnConfigServiceImpl implements ColumnConfigService {
 		ohsColumnConfig.setColumnName(column.getColumnName());
 		ohsColumnConfig.setCreateDate(new Timestamp(new Date().getTime()));
 		ohsColumnConfig.setIsHide(column.getIsHide());
-		ohsColumnConfig.setCreateUser("admin");
+		ohsColumnConfig.setCreateUser(column.getCreateUser());
 		ohsColumnConfig.setSysId(ohsTableConfig.getSysId());
 		ohsColumnConfig.setTableId(ohsTableConfigLst.get(0).getId());
 
@@ -188,10 +192,13 @@ public class ColumnConfigServiceImpl implements ColumnConfigService {
 	}
 
 	@Override
-	public ColumnDTO deleteById(int id) throws OhsException {
+	public ColumnDTO deleteById(int id, String tokenName) throws OhsException {
 		Optional<OhsColumnConfig> ohsColumnConfiOpt = ohsColumnConfigRepository.findById(id);
 		if (!ohsColumnConfiOpt.isPresent()) {
 			throw new OhsException("该字段信息已被删除！请重新查询！");
+		}
+		if (!ohsColumnConfiOpt.get().getCreateUser().equals(tokenName)) {
+			throw new OhsException("禁止删除非当前用户的字段信息！");
 		}
 		ohsColumnConfigRepository.deleteById(id);
 		ColumnDTO column = new ColumnDTO();
@@ -204,6 +211,7 @@ public class ColumnConfigServiceImpl implements ColumnConfigService {
 		OhsSysConfig ohsSysConfig = new OhsSysConfig();
 		ohsSysConfig.setSysAlias(OhsUtils.putIfNotBlank(column.getSysAlias()));
 		ohsSysConfig.setSysChineseNme(OhsUtils.putIfNotBlank(column.getSysChineseNme()));
+		ohsSysConfig.setCreateUser(column.getCreateUser());
 
 		List<OhsSysConfig> ohsSysConfigLst = ohsSysConfigRepository.findAll(Example.of(ohsSysConfig));
 		if (CollectionUtils.isEmpty(ohsSysConfigLst)) {
@@ -214,6 +222,7 @@ public class ColumnConfigServiceImpl implements ColumnConfigService {
 		ohsTableConfig.setSchemaName(OhsUtils.putIfNotBlank(column.getSchemaName()));
 		ohsTableConfig.setTableName(OhsUtils.putIfNotBlank(column.getTableName()));
 		ohsTableConfig.setSysId(ohsSysConfigLst.get(0).getId());
+		ohsTableConfig.setCreateUser(column.getCreateUser());
 
 		List<OhsTableConfig> ohsTableConfigLst = ohsTableConfigRepository.findAll(Example.of(ohsTableConfig));
 
@@ -226,7 +235,7 @@ public class ColumnConfigServiceImpl implements ColumnConfigService {
 		ohsColumnConfig.setColumnAlias(column.getColumnAlias());
 		ohsColumnConfig.setColumnName(column.getColumnName());
 		ohsColumnConfig.setUpdateDate(new Timestamp(new Date().getTime()));
-		ohsColumnConfig.setUpdateUser("admin");
+		ohsColumnConfig.setUpdateUser(column.getCreateUser());
 		ohsColumnConfig.setIsHide(column.getIsHide());
 		ohsColumnConfig.setCreateDate(ohsTableConfigLst.get(0).getCreateDate());
 		ohsColumnConfig.setCreateUser(ohsTableConfigLst.get(0).getCreateUser());

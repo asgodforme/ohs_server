@@ -82,7 +82,7 @@ public class UserConfigServiceImpl implements UserConfigService {
 			newUser.setRole(usr.getRole());
 			newUser.setIpAddr(user.getIpAddr());
 			newUser.setCreateDate(new Timestamp(new Date().getTime()));
-			newUser.setCreateUser("admin");
+			newUser.setCreateUser(user.getTokenName());
 			return newUser;
 		};
 		
@@ -107,10 +107,13 @@ public class UserConfigServiceImpl implements UserConfigService {
 	}
 
 	@Override
-	public User deleteById(int id) throws OhsException {
+	public User deleteById(int id, String tokenName) throws OhsException {
 		Optional<OhsUserConfig> ohsUserConfigOpt = ohsUserConfigRepository.findById(id);
 		if (!ohsUserConfigOpt.isPresent()) {
 			throw new OhsException("该人员已被删除！");
+		}
+		if (!ohsUserConfigOpt.get().getCreateUser().equals(tokenName)) {
+			throw new OhsException("禁止删除非当前用户数据！");
 		}
 		ohsUserConfigRepository.deleteById(id);
 		User user = new User();
@@ -128,7 +131,7 @@ public class UserConfigServiceImpl implements UserConfigService {
 			newUser.setPassword(usr.getPassword());
 			newUser.setRole(usr.getRole());
 			newUser.setUpdateDate(new Timestamp(new Date().getTime()));
-			newUser.setUpdateUser("admin");
+			newUser.setUpdateUser(user.getTokenName());
 			return newUser;
 		};
 		

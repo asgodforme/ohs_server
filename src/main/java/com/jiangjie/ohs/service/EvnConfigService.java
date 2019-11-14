@@ -10,7 +10,7 @@ public interface EvnConfigService {
 
 	Evn saveEvnConfig(Evn evn) throws OhsException;
 
-	Evn deleteById(int id) throws OhsException;
+	Evn deleteById(int id, String tokenName) throws OhsException;
 
 	Evn updateById(Evn evn) throws OhsException;
 

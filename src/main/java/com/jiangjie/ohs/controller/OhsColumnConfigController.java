@@ -37,15 +37,6 @@ public class OhsColumnConfigController {
 		return columnConfigService.getAllColumn(Column);
 	}
 	
-	/**
-	 * TODO POST传值报错！！！麻蛋
-	 */
-//	@GetMapping("/saveColumnConfig")
-//	public ColumnDTO saveColumnConfig(ColumnDTO column) throws OhsException {
-//		System.out.println(column);
-//		return columnConfigService.saveColumnConfig(column);
-//	}
-	
 	@PostMapping("/saveColumnConfig")
 	@ResponseBody
 	public ColumnDTO saveColumnConfig(@RequestBody Map<String, Object> requestParam) throws OhsException {
@@ -58,25 +49,16 @@ public class OhsColumnConfigController {
 		column.setColumnName((String) requestParam.get("columnName"));
 		column.setIsHide((String) requestParam.get("isHide"));
 		column.setTableChnName((String) requestParam.get("tableChnName"));
+		column.setCreateUser((String) requestParam.get("tokenName"));
 		return columnConfigService.saveColumnConfig(column);
 	}
 	
 	
 	@DeleteMapping("/deleteById/{id}")
-	public ColumnDTO deleteById(@PathVariable("id") String id) throws OhsException {
-		return columnConfigService.deleteById(Integer.parseInt(id));
+	public ColumnDTO deleteById(@PathVariable("id") String id, String tokenName) throws OhsException {
+		return columnConfigService.deleteById(Integer.parseInt(id), tokenName);
 	}
 	
-	/**
-	 * TODO PUT传值报错！！！麻蛋
-	 * @param ohsSysConfig
-	 * @return 
-	 * @throws OhsException 
-	 */
-//	@GetMapping("/updateById")
-//	public ColumnDTO updateById(ColumnDTO column) throws OhsException {
-//		return columnConfigService.updateById(column);
-//	}
 	
 	@PutMapping("/updateById")
 	@ResponseBody
@@ -91,6 +73,7 @@ public class OhsColumnConfigController {
 		column.setColumnName((String) requestParam.get("columnName"));
 		column.setIsHide((String) requestParam.get("isHide"));
 		column.setTableChnName((String) requestParam.get("tableChnName"));
+		column.setCreateUser((String) requestParam.get("tokenName"));
 		return columnConfigService.updateById(column);
 	}
 

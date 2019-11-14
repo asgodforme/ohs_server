@@ -37,14 +37,6 @@ public class OhsTableConfigController {
 		return tableConfigService.getAllTable(Table);
 	}
 	
-//	/**
-//	 * TODO POST传值报错！！！麻蛋
-//	 */
-//	@GetMapping("/saveTableConfig")
-//	public Table saveTableConfig(Table table) throws OhsException {
-//		return tableConfigService.saveTableConfig(table);
-//	}
-	
 	@PostMapping("/saveTableConfig")
 	@ResponseBody
 	public Table saveTableConfig(@RequestBody Map<String, Object> requestParam) throws OhsException {
@@ -54,6 +46,7 @@ public class OhsTableConfigController {
 		table.setSchemaName((String) requestParam.get("schemaName"));
 		table.setTableName((String) requestParam.get("tableName"));
 		table.setTableChnName((String) requestParam.get("tableChnName"));
+		table.setCreateUser((String) requestParam.get("tokenName"));
 		return tableConfigService.saveTableConfig(table);
 	}
 	
@@ -62,17 +55,6 @@ public class OhsTableConfigController {
 		return tableConfigService.deleteById(Integer.parseInt(id));
 	}
 	
-	/**
-	 * TODO PUT传值报错！！！麻蛋
-	 * @param ohsSysConfig
-	 * @return 
-	 * @throws OhsException 
-	 */
-//	@GetMapping("/updateById")
-//	public Table updateById(Table table) throws OhsException {
-//		return tableConfigService.updateById(table);
-//	}
-//	
 	@PutMapping("/updateById")
 	@ResponseBody
 	public Table updateById(@RequestBody Map<String, Object> requestParam) throws OhsException {
@@ -83,6 +65,7 @@ public class OhsTableConfigController {
 		table.setSchemaName((String) requestParam.get("schemaName"));
 		table.setTableName((String) requestParam.get("tableName"));
 		table.setTableChnName((String) requestParam.get("tableChnName"));
+		table.setCreateUser((String) requestParam.get("tokenName"));
 		return tableConfigService.updateById(table);
 	}
 

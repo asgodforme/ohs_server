@@ -43,7 +43,7 @@ public interface SysConfigService {
 	 * @return
 	 * @throws OhsException
 	 */
-	public OhsSysConfig deleteById(OhsSysConfig ohsSysConfig) throws OhsException;
+	public OhsSysConfig deleteById(OhsSysConfig ohsSysConfig, String tokenName) throws OhsException;
 	
 	/**
 	 * 更新系统配置信息

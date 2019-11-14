@@ -35,6 +35,16 @@ public class User {
 	private String ipAddr;
 
 	private String isFirstLogin;
+	
+	private String tokenName;
+	
+	public String getTokenName() {
+		return tokenName;
+	}
+
+	public void setTokenName(String tokenName) {
+		this.tokenName = tokenName;
+	}
 
 	public String getIsFirstLogin() {
 		return isFirstLogin;
