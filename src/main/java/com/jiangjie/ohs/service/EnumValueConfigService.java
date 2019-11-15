@@ -10,7 +10,7 @@ public interface EnumValueConfigService {
 
 	ColumnDTO saveEnumValueConfig(ColumnDTO column) throws OhsException;
 
-	ColumnDTO deleteById(int parseInt) throws OhsException;
+	ColumnDTO deleteById(int parseInt, String tokenName) throws OhsException;
 
 	ColumnDTO updateById(ColumnDTO column) throws OhsException;
 

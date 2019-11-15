@@ -45,12 +45,13 @@ public class OhsInterfaceConfigController {
 		interfaceObj.setInterfaceAlias((String) requestParam.get("interfaceAlias"));
 		interfaceObj.setRequestTemplate((String) requestParam.get("requestTemplate"));
 		interfaceObj.setResponseTemplate((String) requestParam.get("responseTemplate"));
+		interfaceObj.setCreateUser((String) requestParam.get("tokenName"));
 		return interfaceConfigService.saveInterfaceConfig(interfaceObj);
 	}
 
 	@DeleteMapping("/deleteById/{id}")
-	public Interface deleteById(@PathVariable("id") String id) throws OhsException {
-		return interfaceConfigService.deleteById(Integer.parseInt(id));
+	public Interface deleteById(@PathVariable("id") String id, String tokenName) throws OhsException {
+		return interfaceConfigService.deleteById(Integer.parseInt(id), tokenName);
 	}
 
 	@PutMapping("/updateById")
@@ -69,6 +70,7 @@ public class OhsInterfaceConfigController {
 		interfaceObj.setInterfaceAlias((String) requestParam.get("interfaceAlias"));
 		interfaceObj.setRequestTemplate((String) requestParam.get("requestTemplate"));
 		interfaceObj.setResponseTemplate((String) requestParam.get("responseTemplate"));
+		interfaceObj.setCreateUser((String) requestParam.get("tokenName"));
 		return interfaceConfigService.updateById(interfaceObj);
 	}
 
@@ -79,6 +81,7 @@ public class OhsInterfaceConfigController {
 		interfaceObj.setTargetServerId(requestParam.get("targetServerId") + "");
 		interfaceObj.setId(requestParam.get("id") + "");
 		interfaceObj.setSingleRecordsId((Integer) requestParam.get("singleRecordsId"));
+		interfaceObj.setCreateUser((String) requestParam.get("tokenName"));
 		return interfaceConfigService.restfulRequest(interfaceObj);
 	}
 }

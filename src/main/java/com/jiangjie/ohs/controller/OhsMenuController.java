@@ -21,8 +21,8 @@ public class OhsMenuController {
 	private MenuService menuService;
 	
 	@GetMapping("/getAllMenu")
-	public List<Menu> getAllMenu(HttpServletRequest request) {
-		return menuService.packageMenu();
+	public List<Menu> getAllMenu(HttpServletRequest request, String tokenName) {
+		return menuService.packageMenu(tokenName);
 	}
 
 }

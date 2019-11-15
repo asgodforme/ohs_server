@@ -33,18 +33,11 @@ public class OhsSingleSqlConfigController {
 	 * @throws OhsException
 	 */
 	@GetMapping("/getAllSingleSql")
-	public PageResponse<SingleSql> getAllSingleSql(SingleSql SingleSql) throws OhsException {
+	public PageResponse<SingleSql> getAllSingleSql(SingleSql SingleSql, String tokenName) throws OhsException {
+		SingleSql.setCreateUser(tokenName);
 		return singleSqlConfigService.getAllSingleSql(SingleSql);
 	}
 	
-//	/**
-//	 * TODO POST传值报错！！！麻蛋
-//	 */
-//	@GetMapping("/saveSingleSqlConfig")
-//	public SingleSql saveSingleSqlConfig(SingleSql singleSql) throws OhsException {
-//		return singleSqlConfigService.saveSingleSqlConfig(singleSql);
-//	}
-
 	@PostMapping("/saveSingleSqlConfig")
 	@ResponseBody
 	public SingleSql saveSingleSqlConfig(@RequestBody Map<String, Object> requestParam) throws OhsException {
@@ -59,25 +52,14 @@ public class OhsSingleSqlConfigController {
 		singleSql.setRemark((String) requestParam.get("remark"));
 		singleSql.setColumnAlias((String) requestParam.get("columnAlias"));
 		singleSql.setColumnName((String) requestParam.get("columnName"));
-		
+		singleSql.setCreateUser((String) requestParam.get("tokenName"));
 		return singleSqlConfigService.saveSingleSqlConfig(singleSql);
 	}
 	
 	@DeleteMapping("/deleteById/{id}")
-	public SingleSql deleteById(@PathVariable("id") String id) throws OhsException {
-		return singleSqlConfigService.deleteById(Integer.parseInt(id));
+	public SingleSql deleteById(@PathVariable("id") String id, String tokenName) throws OhsException {
+		return singleSqlConfigService.deleteById(Integer.parseInt(id), tokenName);
 	}
-	
-//	/**
-//	 * TODO PUT传值报错！！！麻蛋
-//	 * @param ohsSysConfig
-//	 * @return 
-//	 * @throws OhsException 
-//	 */
-//	@GetMapping("/updateById")
-//	public SingleSql updateById(SingleSql singleSql) throws OhsException {
-//		return singleSqlConfigService.updateById(singleSql);
-//	}
 	
 	@PutMapping("/updateById")
 	@ResponseBody
@@ -94,6 +76,7 @@ public class OhsSingleSqlConfigController {
 		singleSql.setRemark((String) requestParam.get("remark"));
 		singleSql.setColumnAlias((String) requestParam.get("columnAlias"));
 		singleSql.setColumnName((String) requestParam.get("columnName"));
+		singleSql.setCreateUser((String) requestParam.get("tokenName"));
 		
 		return singleSqlConfigService.updateById(singleSql);
 	}

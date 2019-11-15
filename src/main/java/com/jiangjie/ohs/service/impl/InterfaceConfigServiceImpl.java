@@ -26,6 +26,7 @@ import com.jiangjie.ohs.entity.OhsInterfaceSingleRecords;
 import com.jiangjie.ohs.entity.OhsModuleConfig;
 import com.jiangjie.ohs.entity.OhsSysConfig;
 import com.jiangjie.ohs.entity.autoTest.OhsInterfaceConfig;
+import com.jiangjie.ohs.entity.common.RelationUserInfo;
 import com.jiangjie.ohs.exception.OhsException;
 import com.jiangjie.ohs.repository.OhsEnvironmentConfigRepository;
 import com.jiangjie.ohs.repository.OhsInterfaceConfigRepository;
@@ -61,7 +62,7 @@ public class InterfaceConfigServiceImpl implements InterfaceConfigService {
 		ohsSysConfig.setSysAlias(StringUtils.isEmpty(interfaceObj.getSysAlias()) ? null : interfaceObj.getSysAlias());
 		ohsSysConfig.setSysChineseNme(
 				StringUtils.isEmpty(interfaceObj.getSysChineseNme()) ? null : interfaceObj.getSysChineseNme());
-
+		ohsSysConfig.setCreateUser(interfaceObj.getCreateUser());
 		List<OhsSysConfig> ohsSysConfigLst = ohsSysConfigRepository.findAll(Example.of(ohsSysConfig));
 		if (CollectionUtils.isEmpty(ohsSysConfigLst)) {
 			throw new OhsException("当前系统不存在对应系统配置信息，请先添加系统配置信息后再查询或新增修改模块！");
@@ -75,6 +76,9 @@ public class InterfaceConfigServiceImpl implements InterfaceConfigService {
 				StringUtils.isEmpty(interfaceObj.getModuleAlias()) ? null : interfaceObj.getModuleAlias());
 		ohsModuleConfig
 				.setModuleName(StringUtils.isEmpty(interfaceObj.getModuleName()) ? null : interfaceObj.getModuleName());
+		RelationUserInfo relationUserInfo = new RelationUserInfo();
+		relationUserInfo.setCreateUser(interfaceObj.getCreateUser());
+		ohsModuleConfig.setRelationUserInfo(relationUserInfo);
 		// 如果送了系统码或者系统名，表示不是查询全部的模块
 		if (!StringUtils.isEmpty(interfaceObj.getSysAlias()) || !StringUtils.isEmpty(interfaceObj.getSysChineseNme())) {
 			ohsModuleConfig.setSysId(ohsSysConfig.getId());
@@ -99,7 +103,7 @@ public class InterfaceConfigServiceImpl implements InterfaceConfigService {
 		if (!StringUtils.isEmpty(interfaceObj.getMethod())) {
 			ohsInterfaceConfig.setMethod(interfaceObj.getMethod());
 		}
-
+		ohsInterfaceConfig.setCreateUser(interfaceObj.getCreateUser());
 		Page<OhsInterfaceConfig> ohsInterfaceConfigListPage = ohsInterfaceConfigRepository
 				.findAll(Example.of(ohsInterfaceConfig), pageable);
 		List<OhsInterfaceConfig> ohsInterfaceConfigList = ohsInterfaceConfigListPage.getContent();
@@ -141,6 +145,7 @@ public class InterfaceConfigServiceImpl implements InterfaceConfigService {
 				
 				OhsInterfaceSingleRecords ohsInterfaceSingleRecords = new OhsInterfaceSingleRecords();
 				ohsInterfaceSingleRecords.setInterfaceId(ohsIter.getId());
+				ohsInterfaceSingleRecords.setCreateUser(interfaceObj.getCreateUser());
 				List<OhsInterfaceSingleRecords> ohsInterfaceSingleRecordsLst = ohsInterfaceSingleRecordsRepository.findAll(Example.of(ohsInterfaceSingleRecords));
 				if (!CollectionUtils.isEmpty(ohsInterfaceSingleRecordsLst)) {
 					ohsInterfaceSingleRecordsLst.sort(Comparator.comparing(OhsInterfaceSingleRecords::getId));
@@ -155,6 +160,7 @@ public class InterfaceConfigServiceImpl implements InterfaceConfigService {
 			
 			OhsEnvironmentConfig ohsEnvironmentConfig = new OhsEnvironmentConfig();
 			ohsEnvironmentConfig.setSysId(ohsSysConfig.getId());
+			ohsEnvironmentConfig.setRelationUserInfo(relationUserInfo);
 			List<OhsEnvironmentConfig> ohsEnvironmentConfigLst = ohsEnvironmentConfigRepository.findAll(Example.of(ohsEnvironmentConfig));
 			List<Interface.EnvironmentInfo> environmentInfoLst = new ArrayList<>();
 			ohsEnvironmentConfigLst.stream().forEach(env -> {
@@ -167,7 +173,6 @@ public class InterfaceConfigServiceImpl implements InterfaceConfigService {
 			
 			interfaceLst.add(interfaceRetObj);
 		}
-
 		
 		PageResponse<Interface> modulePageRsp = new PageResponse<Interface>(interfaceLst,
 				ohsInterfaceConfigListPage.getNumber(), ohsInterfaceConfigListPage.getSize(),
@@ -182,7 +187,7 @@ public class InterfaceConfigServiceImpl implements InterfaceConfigService {
 		ohsSysConfig.setSysAlias(StringUtils.isEmpty(interfaceObj.getSysAlias()) ? null : interfaceObj.getSysAlias());
 		ohsSysConfig.setSysChineseNme(
 				StringUtils.isEmpty(interfaceObj.getSysChineseNme()) ? null : interfaceObj.getSysChineseNme());
-
+		ohsSysConfig.setCreateUser(interfaceObj.getCreateUser());
 		List<OhsSysConfig> ohsSysConfigLst = ohsSysConfigRepository.findAll(Example.of(ohsSysConfig));
 		if (CollectionUtils.isEmpty(ohsSysConfigLst)) {
 			throw new OhsException("当前系统不存在对应系统配置信息，请先添加系统配置信息后再查询或新增修改模块！");
@@ -196,6 +201,9 @@ public class InterfaceConfigServiceImpl implements InterfaceConfigService {
 				StringUtils.isEmpty(interfaceObj.getModuleAlias()) ? null : interfaceObj.getModuleAlias());
 		ohsModuleConfig
 				.setModuleName(StringUtils.isEmpty(interfaceObj.getModuleName()) ? null : interfaceObj.getModuleName());
+		RelationUserInfo relationUserInfo = new RelationUserInfo();
+		relationUserInfo.setCreateUser(interfaceObj.getCreateUser());
+		ohsModuleConfig.setRelationUserInfo(relationUserInfo);
 		// 如果送了系统码或者系统名，表示不是查询全部的模块
 		if (!StringUtils.isEmpty(interfaceObj.getSysAlias()) || !StringUtils.isEmpty(interfaceObj.getSysChineseNme())) {
 			ohsModuleConfig.setSysId(ohsSysConfig.getId());
@@ -214,7 +222,7 @@ public class InterfaceConfigServiceImpl implements InterfaceConfigService {
 		ohsInterfaceConfig.setUrlPath(interfaceObj.getUrlPath());
 		ohsInterfaceConfig.setMethod(interfaceObj.getMethod());
 		ohsInterfaceConfig.setCreateDate(new Timestamp(new Date().getTime()));
-		ohsInterfaceConfig.setCreateUser("admin");
+		ohsInterfaceConfig.setCreateUser(interfaceObj.getCreateUser());
 		ohsInterfaceConfig.setInterfaceAlias(interfaceObj.getInterfaceAlias());
 		ohsInterfaceConfig.setInterfaceName(interfaceObj.getInterfaceName());
 		ohsInterfaceConfig.setInterfaceType(interfaceObj.getInterfaceType());
@@ -230,10 +238,13 @@ public class InterfaceConfigServiceImpl implements InterfaceConfigService {
 	}
 
 	@Override
-	public Interface deleteById(int id) throws OhsException {
+	public Interface deleteById(int id, String tokenName) throws OhsException {
 		Optional<OhsInterfaceConfig> ohsInterfaceConfigOpt = ohsInterfaceConfigRepository.findById(id);
 		if (!ohsInterfaceConfigOpt.isPresent()) {
 			throw new OhsException("该接口信息已被删除！请重新查询！");
+		}
+		if (!ohsInterfaceConfigOpt.get().getCreateUser().equals(tokenName)) {
+			throw new OhsException("禁止删除非当前用户数据！");
 		}
 		ohsInterfaceConfigRepository.deleteById(id);
 		Interface interfaceObj = new Interface();
@@ -247,7 +258,7 @@ public class InterfaceConfigServiceImpl implements InterfaceConfigService {
 		ohsSysConfig.setSysAlias(StringUtils.isEmpty(interfaceObj.getSysAlias()) ? null : interfaceObj.getSysAlias());
 		ohsSysConfig.setSysChineseNme(
 				StringUtils.isEmpty(interfaceObj.getSysChineseNme()) ? null : interfaceObj.getSysChineseNme());
-
+		ohsSysConfig.setCreateUser(interfaceObj.getCreateUser());
 		List<OhsSysConfig> ohsSysConfigLst = ohsSysConfigRepository.findAll(Example.of(ohsSysConfig));
 		if (CollectionUtils.isEmpty(ohsSysConfigLst)) {
 			throw new OhsException("当前系统不存在对应系统配置信息，请先添加系统配置信息后再查询或新增修改模块！");
@@ -261,6 +272,9 @@ public class InterfaceConfigServiceImpl implements InterfaceConfigService {
 				StringUtils.isEmpty(interfaceObj.getModuleAlias()) ? null : interfaceObj.getModuleAlias());
 		ohsModuleConfig
 				.setModuleName(StringUtils.isEmpty(interfaceObj.getModuleName()) ? null : interfaceObj.getModuleName());
+		RelationUserInfo relationUserInfo = new RelationUserInfo();
+		relationUserInfo.setCreateUser(interfaceObj.getCreateUser());
+		ohsModuleConfig.setRelationUserInfo(relationUserInfo);
 		// 如果送了系统码或者系统名，表示不是查询全部的模块
 		if (!StringUtils.isEmpty(interfaceObj.getSysAlias()) || !StringUtils.isEmpty(interfaceObj.getSysChineseNme())) {
 			ohsModuleConfig.setSysId(ohsSysConfig.getId());
@@ -287,7 +301,7 @@ public class InterfaceConfigServiceImpl implements InterfaceConfigService {
 		ohsInterfaceConfig.setCreateDate(ohsInterfaceConfigOpt.get().getCreateDate());
 		ohsInterfaceConfig.setCreateUser(ohsInterfaceConfigOpt.get().getCreateUser());
 		ohsInterfaceConfig.setUpdateDate(new Timestamp(new Date().getTime()));
-		ohsInterfaceConfig.setUpdateUser("admin");
+		ohsInterfaceConfig.setUpdateUser(interfaceObj.getCreateUser());
 		ohsInterfaceConfig.setInterfaceType(interfaceObj.getInterfaceType());
 		ohsInterfaceConfig.setInterfaceAlias(interfaceObj.getInterfaceAlias());
 		ohsInterfaceConfig.setInterfaceName(interfaceObj.getInterfaceName());
@@ -299,7 +313,7 @@ public class InterfaceConfigServiceImpl implements InterfaceConfigService {
 		
 		interfaceObj.setId("" + ohsInterfaceConfig.getId());
 		interfaceObj.setUpdateDate(new Timestamp(new Date().getTime()));
-		interfaceObj.setUpdateUser("admin");
+		interfaceObj.setUpdateUser(interfaceObj.getCreateUser());
 		interfaceObj.setCreateUser(ohsInterfaceConfig.getCreateUser());
 		interfaceObj.setCreateDate(ohsInterfaceConfig.getCreateDate());
 		return interfaceObj;
@@ -337,7 +351,7 @@ public class InterfaceConfigServiceImpl implements InterfaceConfigService {
 					ohsInterfaceSingleRecords.setResponseData(msg);
 				} else {
 					ohsInterfaceSingleRecords.setResponseData(msg);
-					ohsInterfaceSingleRecords.setCreateUser("admin");
+					ohsInterfaceSingleRecords.setCreateUser(interfaceObj.getCreateUser());
 					ohsInterfaceSingleRecords.setCreateDate(new Timestamp(new Date().getTime()));
 				}
 				ohsInterfaceSingleRecordsRepository.save(ohsInterfaceSingleRecords);

@@ -10,7 +10,7 @@ public interface SingleSqlConfigService {
 
 	SingleSql saveSingleSqlConfig(SingleSql singleSql) throws OhsException;
 
-	SingleSql deleteById(int parseInt) throws OhsException;
+	SingleSql deleteById(int parseInt, String tokenName) throws OhsException;
 
 	SingleSql updateById(SingleSql singleSql) throws OhsException;
 

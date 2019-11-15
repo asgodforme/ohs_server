@@ -9,6 +9,6 @@ public interface MenuService {
 	/**
 	 * 组装前台需要的菜单结构
 	 */
-	public List<Menu> packageMenu();
+	public List<Menu> packageMenu(String tokenName);
 
 }

@@ -10,7 +10,7 @@ public interface InterfaceConfigService {
 
 	Interface saveInterfaceConfig(Interface interfaceObj) throws OhsException;
 
-	Interface deleteById(int parseInt) throws OhsException;
+	Interface deleteById(int parseInt, String tokenName) throws OhsException;
 
 	Interface updateById(Interface interfaceObj) throws OhsException;
 

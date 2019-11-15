@@ -23,7 +23,7 @@ public class MenuServiceImpl implements MenuService {
 	/**
 	 * 组装前台需要的菜单结构
 	 */
-	public List<Menu> packageMenu() {
+	public List<Menu> packageMenu(String tokenName) {
 		OhsMenu qryOhsMenu = new OhsMenu();
 		qryOhsMenu.setIsHide("0");
 		List<OhsMenu> ohsMenus = ohsMenuRepository.findAll(Example.of(qryOhsMenu));
@@ -38,12 +38,23 @@ public class MenuServiceImpl implements MenuService {
 			menu.setSubMenus(subMenus);
 			for (OhsMenu om : ohsMenus) {
 				if (!StringUtils.isEmpty(om.getParentMenuId()) && om.getParentMenuId().equals(String.valueOf(ohsMenu.getId()))) {
-					SubMenu subMenu = new SubMenu();
-					subMenu.setId(String.valueOf(om.getId()));
-					subMenu.setSubMenuName(om.getSubMenuName());
-					subMenu.setSubMenuUrl(om.getSubMenuUrl());
-					subMenu.setRole(om.getRole());
-					subMenus.add(subMenu);
+					if ("dataQuery".equals(om.getSubMenuUrl())) {
+						if (tokenName.equals(om.getRelationUserInfo().getCreateUser())) {
+							SubMenu subMenu = new SubMenu();
+							subMenu.setId(String.valueOf(om.getId()));
+							subMenu.setSubMenuName(om.getSubMenuName());
+							subMenu.setSubMenuUrl(om.getSubMenuUrl());
+							subMenu.setRole(om.getRole());
+							subMenus.add(subMenu);
+						}
+					} else {
+						SubMenu subMenu = new SubMenu();
+						subMenu.setId(String.valueOf(om.getId()));
+						subMenu.setSubMenuName(om.getSubMenuName());
+						subMenu.setSubMenuUrl(om.getSubMenuUrl());
+						subMenu.setRole(om.getRole());
+						subMenus.add(subMenu);
+					}
 				}
 			}
 			menus.add(menu);

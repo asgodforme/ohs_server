@@ -106,6 +106,9 @@
 			<if test="sysChineseNme != null and sysChineseNme != ''">
 				and sysCfg.sys_chinese_nme = #{sysChineseNme}
 			</if>
+			<if test="createUser != null">
+				and sysCfg.create_user = #{createUser}
+			</if>
 		inner join 
 			ohs_module_config moduleCfg
 		on 
@@ -116,6 +119,9 @@
 			<if test="moduleName != null and moduleName != ''">
 				and moduleCfg.module_name = #{moduleName}
 			</if>
+			<if test="createUser != null">
+				and moduleCfg.create_user = #{createUser}
+			</if>
 		inner join 
 			ohs_table_config tableCfg
 		on 
@@ -125,6 +131,9 @@
 			</if>
 			<if test="tableChnName != null and tableChnName != ''">
 				and tableCfg.table_chn_name = #{tableChnName}
+			</if>
+			<if test="createUser != null">
+				and tableCfg.create_user = #{createUser}
 			</if>
 		left join
 			ohs_single_query_where_info singleQueryWhereInfo 
@@ -137,6 +146,9 @@
 			</if>
 			<if test="singleTableSql != null and singleTableSql != ''">
 				and singleSqlCfg.single_table_sql = #{singleTableSql}
+			</if>
+			<if test="createUser != null">
+				and singleSqlCfg.create_user = #{createUser}
 			</if>
 			limit #{pageSize} offset #{offsetSize}
 	</select>
@@ -156,6 +168,9 @@
 			<if test="sysChineseNme != null and sysChineseNme != ''">
 				and sysCfg.sys_chinese_nme = #{sysChineseNme}
 			</if>
+			<if test="createUser != null">
+				and sysCfg.create_user = #{createUser}
+			</if>
 		inner join 
 			ohs_module_config moduleCfg
 		on 
@@ -166,6 +181,9 @@
 			<if test="moduleName != null and moduleName != ''">
 				and moduleCfg.module_name = #{moduleName}
 			</if>
+			<if test="createUser != null">
+				and moduleCfg.create_user = #{createUser}
+			</if>
 		inner join 
 			ohs_table_config tableCfg
 		on 
@@ -175,6 +193,9 @@
 			</if>
 			<if test="tableChnName != null and tableChnName != ''">
 				and tableCfg.table_chn_name = #{tableChnName}
+			</if>
+			<if test="createUser != null">
+				and tableCfg.create_user = #{createUser}
 			</if>
 		left join
 			ohs_single_query_where_info singleQueryWhereInfo 
@@ -187,6 +208,9 @@
 			</if>
 			<if test="singleTableSql != null and singleTableSql != ''">
 				and singleSqlCfg.single_table_sql = #{singleTableSql}
+			</if>
+			<if test="createUser != null">
+				and singleSqlCfg.create_user = #{createUser}
 			</if>
 	</select>
 	

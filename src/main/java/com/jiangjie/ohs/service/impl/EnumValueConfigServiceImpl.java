@@ -54,6 +54,7 @@ public class EnumValueConfigServiceImpl implements EnumValueConfigService {
 		OhsEnumValueConfig ohsEnumValueConfig = new OhsEnumValueConfig();
 		ohsEnumValueConfig.setEnumValue(OhsUtils.putIfNotBlank(column.getEnumValue()));
 		ohsEnumValueConfig.setEnumChineseValue(OhsUtils.putIfNotBlank(column.getEnumChineseValue()));
+		ohsEnumValueConfig.setCreateUser(column.getTokenName());
 		
 		Pageable pageable = PageRequest.of(column.getCurrent() - 1 < 0 ? 0 : column.getCurrent() - 1,
 				column.getPageSize());
@@ -101,6 +102,7 @@ public class EnumValueConfigServiceImpl implements EnumValueConfigService {
 		OhsSysConfig ohsSysConfig = new OhsSysConfig();
 		ohsSysConfig.setSysAlias(OhsUtils.putIfNotBlank(column.getSysAlias()));
 		ohsSysConfig.setSysChineseNme(OhsUtils.putIfNotBlank(column.getSysChineseNme()));
+		ohsSysConfig.setCreateUser(column.getCreateUser());
 
 		List<OhsSysConfig> ohsSysConfigLst = ohsSysConfigRepository.findAll(Example.of(ohsSysConfig));
 		if (CollectionUtils.isEmpty(ohsSysConfigLst)) {
@@ -111,6 +113,7 @@ public class EnumValueConfigServiceImpl implements EnumValueConfigService {
 		ohsTableConfig.setSchemaName(OhsUtils.putIfNotBlank(column.getSchemaName()));
 		ohsTableConfig.setTableName(OhsUtils.putIfNotBlank(column.getTableName()));
 		ohsTableConfig.setSysId(ohsSysConfigLst.get(0).getId());
+		ohsTableConfig.setCreateUser(column.getCreateUser());
 		
 		List<OhsTableConfig> ohsTableConfigLst = ohsTableConfigRepository.findAll(Example.of(ohsTableConfig));
 		
@@ -123,6 +126,7 @@ public class EnumValueConfigServiceImpl implements EnumValueConfigService {
 		ohsColumnConfig.setColumnName(column.getColumnName());
 		ohsColumnConfig.setSysId(ohsTableConfig.getSysId());
 		ohsColumnConfig.setTableId(ohsTableConfigLst.get(0).getId());
+		ohsColumnConfig.setCreateUser(column.getCreateUser());
 		
 		List<OhsColumnConfig> ohsColumnConfigLst = ohsColumnConfigRepository.findAll(Example.of(ohsColumnConfig));
 		if (CollectionUtils.isEmpty(ohsColumnConfigLst)) {
@@ -134,7 +138,7 @@ public class EnumValueConfigServiceImpl implements EnumValueConfigService {
 		ohsEnumValueConfig.setEnumValue(column.getEnumValue());
 		ohsEnumValueConfig.setColumnId(ohsColumnConfigLst.get(0).getId());
 		ohsEnumValueConfig.setCreateDate(new Timestamp(new Date().getTime()));
-		ohsEnumValueConfig.setCreateUser("admin");
+		ohsEnumValueConfig.setCreateUser(column.getCreateUser());
 		
 		ohsEnumValueConfig = ohsEnumValueConfigRepository.save(ohsEnumValueConfig);
 		
@@ -147,11 +151,16 @@ public class EnumValueConfigServiceImpl implements EnumValueConfigService {
 	}
 
 	@Override
-	public ColumnDTO deleteById(int id) throws OhsException {
+	public ColumnDTO deleteById(int id, String tokenName) throws OhsException {
 		Optional<OhsEnumValueConfig> ohsEnumValueConfigOpt = ohsEnumValueConfigRepository.findById(id);
 		if (!ohsEnumValueConfigOpt.isPresent()) {
 			throw new OhsException("该枚举值信息已经被删除！");
 		}
+		
+		if (!ohsEnumValueConfigOpt.get().getCreateUser().equals(tokenName)) {
+			throw new OhsException("禁止删除非当前用户的数据！");
+		}
+		
 		ohsEnumValueConfigRepository.deleteById(id);
 		ColumnDTO column = new ColumnDTO();
 		column.setId(id);
@@ -163,6 +172,7 @@ public class EnumValueConfigServiceImpl implements EnumValueConfigService {
 		OhsSysConfig ohsSysConfig = new OhsSysConfig();
 		ohsSysConfig.setSysAlias(OhsUtils.putIfNotBlank(column.getSysAlias()));
 		ohsSysConfig.setSysChineseNme(OhsUtils.putIfNotBlank(column.getSysChineseNme()));
+		ohsSysConfig.setCreateUser(column.getCreateUser());
 
 		List<OhsSysConfig> ohsSysConfigLst = ohsSysConfigRepository.findAll(Example.of(ohsSysConfig));
 		if (CollectionUtils.isEmpty(ohsSysConfigLst)) {
@@ -173,6 +183,7 @@ public class EnumValueConfigServiceImpl implements EnumValueConfigService {
 		ohsTableConfig.setSchemaName(OhsUtils.putIfNotBlank(column.getSchemaName()));
 		ohsTableConfig.setTableName(OhsUtils.putIfNotBlank(column.getTableName()));
 		ohsTableConfig.setSysId(ohsSysConfigLst.get(0).getId());
+		ohsTableConfig.setCreateUser(column.getCreateUser());
 		
 		List<OhsTableConfig> ohsTableConfigLst = ohsTableConfigRepository.findAll(Example.of(ohsTableConfig));
 		
@@ -185,6 +196,7 @@ public class EnumValueConfigServiceImpl implements EnumValueConfigService {
 		ohsColumnConfig.setColumnName(column.getColumnName());
 		ohsColumnConfig.setSysId(ohsTableConfig.getSysId());
 		ohsColumnConfig.setTableId(ohsTableConfigLst.get(0).getId());
+		ohsColumnConfig.setCreateUser(column.getCreateUser());
 		
 		List<OhsColumnConfig> ohsColumnConfigLst = ohsColumnConfigRepository.findAll(Example.of(ohsColumnConfig));
 		if (CollectionUtils.isEmpty(ohsColumnConfigLst)) {
@@ -203,7 +215,7 @@ public class EnumValueConfigServiceImpl implements EnumValueConfigService {
 		ohsEnumValueConfig.setCreateDate(ohsEnumValueConfigOpt.get().getCreateDate());
 		ohsEnumValueConfig.setCreateUser(ohsEnumValueConfigOpt.get().getCreateUser());
 		ohsEnumValueConfig.setUpdateDate(new Timestamp(new Date().getTime()));
-		ohsEnumValueConfig.setUpdateUser("admin");
+		ohsEnumValueConfig.setUpdateUser(column.getCreateUser());
 		
 		ohsEnumValueConfig = ohsEnumValueConfigRepository.save(ohsEnumValueConfig);
 		

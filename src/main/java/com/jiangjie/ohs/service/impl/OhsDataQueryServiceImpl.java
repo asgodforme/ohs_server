@@ -17,6 +17,7 @@ import com.jiangjie.ohs.dto.DataQueryResponse;
 import com.jiangjie.ohs.entity.OhsEnvironmentConfig;
 import com.jiangjie.ohs.entity.OhsModuleConfig;
 import com.jiangjie.ohs.entity.OhsSysConfig;
+import com.jiangjie.ohs.entity.common.RelationUserInfo;
 import com.jiangjie.ohs.entity.dataEntity.OhsColumnConfig;
 import com.jiangjie.ohs.entity.dataEntity.OhsSingleQueryWhereInfo;
 import com.jiangjie.ohs.entity.dataEntity.OhsSingleSqlConfig;
@@ -60,11 +61,14 @@ public class OhsDataQueryServiceImpl implements OhsDataQueryService {
 		OhsUtils.throwIfEmpty(param, "sysChineseNme", "系统名不能为空！");
 		OhsUtils.throwIfEmpty(param, "moduleAlias", "模块名不能为空！");
 		OhsUtils.throwIfEmpty(param, "envInfo", "环境	不能为空！");
+		
+		String createUser = (String) param.get("tokenName");
 
 		// 定位系统
 		OhsSysConfig ohsSysConfig = new OhsSysConfig();
 		ohsSysConfig.setSysAlias((String) param.get("sysAlias"));
 		ohsSysConfig.setSysChineseNme((String) param.get("sysChineseNme"));
+		ohsSysConfig.setCreateUser(createUser);
 		List<OhsSysConfig> ohsSysConfigLst = ohsSysConfigRepository.findAll(Example.of(ohsSysConfig));
 		if (CollectionUtils.isEmpty(ohsSysConfigLst)) {
 			throw new OhsException("该系统不存在！请联系管理员！");
@@ -76,6 +80,9 @@ public class OhsDataQueryServiceImpl implements OhsDataQueryService {
 		OhsModuleConfig ohsModuleConfig = new OhsModuleConfig();
 		ohsModuleConfig.setModuleAlias((String) param.get("moduleAlias"));
 		ohsModuleConfig.setSysId(ohsSysConfig.getId());
+		RelationUserInfo relationUserInfo = new RelationUserInfo();
+		relationUserInfo.setCreateUser(createUser);
+		ohsModuleConfig.setRelationUserInfo(relationUserInfo);
 		List<OhsModuleConfig> ohsModuleConfigLst = ohsModuleConfigRepository.findAll(Example.of(ohsModuleConfig));
 		if (CollectionUtils.isEmpty(ohsModuleConfigLst)) {
 			throw new OhsException("该模块不存在！请联系管理员！");
@@ -86,21 +93,21 @@ public class OhsDataQueryServiceImpl implements OhsDataQueryService {
 		OhsSingleSqlConfig ohsSingleSqlConfig = new OhsSingleSqlConfig();
 		ohsSingleSqlConfig.setSysId(ohsSysConfig.getId());
 		ohsSingleSqlConfig.setModuleId(ohsModuleConfig.getId());
+		ohsSingleSqlConfig.setCreateUser(createUser);
 		List<OhsSingleSqlConfig> ohsSingleSqlConfigLst = ohsSingleSqlConfigRepository
 				.findAll(Example.of(ohsSingleSqlConfig));
 		if (CollectionUtils.isEmpty(ohsSingleSqlConfigLst)) {
 			throw new OhsException("该单表SQL不存在！请联系管理员！");
 		}
 
-		if (DatasourceFactory.getDataSourceById(Integer.parseInt((String) param.get("envInfo"))) == null) {
-			Optional<OhsEnvironmentConfig> ohsEnvironmentConfigOpt = ohsEnvironmentConfigRepository
-					.findById(Integer.parseInt((String) param.get("envInfo")));
-			if (!ohsEnvironmentConfigOpt.isPresent()) {
-				throw new OhsException("该环境信息不存在！请联系管理员！");
-			}
-			DatasourceFactory.putDataSource(Integer.parseInt((String) param.get("envInfo")),
-					ohsEnvironmentConfigOpt.get());
+//		if (DatasourceFactory.getDataSourceById(Integer.parseInt((String) param.get("envInfo"))) == null) {
+//		}
+		Optional<OhsEnvironmentConfig> ohsEnvironmentConfigOpt = ohsEnvironmentConfigRepository.findById(Integer.parseInt((String) param.get("envInfo")));
+		if (!ohsEnvironmentConfigOpt.isPresent()) {
+			throw new OhsException("该环境信息不存在！请联系管理员！");
 		}
+		DatasourceFactory.putDataSource(Integer.parseInt((String) param.get("envInfo")),
+				ohsEnvironmentConfigOpt.get());
 
 		JdbcTemplate jdbcTemplate = new JdbcTemplate(
 				DatasourceFactory.getDataSourceById(Integer.parseInt((String) param.get("envInfo"))));
@@ -115,6 +122,7 @@ public class OhsDataQueryServiceImpl implements OhsDataQueryService {
 			// 查询条件信息
 			OhsSingleQueryWhereInfo ohsSingleQueryWhereInfo = new OhsSingleQueryWhereInfo();
 			ohsSingleQueryWhereInfo.setSingleSqlId(ohsSingleSql.getId());
+			ohsSingleQueryWhereInfo.setCreateUser(createUser);
 			List<OhsSingleQueryWhereInfo> ohsSingleQueryWhereInfoLst = ohsSingleQueryWhereInfoRepository
 					.findAll(Example.of(ohsSingleQueryWhereInfo));
 
@@ -137,6 +145,7 @@ public class OhsDataQueryServiceImpl implements OhsDataQueryService {
 					ohsColumnConfig.setSysId(ohsSysConfig.getId());
 					ohsColumnConfig.setTableId(ohsSingleSql.getTableId());
 					ohsColumnConfig.setColumnName(entry.getKey().toLowerCase());
+					ohsColumnConfig.setCreateUser(createUser);
 					List<OhsColumnConfig> ohsColumnConfigLst = ohsColumnConfigRepository.findAll(Example.of(ohsColumnConfig));
 					Map<String, String> headerColumn = new HashMap<String, String>();
 					if (CollectionUtils.isEmpty(ohsColumnConfigLst)) {

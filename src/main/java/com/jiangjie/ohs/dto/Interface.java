@@ -63,6 +63,16 @@ public class Interface {
 
 	private Integer singleRecordsId;
 
+	private String tokenName;
+
+	public String getTokenName() {
+		return tokenName;
+	}
+
+	public void setTokenName(String tokenName) {
+		this.tokenName = tokenName;
+	}
+
 	public Integer getSingleRecordsId() {
 		return singleRecordsId;
 	}

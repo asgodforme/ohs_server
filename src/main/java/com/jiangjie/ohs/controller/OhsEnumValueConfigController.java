@@ -37,14 +37,6 @@ public class OhsEnumValueConfigController {
 		return enumValueConfigService.getAllEnumValue(column);
 	}
 	
-//	/**
-//	 * TODO POST传值报错！！！麻蛋
-//	 */
-//	@GetMapping("/saveEnumValueConfig")
-//	public ColumnDTO saveEnumValueConfig(ColumnDTO column) throws OhsException {
-//		return enumValueConfigService.saveEnumValueConfig(column);
-//	}
-	
 	@PostMapping("/saveEnumValueConfig")
 	@ResponseBody
 	public ColumnDTO saveEnumValueConfig(@RequestBody Map<String, Object> requestParam) throws OhsException {
@@ -57,24 +49,15 @@ public class OhsEnumValueConfigController {
 		column.setColumnName((String) requestParam.get("columnName"));
 		column.setEnumChineseValue((String) requestParam.get("enumChineseValue"));
 		column.setEnumValue((String) requestParam.get("enumValue"));
+		column.setCreateUser((String) requestParam.get("tokenName"));
 		return enumValueConfigService.saveEnumValueConfig(column);
 	}
 	
 	@DeleteMapping("/deleteById/{id}")
-	public ColumnDTO deleteById(@PathVariable("id") String id) throws OhsException {
-		return enumValueConfigService.deleteById(Integer.parseInt(id));
+	public ColumnDTO deleteById(@PathVariable("id") String id, String tokenName) throws OhsException {
+		return enumValueConfigService.deleteById(Integer.parseInt(id), tokenName);
 	}
 	
-	/**
-	 * TODO PUT传值报错！！！麻蛋
-	 * @param ohsSysConfig
-	 * @return 
-	 * @throws OhsException 
-	 */
-//	@GetMapping("/updateById")
-//	public ColumnDTO updateById(ColumnDTO column) throws OhsException {
-//		return enumValueConfigService.updateById(column);
-//	}
 	
 	@PutMapping("/updateById")
 	@ResponseBody
@@ -89,6 +72,7 @@ public class OhsEnumValueConfigController {
 		column.setColumnName((String) requestParam.get("columnName"));
 		column.setEnumChineseValue((String) requestParam.get("enumChineseValue"));
 		column.setEnumValue((String) requestParam.get("enumValue"));
+		column.setCreateUser((String) requestParam.get("tokenName"));
 		return enumValueConfigService.updateById(column);
 	}
 

@@ -17,6 +17,7 @@ import com.jiangjie.ohs.dto.PageResponse;
 import com.jiangjie.ohs.dto.SingleSql;
 import com.jiangjie.ohs.entity.OhsModuleConfig;
 import com.jiangjie.ohs.entity.OhsSysConfig;
+import com.jiangjie.ohs.entity.common.RelationUserInfo;
 import com.jiangjie.ohs.entity.dataEntity.OhsColumnConfig;
 import com.jiangjie.ohs.entity.dataEntity.OhsSingleQueryWhereInfo;
 import com.jiangjie.ohs.entity.dataEntity.OhsSingleSqlConfig;
@@ -65,6 +66,7 @@ public class SingleSqlConfigServiceImpl implements SingleSqlConfigService {
 		OhsSysConfig ohsSysConfig = new OhsSysConfig();
 		ohsSysConfig.setSysAlias(OhsUtils.putIfNotBlank(singleSql.getSysAlias()));
 		ohsSysConfig.setSysChineseNme(OhsUtils.putIfNotBlank(singleSql.getSysChineseNme()));
+		ohsSysConfig.setCreateUser(singleSql.getCreateUser());
 		List<OhsSysConfig> ohsSysConfigLst = ohsSysConfigRepository.findAll(Example.of(ohsSysConfig));
 		if (CollectionUtils.isEmpty(ohsSysConfigLst)) {
 			throw new OhsException("当前系统中不存在系统配置信息，请先在“公共参数配置-系统配置”中配置系统信息！");
@@ -74,6 +76,9 @@ public class SingleSqlConfigServiceImpl implements SingleSqlConfigService {
 		OhsModuleConfig ohsModuleConfig = new OhsModuleConfig();
 		ohsModuleConfig.setModuleAlias(OhsUtils.putIfNotBlank(singleSql.getModuleAlias()));
 		ohsModuleConfig.setModuleName(OhsUtils.putIfNotBlank(singleSql.getModuleName()));
+		RelationUserInfo relationUserInfo = new RelationUserInfo();
+		relationUserInfo.setCreateUser(singleSql.getCreateUser());
+		ohsModuleConfig.setRelationUserInfo(relationUserInfo);
 		List<OhsModuleConfig> ohsModuleConfigLst = ohsModuleConfigRepository.findAll(Example.of(ohsModuleConfig));
 		if (CollectionUtils.isEmpty(ohsModuleConfigLst)) {
 			throw new OhsException("当前系统中不存在模块配置信息，请先在“公共参数配置-模块配置”中配置模块信息！");
@@ -82,6 +87,7 @@ public class SingleSqlConfigServiceImpl implements SingleSqlConfigService {
 		OhsTableConfig ohsTableConfig = new OhsTableConfig();
 		ohsTableConfig.setTableName(OhsUtils.putIfNotBlank(singleSql.getTableName()));
 		ohsTableConfig.setTableChnName(OhsUtils.putIfNotBlank(singleSql.getTableChnName()));
+		ohsTableConfig.setCreateUser(singleSql.getCreateUser());
 		List<OhsTableConfig> ohsTableConfigLst = ohsTableConfigRepository.findAll(Example.of(ohsTableConfig));
 		if (CollectionUtils.isEmpty(ohsTableConfigLst)) {
 			throw new OhsException("当前系统中不存在表配置信息，请先在“数据定制化配置-表配置”中配置表信息！");
@@ -127,6 +133,7 @@ public class SingleSqlConfigServiceImpl implements SingleSqlConfigService {
 		OhsSysConfig ohsSysConfig = new OhsSysConfig();
 		ohsSysConfig.setSysAlias(OhsUtils.putIfNotBlank(singleSql.getSysAlias()));
 		ohsSysConfig.setSysChineseNme(OhsUtils.putIfNotBlank(singleSql.getSysChineseNme()));
+		ohsSysConfig.setCreateUser(singleSql.getCreateUser());
 		List<OhsSysConfig> ohsSysConfigLst = ohsSysConfigRepository.findAll(Example.of(ohsSysConfig));
 		if (CollectionUtils.isEmpty(ohsSysConfigLst)) {
 			throw new OhsException("该系统信息不存在！");
@@ -140,6 +147,9 @@ public class SingleSqlConfigServiceImpl implements SingleSqlConfigService {
 		ohsModuleConfig.setModuleAlias(OhsUtils.putIfNotBlank(singleSql.getModuleAlias()));
 		ohsModuleConfig.setModuleName(OhsUtils.putIfNotBlank(singleSql.getModuleName()));
 		ohsModuleConfig.setSysId(sysId);
+		RelationUserInfo relationUserInfo = new RelationUserInfo();
+		relationUserInfo.setCreateUser(singleSql.getCreateUser());
+		ohsModuleConfig.setRelationUserInfo(relationUserInfo);
 		List<OhsModuleConfig> ohsModuleConfigLst = ohsModuleConfigRepository.findAll(Example.of(ohsModuleConfig));
 		if (CollectionUtils.isEmpty(ohsModuleConfigLst)) {
 			throw new OhsException("当前系统下不存在该模块信息！");
@@ -150,6 +160,7 @@ public class SingleSqlConfigServiceImpl implements SingleSqlConfigService {
 		ohsTableConfig.setTableName(singleSql.getTableName());
 		ohsTableConfig.setTableChnName(singleSql.getTableChnName());
 		ohsTableConfig.setSysId(sysId);
+		ohsTableConfig.setCreateUser(singleSql.getCreateUser());
 		List<OhsTableConfig> ohsTableConfigLst = ohsTableConfigRepository.findAll(Example.of(ohsTableConfig));
 		if (CollectionUtils.isEmpty(ohsTableConfigLst)) {
 			throw new OhsException("当前系统下不存在该表信息！");
@@ -159,9 +170,10 @@ public class SingleSqlConfigServiceImpl implements SingleSqlConfigService {
 		ohsSingleSqlConfig.setSysId(sysId);
 		ohsSingleSqlConfig.setModuleId(ohsModuleConfigLst.get(0).getId());
 		ohsSingleSqlConfig.setTableId(ohsTableConfigLst.get(0).getId());
+		ohsSingleSqlConfig.setCreateUser(singleSql.getCreateUser());
 		List<OhsSingleSqlConfig> ohsSingleSqlConfigLst = ohsSingleSqlConfigRepository.findAll(Example.of(ohsSingleSqlConfig));
 		ohsSingleSqlConfig.setSingleTableSql(singleSql.getSingleTableSql());
-		ohsSingleSqlConfig.setCreateUser("admin");
+		ohsSingleSqlConfig.setCreateUser(singleSql.getCreateUser());
 		ohsSingleSqlConfig.setCreateDate(new Timestamp(new Date().getTime()));
 		OhsSingleQueryWhereInfo ohsSingleQueryWhereInfo = new OhsSingleQueryWhereInfo();
 		// 不存在则去保存，存在就只保存查询键信息
@@ -176,7 +188,7 @@ public class SingleSqlConfigServiceImpl implements SingleSqlConfigService {
 			ohsSingleSqlConfig.setId(ohsSingleSqlConfigLst.get(0).getId());
 			ohsSingleSqlConfig.setRemark(ohsSingleSqlConfigLst.get(0).getRemark());
 			ohsSingleSqlConfig.setUpdateDate(new Timestamp(new Date().getTime()));			
-			ohsSingleSqlConfig.setUpdateUser("admin");
+			ohsSingleSqlConfig.setUpdateUser(singleSql.getCreateUser());
 		}
 		
 		// 每个单表SQL只能添加3个查询条件 // TODO  参数化硬编码，后期考虑配置化
@@ -189,13 +201,13 @@ public class SingleSqlConfigServiceImpl implements SingleSqlConfigService {
 			throw new OhsException("该单表查询SQL该字段查询条件已经存在！");
 		}
 		ohsSingleQueryWhereInfo.setKeyChnInfo(singleSql.getColumnName());
-		ohsSingleQueryWhereInfo.setCreateUser("admin");
+		ohsSingleQueryWhereInfo.setCreateUser(singleSql.getCreateUser());
 		ohsSingleQueryWhereInfo.setCreateDate(new Timestamp(new Date().getTime()));
 		ohsSingleQueryWhereInfoRepository.save(ohsSingleQueryWhereInfo);
 		
 		
 		// 根据数据库中配置的信息生成单表sql
-		String singleSqlResult = generateSingleSql(ohsTableConfigLst.get(0).getId(), ohsSingleSqlConfig.getId());
+		String singleSqlResult = generateSingleSql(ohsTableConfigLst.get(0).getId(), ohsSingleSqlConfig.getId(), singleSql.getCreateUser());
 		ohsSingleSqlConfig.setSingleTableSql(singleSqlResult);
 		ohsSingleSqlConfigRepository.save(ohsSingleSqlConfig);
 		singleSql.setSingleTableSql(singleSqlResult);
@@ -207,13 +219,14 @@ public class SingleSqlConfigServiceImpl implements SingleSqlConfigService {
 	@Autowired
 	private OhsColumnConfigRepository ohsColumnConfigRepository;
 	
-	private String generateSingleSql(Integer tableId, Integer singleSqlId) throws OhsException {
+	private String generateSingleSql(Integer tableId, Integer singleSqlId, String createUser) throws OhsException {
 		StringBuffer singleSqlSb = new StringBuffer();
 		singleSqlSb.append("select ");
 		
 		// 查出当前表的所有配置字段
 		OhsColumnConfig queryObj = new OhsColumnConfig();
 		queryObj.setTableId(tableId);
+		queryObj.setCreateUser(createUser);
 		List<OhsColumnConfig> ohsColumnConfigLst = ohsColumnConfigRepository.findAll(Example.of(queryObj));
 		
 		if (CollectionUtils.isEmpty(ohsColumnConfigLst)) {
@@ -228,6 +241,7 @@ public class SingleSqlConfigServiceImpl implements SingleSqlConfigService {
 		
 		OhsTableConfig ohsTableConfig = new OhsTableConfig();
 		ohsTableConfig.setId(tableId);
+		ohsTableConfig.setCreateUser(createUser);
 		Optional<OhsTableConfig> ohsTableConfigOpt = ohsTableConfigRepository.findOne(Example.of(ohsTableConfig));
 		if (!ohsTableConfigOpt.isPresent()) {
 			throw new OhsException("当前表已经被删除！");
@@ -237,6 +251,7 @@ public class SingleSqlConfigServiceImpl implements SingleSqlConfigService {
 		
 		OhsSingleQueryWhereInfo ohsSingleQueryWhereInfo = new OhsSingleQueryWhereInfo();
 		ohsSingleQueryWhereInfo.setSingleSqlId(singleSqlId);
+		ohsSingleQueryWhereInfo.setCreateUser(createUser);
 		List<OhsSingleQueryWhereInfo> OhsSingleQueryWhereInfoLst = ohsSingleQueryWhereInfoRepository.findAll(Example.of(ohsSingleQueryWhereInfo));
 		
 		if (!CollectionUtils.isEmpty(OhsSingleQueryWhereInfoLst)) {
@@ -251,14 +266,18 @@ public class SingleSqlConfigServiceImpl implements SingleSqlConfigService {
 	}
 
 	@Override
-	public SingleSql deleteById(int id) throws OhsException {
+	public SingleSql deleteById(int id, String tokenName) throws OhsException {
 		Optional<OhsSingleSqlConfig> ohsSingleSqlConfigOpt = ohsSingleSqlConfigRepository.findById(id);
 		if (!ohsSingleSqlConfigOpt.isPresent()) {
 			throw new OhsException("当前纪录已经被删除！");
 		}
+		if (!ohsSingleSqlConfigOpt.get().getCreateUser().equals(tokenName)) {
+			throw new OhsException("禁止删除非当前用户的数据！");
+		}
 		// 删除单表sql下配置的查询条件字段
 		OhsSingleQueryWhereInfo ohsSingleQueryWhereInfo = new OhsSingleQueryWhereInfo();
 		ohsSingleQueryWhereInfo.setSingleSqlId(ohsSingleSqlConfigOpt.get().getId());
+		ohsSingleQueryWhereInfo.setCreateUser(tokenName);
 		ohsSingleQueryWhereInfoRepository.deleteInBatch(ohsSingleQueryWhereInfoRepository.findAll(Example.of(ohsSingleQueryWhereInfo)));
 		ohsSingleSqlConfigRepository.deleteById(id);
 		SingleSql singleSql = new SingleSql();
@@ -276,6 +295,7 @@ public class SingleSqlConfigServiceImpl implements SingleSqlConfigService {
 		OhsSysConfig ohsSysConfig = new OhsSysConfig();
 		ohsSysConfig.setSysAlias(OhsUtils.putIfNotBlank(singleSql.getSysAlias()));
 		ohsSysConfig.setSysChineseNme(OhsUtils.putIfNotBlank(singleSql.getSysChineseNme()));
+		ohsSysConfig.setCreateUser(singleSql.getCreateUser());
 		List<OhsSysConfig> ohsSysConfigLst = ohsSysConfigRepository.findAll(Example.of(ohsSysConfig));
 		if (CollectionUtils.isEmpty(ohsSysConfigLst)) {
 			throw new OhsException("该系统信息不存在！");
@@ -288,6 +308,9 @@ public class SingleSqlConfigServiceImpl implements SingleSqlConfigService {
 		OhsModuleConfig ohsModuleConfig = new OhsModuleConfig();
 		ohsModuleConfig.setModuleAlias(OhsUtils.putIfNotBlank(singleSql.getModuleAlias()));
 		ohsModuleConfig.setModuleName(OhsUtils.putIfNotBlank(singleSql.getModuleName()));
+		RelationUserInfo relationUserInfo = new RelationUserInfo();
+		relationUserInfo.setCreateUser(singleSql.getCreateUser());
+		ohsModuleConfig.setRelationUserInfo(relationUserInfo);
 		ohsModuleConfig.setSysId(sysId);
 		List<OhsModuleConfig> ohsModuleConfigLst = ohsModuleConfigRepository.findAll(Example.of(ohsModuleConfig));
 		if (CollectionUtils.isEmpty(ohsModuleConfigLst)) {
@@ -298,6 +321,7 @@ public class SingleSqlConfigServiceImpl implements SingleSqlConfigService {
 		OhsTableConfig ohsTableConfig = new OhsTableConfig();
 		ohsTableConfig.setTableName(singleSql.getTableName());
 		ohsTableConfig.setTableChnName(singleSql.getTableChnName());
+		ohsTableConfig.setCreateUser(singleSql.getCreateUser());
 		ohsTableConfig.setSysId(sysId);
 		List<OhsTableConfig> ohsTableConfigLst = ohsTableConfigRepository.findAll(Example.of(ohsTableConfig));
 		if (CollectionUtils.isEmpty(ohsTableConfigLst)) {
@@ -309,6 +333,7 @@ public class SingleSqlConfigServiceImpl implements SingleSqlConfigService {
 			// 查询当前单表SQL下的查询条件
 			OhsSingleQueryWhereInfo whereInfo = new OhsSingleQueryWhereInfo();
 			whereInfo.setSingleSqlId(singleSql.getId());
+			whereInfo.setCreateUser(singleSql.getCreateUser());
 			List<OhsSingleQueryWhereInfo> ohsSingleQueryWhereInfoLst = ohsSingleQueryWhereInfoRepository.findAll(Example.of(whereInfo));
 			List<String> columnAliass = Arrays.asList(singleSql.getColumnAlias().split(",")).stream().filter(colAlias -> !StringUtils.isEmpty(colAlias)).collect(Collectors.toList());
 			List<OhsSingleQueryWhereInfo> resultAlias = ohsSingleQueryWhereInfoLst.stream().filter(ohsSingleSqlWhereInfo -> columnAliass.stream().allMatch(col -> !col.equals(ohsSingleSqlWhereInfo.getKeyInfo()))).collect(Collectors.toList());
@@ -316,6 +341,7 @@ public class SingleSqlConfigServiceImpl implements SingleSqlConfigService {
 				for (OhsSingleQueryWhereInfo resltAlias : resultAlias) {
 					// 删除掉对应的查询条件
 					whereInfo.setKeyInfo(resltAlias.getKeyInfo());
+					whereInfo.setCreateUser(singleSql.getCreateUser());
 					Optional<OhsSingleQueryWhereInfo> ohsSingleQueryWhereInfoOpt = ohsSingleQueryWhereInfoRepository.findOne(Example.of(whereInfo));
 					if (ohsSingleQueryWhereInfoOpt.isPresent()) {
 						ohsSingleQueryWhereInfoRepository.delete(ohsSingleQueryWhereInfoOpt.get());
@@ -331,8 +357,9 @@ public class SingleSqlConfigServiceImpl implements SingleSqlConfigService {
 		ohsSingleSqlConfig.setModuleId(ohsModuleConfigLst.get(0).getId());
 		ohsSingleSqlConfig.setTableId(ohsTableConfigLst.get(0).getId());
 		ohsSingleSqlConfig.setRemark(singleSql.getRemark());
+		ohsSingleSqlConfig.setSingleTableSql(generateSingleSql(ohsTableConfigLst.get(0).getId(), ohsSingleSqlConfig.getId(), singleSql.getCreateUser()));
 		ohsSingleSqlConfig.setUpdateDate(new Timestamp(new Date().getTime()));
-		ohsSingleSqlConfig.setUpdateUser("admin");
+		ohsSingleSqlConfig.setUpdateUser(singleSql.getCreateUser());
 		
 		ohsSingleSqlConfigRepository.save(ohsSingleSqlConfig);
 		singleSql.setUpdateDate(ohsSingleSqlConfig.getUpdateDate());
