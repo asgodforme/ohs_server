@@ -10,7 +10,7 @@ public interface TestsuitConfigService {
 
 	Testsuit saveTestsuitConfig(Testsuit testsuitObj) throws OhsException;
 
-	Testsuit deleteById(int parseInt) throws OhsException;
+	Testsuit deleteById(int parseInt, String tokenName) throws OhsException;
 
 	Testsuit updateById(Testsuit testsuitObj) throws OhsException;
 

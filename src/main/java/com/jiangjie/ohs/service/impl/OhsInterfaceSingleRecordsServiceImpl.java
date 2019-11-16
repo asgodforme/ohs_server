@@ -32,7 +32,7 @@ public class OhsInterfaceSingleRecordsServiceImpl implements OhsInterfaceSingleR
 		OhsInterfaceSingleRecords ohsInterfaceSingleRecords = new OhsInterfaceSingleRecords();
 		ohsInterfaceSingleRecords.setInterfaceId(Integer.parseInt((String) requestParam.get("id")));
 		ohsInterfaceSingleRecords.setCreateDate(new Timestamp(new Date().getTime()));
-		ohsInterfaceSingleRecords.setCreateUser("admin");
+		ohsInterfaceSingleRecords.setCreateUser((String) requestParam.get("tokenName"));
 		StringBuffer sb = new StringBuffer();
 		for (Map.Entry<String, Object> map: requestParam.entrySet()) {
 			if (!"id".equals(map.getKey())) {

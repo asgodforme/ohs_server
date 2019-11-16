@@ -62,7 +62,7 @@ public class InterfaceConfigServiceImpl implements InterfaceConfigService {
 		ohsSysConfig.setSysAlias(StringUtils.isEmpty(interfaceObj.getSysAlias()) ? null : interfaceObj.getSysAlias());
 		ohsSysConfig.setSysChineseNme(
 				StringUtils.isEmpty(interfaceObj.getSysChineseNme()) ? null : interfaceObj.getSysChineseNme());
-		ohsSysConfig.setCreateUser(interfaceObj.getCreateUser());
+		ohsSysConfig.setCreateUser(interfaceObj.getTokenName());
 		List<OhsSysConfig> ohsSysConfigLst = ohsSysConfigRepository.findAll(Example.of(ohsSysConfig));
 		if (CollectionUtils.isEmpty(ohsSysConfigLst)) {
 			throw new OhsException("当前系统不存在对应系统配置信息，请先添加系统配置信息后再查询或新增修改模块！");
@@ -77,7 +77,7 @@ public class InterfaceConfigServiceImpl implements InterfaceConfigService {
 		ohsModuleConfig
 				.setModuleName(StringUtils.isEmpty(interfaceObj.getModuleName()) ? null : interfaceObj.getModuleName());
 		RelationUserInfo relationUserInfo = new RelationUserInfo();
-		relationUserInfo.setCreateUser(interfaceObj.getCreateUser());
+		relationUserInfo.setCreateUser(interfaceObj.getTokenName());
 		ohsModuleConfig.setRelationUserInfo(relationUserInfo);
 		// 如果送了系统码或者系统名，表示不是查询全部的模块
 		if (!StringUtils.isEmpty(interfaceObj.getSysAlias()) || !StringUtils.isEmpty(interfaceObj.getSysChineseNme())) {
@@ -95,15 +95,19 @@ public class InterfaceConfigServiceImpl implements InterfaceConfigService {
 				interfaceObj.getPageSize());
 
 		OhsInterfaceConfig ohsInterfaceConfig = new OhsInterfaceConfig();
-		ohsInterfaceConfig.setSysId(ohsSysConfig.getId());
-		ohsInterfaceConfig.setModuleId(ohsModuleConfig.getId());
+		if (!StringUtils.isEmpty(interfaceObj.getSysAlias()) || !StringUtils.isEmpty(interfaceObj.getSysChineseNme())) {
+			ohsInterfaceConfig.setSysId(ohsSysConfig.getId());
+		}
+		if (!StringUtils.isEmpty(interfaceObj.getModuleAlias()) || !StringUtils.isEmpty(interfaceObj.getModuleName())) {
+			ohsInterfaceConfig.setModuleId(ohsModuleConfig.getId());
+		}
 		if (!StringUtils.isEmpty(interfaceObj.getUrlPath())) {
 			ohsInterfaceConfig.setUrlPath(interfaceObj.getUrlPath());
 		}
 		if (!StringUtils.isEmpty(interfaceObj.getMethod())) {
 			ohsInterfaceConfig.setMethod(interfaceObj.getMethod());
 		}
-		ohsInterfaceConfig.setCreateUser(interfaceObj.getCreateUser());
+		ohsInterfaceConfig.setCreateUser(interfaceObj.getTokenName());
 		Page<OhsInterfaceConfig> ohsInterfaceConfigListPage = ohsInterfaceConfigRepository
 				.findAll(Example.of(ohsInterfaceConfig), pageable);
 		List<OhsInterfaceConfig> ohsInterfaceConfigList = ohsInterfaceConfigListPage.getContent();
@@ -115,11 +119,20 @@ public class InterfaceConfigServiceImpl implements InterfaceConfigService {
 		for (OhsInterfaceConfig ohsIter : ohsInterfaceConfigList) {
 			Interface interfaceRetObj = new Interface();
 			interfaceRetObj.setId(ohsIter.getId() + "");
-			interfaceRetObj.setSysAlias(ohsSysConfig.getSysAlias());
-			interfaceRetObj.setSysChineseNme(ohsSysConfig.getSysChineseNme());
+			
+			Optional<OhsSysConfig> ohsSysCfg = ohsSysConfigRepository.findById(ohsIter.getSysId());
+			if (!ohsSysCfg.isPresent()) {
+				throw new OhsException("不存在对应系统！");
+			}
+			interfaceRetObj.setSysAlias(ohsSysCfg.get().getSysAlias());
+			interfaceRetObj.setSysChineseNme(ohsSysCfg.get().getSysChineseNme());
 
-			interfaceRetObj.setModuleAlias(ohsModuleConfig.getModuleAlias());
-			interfaceRetObj.setModuleName(ohsModuleConfig.getModuleName());
+			Optional<OhsModuleConfig> ohsModuleCfg = ohsModuleConfigRepository.findById(ohsIter.getModuleId());
+			if (!ohsModuleCfg.isPresent()) {
+				throw new OhsException("不存在对应模块！");
+			}
+			interfaceRetObj.setModuleAlias(ohsModuleCfg.get().getModuleAlias());
+			interfaceRetObj.setModuleName(ohsModuleCfg.get().getModuleName());
 
 			interfaceRetObj.setUrlPath(ohsIter.getUrlPath());
 			interfaceRetObj.setMethod(ohsIter.getMethod());
@@ -145,7 +158,7 @@ public class InterfaceConfigServiceImpl implements InterfaceConfigService {
 				
 				OhsInterfaceSingleRecords ohsInterfaceSingleRecords = new OhsInterfaceSingleRecords();
 				ohsInterfaceSingleRecords.setInterfaceId(ohsIter.getId());
-				ohsInterfaceSingleRecords.setCreateUser(interfaceObj.getCreateUser());
+				ohsInterfaceSingleRecords.setCreateUser(interfaceObj.getTokenName());
 				List<OhsInterfaceSingleRecords> ohsInterfaceSingleRecordsLst = ohsInterfaceSingleRecordsRepository.findAll(Example.of(ohsInterfaceSingleRecords));
 				if (!CollectionUtils.isEmpty(ohsInterfaceSingleRecordsLst)) {
 					ohsInterfaceSingleRecordsLst.sort(Comparator.comparing(OhsInterfaceSingleRecords::getId));
@@ -159,7 +172,9 @@ public class InterfaceConfigServiceImpl implements InterfaceConfigService {
 			
 			
 			OhsEnvironmentConfig ohsEnvironmentConfig = new OhsEnvironmentConfig();
-			ohsEnvironmentConfig.setSysId(ohsSysConfig.getId());
+			if (!StringUtils.isEmpty(interfaceObj.getSysAlias()) || !StringUtils.isEmpty(interfaceObj.getSysChineseNme())) {
+				ohsEnvironmentConfig.setSysId(ohsSysConfig.getId());
+			}
 			ohsEnvironmentConfig.setRelationUserInfo(relationUserInfo);
 			List<OhsEnvironmentConfig> ohsEnvironmentConfigLst = ohsEnvironmentConfigRepository.findAll(Example.of(ohsEnvironmentConfig));
 			List<Interface.EnvironmentInfo> environmentInfoLst = new ArrayList<>();
@@ -334,6 +349,22 @@ public class InterfaceConfigServiceImpl implements InterfaceConfigService {
 		StringBuffer reqUrlSb = new StringBuffer();
 		reqUrlSb.append("http://").append(ohsEnv.get().getEvnIp()).append(":").append(ohsEnv.get().getEvnPort()).append("/").append(ohsInterface.get().getUrlPath());
 		if ("GET".equals(ohsInterface.get().getMethod().toUpperCase())) {
+			OhsInterfaceSingleRecords recd = new OhsInterfaceSingleRecords();
+			recd.setInterfaceId(Integer.parseInt(interfaceObj.getId()));
+			List<OhsInterfaceSingleRecords> recds = ohsInterfaceSingleRecordsRepository.findAll(Example.of(recd));
+			StringBuffer sb = new StringBuffer();
+			if (!CollectionUtils.isEmpty(recds)) {
+				recds.sort(Comparator.comparing(OhsInterfaceSingleRecords::getId));
+				String[] requestData = recds.get(recds.size() - 1).getRequestParameters().split(",");
+				for (String str: requestData) {
+					String[] requestDatas = str.split(":");
+					sb.append(requestDatas[0]).append("=").append(requestDatas[1]);
+					sb.append("&");
+					
+				}
+				sb.substring(0, sb.length() - 1);
+			}
+			reqUrlSb.append("?").append(sb);
 			String msg = restTemplate.getForObject(reqUrlSb.toString(), String.class);
 			if (!StringUtils.isEmpty(interfaceObj.getSingleRecordsId())) {
 				Optional<OhsInterfaceSingleRecords> ohsSingleRecords = ohsInterfaceSingleRecordsRepository.findById(interfaceObj.getSingleRecordsId());

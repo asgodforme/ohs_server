@@ -80,6 +80,16 @@ public class Testsuit {
 
 	private String updateUser;
 
+	private String tokenName;
+
+	public String getTokenName() {
+		return tokenName;
+	}
+
+	public void setTokenName(String tokenName) {
+		this.tokenName = tokenName;
+	}
+
 	public List<Interface> getInInterfaces() {
 		return inInterfaces;
 	}

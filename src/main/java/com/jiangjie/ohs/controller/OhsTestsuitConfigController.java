@@ -48,12 +48,13 @@ public class OhsTestsuitConfigController {
 		testsuitObj.setAfterOperUrl((String) requestParam.get("afterOperUrl"));
 		testsuitObj.setAfterReqOprData((String) requestParam.get("afterReqOprData"));
 		testsuitObj.setAfterRspDataRegx((String) requestParam.get("afterRspDataRegx"));
+		testsuitObj.setCreateUser((String) requestParam.get("tokenName"));
 		return testsuitConfigService.saveTestsuitConfig(testsuitObj);
 	}
 	
 	@DeleteMapping("/deleteById/{id}")
-	public Testsuit deleteById(@PathVariable("id") String id) throws OhsException {
-		return testsuitConfigService.deleteById(Integer.parseInt(id));
+	public Testsuit deleteById(@PathVariable("id") String id, String tokenName) throws OhsException {
+		return testsuitConfigService.deleteById(Integer.parseInt(id), tokenName);
 	}
 	
 
@@ -74,6 +75,7 @@ public class OhsTestsuitConfigController {
 		testsuitObj.setAfterOperUrl((String) requestParam.get("afterOperUrl"));
 		testsuitObj.setAfterReqOprData((String) requestParam.get("afterReqOprData"));
 		testsuitObj.setAfterRspDataRegx((String) requestParam.get("afterRspDataRegx"));
+		testsuitObj.setCreateUser((String) requestParam.get("tokenName"));
 		return testsuitConfigService.updateById(testsuitObj);
 	}
 }

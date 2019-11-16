@@ -53,9 +53,8 @@ public class TestsuitConfigServiceImpl implements TestsuitConfigService {
 	public PageResponse<Testsuit> getAllTestsuit(Testsuit testsuitObj) throws OhsException {
 		OhsSysConfig ohsSysConfig = new OhsSysConfig();
 		ohsSysConfig.setSysAlias(StringUtils.isEmpty(testsuitObj.getSysAlias()) ? null : testsuitObj.getSysAlias());
-		ohsSysConfig.setSysChineseNme(
-				StringUtils.isEmpty(testsuitObj.getSysChineseNme()) ? null : testsuitObj.getSysChineseNme());
-
+		ohsSysConfig.setSysChineseNme(StringUtils.isEmpty(testsuitObj.getSysChineseNme()) ? null : testsuitObj.getSysChineseNme());
+		ohsSysConfig.setCreateUser(testsuitObj.getTokenName());
 		List<OhsSysConfig> ohsSysConfigLst = ohsSysConfigRepository.findAll(Example.of(ohsSysConfig));
 		if (CollectionUtils.isEmpty(ohsSysConfigLst)) {
 			throw new OhsException("当前系统不存在对应系统配置信息，请先添加系统配置信息后再查询或新增修改模块！");
@@ -65,10 +64,8 @@ public class TestsuitConfigServiceImpl implements TestsuitConfigService {
 		ohsSysConfig = ohsSysConfigLst.get(0);
 
 		OhsModuleConfig ohsModuleConfig = new OhsModuleConfig();
-		ohsModuleConfig.setModuleAlias(
-				StringUtils.isEmpty(testsuitObj.getModuleAlias()) ? null : testsuitObj.getModuleAlias());
-		ohsModuleConfig
-				.setModuleName(StringUtils.isEmpty(testsuitObj.getModuleName()) ? null : testsuitObj.getModuleName());
+		ohsModuleConfig.setModuleAlias(StringUtils.isEmpty(testsuitObj.getModuleAlias()) ? null : testsuitObj.getModuleAlias());
+		ohsModuleConfig.setModuleName(StringUtils.isEmpty(testsuitObj.getModuleName()) ? null : testsuitObj.getModuleName());
 		// 如果送了系统码或者系统名，表示不是查询全部的模块
 		if (!StringUtils.isEmpty(testsuitObj.getSysAlias()) || !StringUtils.isEmpty(testsuitObj.getSysChineseNme())) {
 			ohsModuleConfig.setSysId(ohsSysConfig.getId());
@@ -85,11 +82,14 @@ public class TestsuitConfigServiceImpl implements TestsuitConfigService {
 				testsuitObj.getPageSize());
 
 		OhsTestsuitConfig ohsTestsuitConfig = new OhsTestsuitConfig();
-		ohsTestsuitConfig.setSysId(ohsSysConfig.getId());
-		ohsTestsuitConfig.setModuleId(ohsModuleConfig.getId());
-
-		Page<OhsTestsuitConfig> ohsTestsuitConfigListPage = ohsTestsuitConfigRepository
-				.findAll(Example.of(ohsTestsuitConfig), pageable);
+		if (!StringUtils.isEmpty(testsuitObj.getSysAlias()) || !StringUtils.isEmpty(testsuitObj.getSysChineseNme())) {
+			ohsTestsuitConfig.setSysId(ohsSysConfig.getId());
+		}
+		if (!StringUtils.isEmpty(testsuitObj.getModuleAlias()) || !StringUtils.isEmpty(testsuitObj.getModuleName())) {
+			ohsTestsuitConfig.setModuleId(ohsModuleConfig.getId());
+		}
+		ohsTestsuitConfig.setCreateUser(testsuitObj.getTokenName());
+		Page<OhsTestsuitConfig> ohsTestsuitConfigListPage = ohsTestsuitConfigRepository.findAll(Example.of(ohsTestsuitConfig), pageable);
 		List<OhsTestsuitConfig> ohsTestsuitConfigList = ohsTestsuitConfigListPage.getContent();
 		if (CollectionUtils.isEmpty(ohsTestsuitConfigList)) {
 			throw new OhsException("当前系统不存在对应测试案例配置信息，请自行添加测试案例！");
@@ -99,11 +99,19 @@ public class TestsuitConfigServiceImpl implements TestsuitConfigService {
 		for (OhsTestsuitConfig ohsIter : ohsTestsuitConfigList) {
 			Testsuit interfaceRetObj = new Testsuit();
 			interfaceRetObj.setId(ohsIter.getId() + "");
-			interfaceRetObj.setSysAlias(ohsSysConfig.getSysAlias());
-			interfaceRetObj.setSysChineseNme(ohsSysConfig.getSysChineseNme());
+			Optional<OhsSysConfig> ohsSysCfg = ohsSysConfigRepository.findById(ohsIter.getSysId());
+			if (!ohsSysCfg.isPresent()) {
+				throw new OhsException("不存在对应系统！");
+			}
+			interfaceRetObj.setSysAlias(ohsSysCfg.get().getSysAlias());
+			interfaceRetObj.setSysChineseNme(ohsSysCfg.get().getSysChineseNme());
 
-			interfaceRetObj.setModuleAlias(ohsModuleConfig.getModuleAlias());
-			interfaceRetObj.setModuleName(ohsModuleConfig.getModuleName());
+			Optional<OhsModuleConfig> ohsModuleCfg = ohsModuleConfigRepository.findById(ohsIter.getModuleId());
+			if (!ohsModuleCfg.isPresent()) {
+				throw new OhsException("不存在对应模块！");
+			}
+			interfaceRetObj.setModuleAlias(ohsModuleCfg.get().getModuleAlias());
+			interfaceRetObj.setModuleName(ohsModuleCfg.get().getModuleName());
 			interfaceRetObj.setTestsuitName(ohsIter.getTestsuitName());
 			interfaceRetObj.setVersionNo(ohsIter.getVersionNo());
 			interfaceRetObj.setPreOprUrl(ohsIter.getPreOprUrl());
@@ -112,7 +120,6 @@ public class TestsuitConfigServiceImpl implements TestsuitConfigService {
 			interfaceRetObj.setAfterOperUrl(ohsIter.getAfterOperUrl());
 			interfaceRetObj.setAfterReqOprData(ohsIter.getAfterReqOprData());
 			interfaceRetObj.setAfterRspDataRegx(ohsIter.getAfterRspDataRegx());
-
 			
 			// 查询当前测试案例下的接口信息
 			OhsTestsuitRecords ohsTestsuitRecords = new OhsTestsuitRecords();
@@ -175,8 +182,8 @@ public class TestsuitConfigServiceImpl implements TestsuitConfigService {
 	public Testsuit saveTestsuitConfig(Testsuit testsuitObj) throws OhsException {
 		OhsSysConfig ohsSysConfig = new OhsSysConfig();
 		ohsSysConfig.setSysAlias(StringUtils.isEmpty(testsuitObj.getSysAlias()) ? null : testsuitObj.getSysAlias());
-		ohsSysConfig.setSysChineseNme(
-				StringUtils.isEmpty(testsuitObj.getSysChineseNme()) ? null : testsuitObj.getSysChineseNme());
+		ohsSysConfig.setSysChineseNme(StringUtils.isEmpty(testsuitObj.getSysChineseNme()) ? null : testsuitObj.getSysChineseNme());
+		ohsSysConfig.setCreateUser(testsuitObj.getCreateUser());
 
 		List<OhsSysConfig> ohsSysConfigLst = ohsSysConfigRepository.findAll(Example.of(ohsSysConfig));
 		if (CollectionUtils.isEmpty(ohsSysConfigLst)) {
@@ -187,10 +194,8 @@ public class TestsuitConfigServiceImpl implements TestsuitConfigService {
 		ohsSysConfig = ohsSysConfigLst.get(0);
 
 		OhsModuleConfig ohsModuleConfig = new OhsModuleConfig();
-		ohsModuleConfig.setModuleAlias(
-				StringUtils.isEmpty(testsuitObj.getModuleAlias()) ? null : testsuitObj.getModuleAlias());
-		ohsModuleConfig
-				.setModuleName(StringUtils.isEmpty(testsuitObj.getModuleName()) ? null : testsuitObj.getModuleName());
+		ohsModuleConfig.setModuleAlias(StringUtils.isEmpty(testsuitObj.getModuleAlias()) ? null : testsuitObj.getModuleAlias());
+		ohsModuleConfig.setModuleName(StringUtils.isEmpty(testsuitObj.getModuleName()) ? null : testsuitObj.getModuleName());
 		// 如果送了系统码或者系统名，表示不是查询全部的模块
 		if (!StringUtils.isEmpty(testsuitObj.getSysAlias()) || !StringUtils.isEmpty(testsuitObj.getSysChineseNme())) {
 			ohsModuleConfig.setSysId(ohsSysConfig.getId());
@@ -207,7 +212,7 @@ public class TestsuitConfigServiceImpl implements TestsuitConfigService {
 		ohsTestsuitConfig.setSysId(ohsSysConfig.getId());
 		ohsTestsuitConfig.setModuleId(ohsModuleConfig.getId());
 		ohsTestsuitConfig.setCreateDate(new Timestamp(new Date().getTime()));
-		ohsTestsuitConfig.setCreateUser("admin");
+		ohsTestsuitConfig.setCreateUser(testsuitObj.getCreateUser());
 		ohsTestsuitConfig.setTestsuitName(testsuitObj.getTestsuitName());
 		ohsTestsuitConfig.setVersionNo(testsuitObj.getVersionNo());
 		ohsTestsuitConfig.setPreOprUrl(testsuitObj.getPreOprUrl());
@@ -226,10 +231,13 @@ public class TestsuitConfigServiceImpl implements TestsuitConfigService {
 	}
 
 	@Override
-	public Testsuit deleteById(int id) throws OhsException {
+	public Testsuit deleteById(int id, String tokenName) throws OhsException {
 		Optional<OhsTestsuitConfig> ohsTestsuitConfigOpt = ohsTestsuitConfigRepository.findById(id);
 		if (!ohsTestsuitConfigOpt.isPresent()) {
 			throw new OhsException("该接口信息已被删除！请重新查询！");
+		}
+		if (!ohsTestsuitConfigOpt.get().getCreateUser().equals(tokenName)) {
+			throw new OhsException("禁止删除非当前用户数据！");
 		}
 		ohsTestsuitConfigRepository.deleteById(id);
 		Testsuit testsuitObj = new Testsuit();
@@ -243,7 +251,7 @@ public class TestsuitConfigServiceImpl implements TestsuitConfigService {
 		ohsSysConfig.setSysAlias(StringUtils.isEmpty(testsuitObj.getSysAlias()) ? null : testsuitObj.getSysAlias());
 		ohsSysConfig.setSysChineseNme(
 				StringUtils.isEmpty(testsuitObj.getSysChineseNme()) ? null : testsuitObj.getSysChineseNme());
-
+		ohsSysConfig.setCreateUser(testsuitObj.getCreateUser());
 		List<OhsSysConfig> ohsSysConfigLst = ohsSysConfigRepository.findAll(Example.of(ohsSysConfig));
 		if (CollectionUtils.isEmpty(ohsSysConfigLst)) {
 			throw new OhsException("当前系统不存在对应系统配置信息，请先添加系统配置信息后再查询或新增修改模块！");
@@ -281,7 +289,7 @@ public class TestsuitConfigServiceImpl implements TestsuitConfigService {
 		ohsTestsuitConfig.setCreateDate(ohsTestsuitConfigOpt.get().getCreateDate());
 		ohsTestsuitConfig.setCreateUser(ohsTestsuitConfigOpt.get().getCreateUser());
 		ohsTestsuitConfig.setUpdateDate(new Timestamp(new Date().getTime()));
-		ohsTestsuitConfig.setUpdateUser("admin");
+		ohsTestsuitConfig.setUpdateUser(testsuitObj.getCreateUser());
 		ohsTestsuitConfig.setTestsuitName(testsuitObj.getTestsuitName());
 		ohsTestsuitConfig.setVersionNo(testsuitObj.getVersionNo());
 		ohsTestsuitConfig.setPreOprUrl(testsuitObj.getPreOprUrl());
@@ -295,7 +303,7 @@ public class TestsuitConfigServiceImpl implements TestsuitConfigService {
 		
 		testsuitObj.setId("" + ohsTestsuitConfig.getId());
 		testsuitObj.setUpdateDate(new Timestamp(new Date().getTime()));
-		testsuitObj.setUpdateUser("admin");
+		testsuitObj.setUpdateUser(testsuitObj.getCreateUser());
 		testsuitObj.setCreateUser(ohsTestsuitConfig.getCreateUser());
 		testsuitObj.setCreateDate(ohsTestsuitConfig.getCreateDate());
 		return testsuitObj;

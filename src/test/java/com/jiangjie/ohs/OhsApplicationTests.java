@@ -20,9 +20,9 @@ public class OhsApplicationTests {
 
 	@Test
 	public void test1() {
-		String url = "http://localhost:8888/api/menu/getAllMenu";
-		String msg = restTemplate.getForObject(url, String.class);
-		System.out.println("----------------------------- \n -" + msg);
+//		String url = "http://localhost:8888/api/menu/getAllMenu";
+//		String msg = restTemplate.getForObject(url, String.class);
+//		System.out.println("----------------------------- \n -" + msg);
 
 	}
 }

@@ -104,4 +104,13 @@ public class OhsInterfaceSingleRecords {
 	public void setUpdateUser(String updateUser) {
 		this.updateUser = updateUser;
 	}
+
+	@Override
+	public String toString() {
+		return "OhsInterfaceSingleRecords [id=" + id + ", interfaceId=" + interfaceId + ", requestParameters="
+				+ requestParameters + ", requestData=" + requestData + ", responseData=" + responseData
+				+ ", createDate=" + createDate + ", createUser=" + createUser + ", updateDate=" + updateDate
+				+ ", updateUser=" + updateUser + "]";
+	}
+
 }
