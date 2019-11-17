@@ -128,8 +128,12 @@ public class TestsuitConfigServiceImpl implements TestsuitConfigService {
 			
 			// 查询当前系统以及模块下的接口信息
 			OhsInterfaceConfig ohsInterfaceConfig = new OhsInterfaceConfig();
-			ohsInterfaceConfig.setSysId(ohsSysConfig.getId());
-			ohsInterfaceConfig.setModuleId(ohsModuleConfig.getId());
+			if (!StringUtils.isEmpty(testsuitObj.getSysAlias()) || !StringUtils.isEmpty(testsuitObj.getSysChineseNme())) {
+				ohsInterfaceConfig.setSysId(ohsSysConfig.getId());
+			}
+			if (!StringUtils.isEmpty(testsuitObj.getModuleAlias()) || !StringUtils.isEmpty(testsuitObj.getModuleName())) {
+				ohsInterfaceConfig.setModuleId(ohsModuleConfig.getId());
+			}
 			List<OhsInterfaceConfig> ohsInterfaceConfigLst = ohsInterfaceConfigRepository.findAll(Example.of(ohsInterfaceConfig));
 			
 			List<Interface> inInterface = new ArrayList<>();

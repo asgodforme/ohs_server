@@ -19,10 +19,12 @@ import com.jiangjie.ohs.entity.OhsModuleConfig;
 import com.jiangjie.ohs.entity.OhsSysConfig;
 import com.jiangjie.ohs.entity.common.RelationUserInfo;
 import com.jiangjie.ohs.entity.dataEntity.OhsColumnConfig;
+import com.jiangjie.ohs.entity.dataEntity.OhsEnumValueConfig;
 import com.jiangjie.ohs.entity.dataEntity.OhsSingleQueryWhereInfo;
 import com.jiangjie.ohs.entity.dataEntity.OhsSingleSqlConfig;
 import com.jiangjie.ohs.exception.OhsException;
 import com.jiangjie.ohs.repository.OhsColumnConfigRepository;
+import com.jiangjie.ohs.repository.OhsEnumValueConfigRepository;
 import com.jiangjie.ohs.repository.OhsEnvironmentConfigRepository;
 import com.jiangjie.ohs.repository.OhsModuleConfigRepository;
 import com.jiangjie.ohs.repository.OhsSingleQueryWhereInfoRepository;
@@ -51,6 +53,9 @@ public class OhsDataQueryServiceImpl implements OhsDataQueryService {
 	
 	@Autowired
 	private OhsColumnConfigRepository ohsColumnConfigRepository;
+	
+	@Autowired
+	private OhsEnumValueConfigRepository ohsEnumValueConfigRepository;
 	@Override
 	public List<DataQueryResponse> queryBatchDataFileds(Map<String, Object> param) throws OhsException {
 
@@ -154,6 +159,29 @@ public class OhsDataQueryServiceImpl implements OhsDataQueryService {
 						headerColumn.put(entry.getKey(), ohsColumnConfigLst.get(0).getColumnAlias());
 					}
 					headerColumns.add(headerColumn);
+				}
+				for (Map<String, Object> map : result) {
+					for (Map.Entry<String, Object> entry : map.entrySet()) {
+						OhsColumnConfig ohsColumnConfig = new OhsColumnConfig();
+						ohsColumnConfig.setSysId(ohsSysConfig.getId());
+						ohsColumnConfig.setTableId(ohsSingleSql.getTableId());
+						ohsColumnConfig.setColumnName(entry.getKey().toLowerCase());
+						ohsColumnConfig.setCreateUser(createUser);
+						List<OhsColumnConfig> ohsColumnConfigLst = ohsColumnConfigRepository.findAll(Example.of(ohsColumnConfig));
+						if (!CollectionUtils.isEmpty(ohsColumnConfigLst)) {
+							ohsColumnConfig = ohsColumnConfigLst.get(0);
+							OhsEnumValueConfig ohsEnumValueConfig = new OhsEnumValueConfig();
+							ohsEnumValueConfig.setColumnId(ohsColumnConfig.getId());
+							List<OhsEnumValueConfig> ohsEnumValueConfigLst = ohsEnumValueConfigRepository.findAll(Example.of(ohsEnumValueConfig));
+							if (!CollectionUtils.isEmpty(ohsEnumValueConfigLst)) {
+								for (OhsEnumValueConfig enumCfg : ohsEnumValueConfigLst) {
+									if (entry.getValue() != null && (entry.getValue() + "").equals(enumCfg.getEnumValue())) {
+										entry.setValue(enumCfg.getEnumChineseValue());
+									}
+								}
+							}
+						}
+					}
 				}
 			}
 			dataQueryResponseLst.add(dataQueryResponse);

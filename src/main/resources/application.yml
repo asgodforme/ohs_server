@@ -3,7 +3,7 @@ server:
 spring: 
  datasource:
   driverClassName: com.mysql.jdbc.Driver
-  url: jdbc:mysql://127.0.0.1:3306/ohs?serverTimezone=GMT%2B8&useUnicode=true&characterEncoding=utf-8
+  url: jdbc:mysql://localhost:3306/ohs?serverTimezone=GMT%2B8&useUnicode=true&characterEncoding=utf-8
   username: root
   password: jiangjie1
  jpa: 
@@ -14,6 +14,9 @@ spring:
   properties: 
    hibernate: 
     dialect: org.hibernate.dialect.MySQL5Dialect
+ thymeleaf:
+  prefix: 
+   classpath: static/
 security: 
  basic: 
   enabled: false
@@ -21,6 +24,10 @@ security:
 logging: 
  level: 
   root: debug
+ path: /usr/ohs/logs/
+ file: ohs_log.log
+  
+
   
 mybatis:
   mapper-locations: classpath:mapper/*.xml

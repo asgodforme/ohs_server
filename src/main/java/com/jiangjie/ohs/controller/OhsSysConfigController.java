@@ -54,15 +54,6 @@ public class OhsSysConfigController {
 		return sysConfigService.getAllSysInfo(ohsSysConfig);
 	}
 	
-//	/**
-//	 * TODO POST传值报错！！！麻蛋
-//	 * @param ohsSysConfig
-//	 */
-//	@GetMapping("/saveSysConfig")
-//	public OhsSysConfig saveSysConfig(OhsSysConfig ohsSysConfig) throws OhsException {
-//		return sysConfigService.saveSysConfig(ohsSysConfig);
-//	}
-	
 	/**
 	 * 保存系统信息
 	 */

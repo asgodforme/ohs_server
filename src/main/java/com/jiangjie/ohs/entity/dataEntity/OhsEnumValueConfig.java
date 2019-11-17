@@ -106,4 +106,11 @@ public class OhsEnumValueConfig {
 		this.updateUser = updateUser;
 	}
 
+	@Override
+	public String toString() {
+		return "OhsEnumValueConfig [id=" + id + ", columnId=" + columnId + ", enumValue=" + enumValue
+				+ ", enumChineseValue=" + enumChineseValue + ", createDate=" + createDate + ", createUser=" + createUser
+				+ ", updateDate=" + updateDate + ", updateUser=" + updateUser + "]";
+	}
+
 }

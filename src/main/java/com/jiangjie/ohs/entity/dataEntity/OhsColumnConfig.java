@@ -128,4 +128,11 @@ public class OhsColumnConfig {
 		this.isHide = isHide;
 	}
 
+	@Override
+	public String toString() {
+		return "OhsColumnConfig [id=" + id + ", sysId=" + sysId + ", tableId=" + tableId + ", columnName=" + columnName
+				+ ", columnAlias=" + columnAlias + ", isHide=" + isHide + ", createDate=" + createDate + ", createUser="
+				+ createUser + ", updateDate=" + updateDate + ", updateUser=" + updateUser + "]";
+	}
+
 }

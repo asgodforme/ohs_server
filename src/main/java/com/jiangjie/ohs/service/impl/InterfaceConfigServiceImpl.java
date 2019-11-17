@@ -4,7 +4,9 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -179,10 +181,12 @@ public class InterfaceConfigServiceImpl implements InterfaceConfigService {
 			List<OhsEnvironmentConfig> ohsEnvironmentConfigLst = ohsEnvironmentConfigRepository.findAll(Example.of(ohsEnvironmentConfig));
 			List<Interface.EnvironmentInfo> environmentInfoLst = new ArrayList<>();
 			ohsEnvironmentConfigLst.stream().forEach(env -> {
-				Interface.EnvironmentInfo environmentInfo = new Interface().new EnvironmentInfo();
-				environmentInfo.setId(env.getId());
-				environmentInfo.setEvnName(env.getEvnName());
-				environmentInfoLst.add(environmentInfo);
+				if ("0".equals(env.getEvnTyp())) {
+					Interface.EnvironmentInfo environmentInfo = new Interface().new EnvironmentInfo();
+					environmentInfo.setId(env.getId());
+					environmentInfo.setEvnName(env.getEvnName());
+					environmentInfoLst.add(environmentInfo);
+				}
 			});
 			interfaceRetObj.setEnvironmentInfos(environmentInfoLst);
 			
@@ -386,10 +390,50 @@ public class InterfaceConfigServiceImpl implements InterfaceConfigService {
 					ohsInterfaceSingleRecords.setCreateDate(new Timestamp(new Date().getTime()));
 				}
 				ohsInterfaceSingleRecordsRepository.save(ohsInterfaceSingleRecords);
+				interfaceObj.setRequestTemplate(ohsInterfaceSingleRecords.getRequestData());
 				interfaceObj.setResponseTemplate(msg);
 			}
 		} else if ("POST".equals(ohsInterface.get().getMethod().toUpperCase())) {
-//			restTemplate.postForObject(url, request, responseType);
+			Map<String, Object> map = new HashMap<>();
+			OhsInterfaceSingleRecords recd = new OhsInterfaceSingleRecords();
+			recd.setInterfaceId(Integer.parseInt(interfaceObj.getId()));
+			List<OhsInterfaceSingleRecords> recds = ohsInterfaceSingleRecordsRepository.findAll(Example.of(recd));
+			StringBuffer sb = new StringBuffer();
+			if (!CollectionUtils.isEmpty(recds)) {
+				recds.sort(Comparator.comparing(OhsInterfaceSingleRecords::getId));
+				if (recds.get(recds.size() - 1) != null && recds.get(recds.size() - 1).getRequestParameters() != null) {
+					String[] requestData = recds.get(recds.size() - 1).getRequestParameters().split(",");
+					for (String str: requestData) {
+						String[] requestDatas = str.split(":");
+						sb.append(requestDatas[0]).append("=").append(requestDatas[1]);
+						map.put(requestDatas[0], requestDatas[1]);
+					}
+				}
+			}
+			String result = restTemplate.postForObject(reqUrlSb.toString(), map, String.class);
+			if (!StringUtils.isEmpty(interfaceObj.getSingleRecordsId())) {
+				Optional<OhsInterfaceSingleRecords> ohsSingleRecords = ohsInterfaceSingleRecordsRepository.findById(interfaceObj.getSingleRecordsId());
+				if (ohsSingleRecords.isPresent()) {
+					ohsSingleRecords.get().setResponseData(result);
+					ohsInterfaceSingleRecordsRepository.save(ohsSingleRecords.get());
+				}
+			} else {
+				OhsInterfaceSingleRecords ohsInterfaceSingleRecords = new OhsInterfaceSingleRecords();
+				ohsInterfaceSingleRecords.setInterfaceId(Integer.parseInt(interfaceObj.getId()));
+				List<OhsInterfaceSingleRecords> ohsInterfaceSingleRecordsLst = ohsInterfaceSingleRecordsRepository.findAll(Example.of(ohsInterfaceSingleRecords));
+				if (!CollectionUtils.isEmpty(ohsInterfaceSingleRecordsLst)) {
+					ohsInterfaceSingleRecordsLst.sort(Comparator.comparing(OhsInterfaceSingleRecords::getId));
+					ohsInterfaceSingleRecords = ohsInterfaceSingleRecordsLst.get(ohsInterfaceSingleRecordsLst.size() - 1);
+					ohsInterfaceSingleRecords.setResponseData(result);
+				} else {
+					ohsInterfaceSingleRecords.setResponseData(result);
+					ohsInterfaceSingleRecords.setCreateUser(interfaceObj.getCreateUser());
+					ohsInterfaceSingleRecords.setCreateDate(new Timestamp(new Date().getTime()));
+				}
+				ohsInterfaceSingleRecordsRepository.save(ohsInterfaceSingleRecords);
+				interfaceObj.setRequestTemplate(ohsInterfaceSingleRecords.getRequestData());
+				interfaceObj.setResponseTemplate(result);
+			}
 		}
 		
 		return interfaceObj;

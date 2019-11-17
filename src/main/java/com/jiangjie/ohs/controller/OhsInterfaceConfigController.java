@@ -46,6 +46,14 @@ public class OhsInterfaceConfigController {
 		interfaceObj.setRequestTemplate((String) requestParam.get("requestTemplate"));
 		interfaceObj.setResponseTemplate((String) requestParam.get("responseTemplate"));
 		interfaceObj.setCreateUser((String) requestParam.get("tokenName"));
+		
+		if ("WEBSERVICE".equals(interfaceObj.getInterfaceType())) {
+			throw new OhsException("后续开放webservice接口测试，敬请期待！");
+		}
+		
+		if ("PUT".equals(interfaceObj.getMethod()) || "DELETE".equals(interfaceObj.getMethod())) {
+			throw new OhsException("后续开放put,delete restful方法接口测试，敬请期待！");
+		}
 		return interfaceConfigService.saveInterfaceConfig(interfaceObj);
 	}
 

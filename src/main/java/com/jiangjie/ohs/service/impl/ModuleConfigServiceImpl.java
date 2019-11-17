@@ -246,10 +246,12 @@ public class ModuleConfigServiceImpl implements ModuleConfigService {
 			if (!CollectionUtils.isEmpty(ohsEnvironmentConfigLst)) {
 				List<EnvInfo> envInfos = new ArrayList<EnvInfo>();
 				ohsEnvironmentConfigLst.stream().forEach(ohsEnv -> {
-					EnvInfo envInfo = new EnvInfo();
-					envInfo.setEnvId(ohsEnv.getId() + "");
-					envInfo.setEnvAlias(ohsEnv.getEvnName());
-					envInfos.add(envInfo);
+					if ("1".equals(ohsEnv.getEvnTyp())) {
+						EnvInfo envInfo = new EnvInfo();
+						envInfo.setEnvId(ohsEnv.getId() + "");
+						envInfo.setEnvAlias(ohsEnv.getEvnName());
+						envInfos.add(envInfo);
+					}
 				});
 				newModule.setEnvInfo(envInfos);
 			}

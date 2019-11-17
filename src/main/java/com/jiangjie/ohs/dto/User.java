@@ -2,6 +2,8 @@ package com.jiangjie.ohs.dto;
 
 import java.sql.Timestamp;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 /**
  * 人员
  * 
@@ -20,10 +22,12 @@ public class User {
 
 	private String role;
 
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
 	private Timestamp updateDate;
 
 	private String updateUser;
 
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
 	private Timestamp createDate;
 
 	private String createUser;
